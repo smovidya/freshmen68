@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, boolean, integer, index } from 'drizzle-orm/pg-core';
+import { user } from './auth.schema';
 
 export const students = pgTable('students', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -88,7 +89,8 @@ export const availableGroupsRelations = relations(availableGroups, ({ many }) =>
   teams: many(teams),
 }));
 
-export const teamsRelations = relations(teams, ({ one }) => ({
+export const teamsRelations = relations(teams, ({ one, many }) => ({
+  users: many(user),
   creator: one(students, {
     fields: [teams.creatorId],
     references: [students.id],
