@@ -11,11 +11,11 @@
     "db:studio": "DATABASE_URL=postgres://root:mysecretpassword@localhost:5541/local drizzle-kit studio"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250711.0",
+    "@cloudflare/workers-types": "^4.20250712.0",
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "dotenv": "^17.2.0"
