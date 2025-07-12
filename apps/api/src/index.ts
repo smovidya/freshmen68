@@ -1,7 +1,7 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { env, WorkerEntrypoint } from 'cloudflare:workers';
 import { appRouter } from '@freshmen68/trpc';
-import { auth } from "@freshmen68/auth"
+import { createAuth } from "@freshmen68/auth"
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
@@ -24,6 +24,9 @@ app.use(
 );
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => {
+	const auth = createAuth({
+		env,
+	});
 	return auth.handler(c.req.raw);
 });
 
