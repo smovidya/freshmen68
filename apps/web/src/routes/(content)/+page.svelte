@@ -14,8 +14,8 @@
 	<p>
 		นี่เป็นเวอร์ชัน demo ให้กรอกรหัสนิสิตสมมติเพื่อทดลองระบบ (เวอร์ชันจริงจะล็อกอินด้วยอีเมลนิสิต)
 	</p>
-	{#if $session.user}
-		{JSON.stringify($session.user, null, 2)}
+	{#if $session.data?.user}
+		{JSON.stringify($session.data?.user, null, 2)}
 	{:else}
 		<p class="text-red-500">กรุณาเข้าสู่ระบบก่อน</p>
 		<form>
@@ -29,12 +29,19 @@
 			<Button
 				type="submit"
 				class="mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-				onclick={() =>
-					authClient.signUp.email({
+				onclick={async () => {
+					const { data, error } = await authClient.signUp.email({
 						email: `${studentId}@student.chula.ac.th.mock`, // สมมติอีเมลนิสิต
 						password: 'password1234',
 						name: 'นิสิตสมมติ'
-					})}
+					});
+					if (error?.code === 'USER_ALREADY_EXISTS') {
+						await authClient.signIn.email({
+							email: `${studentId}@student.chula.ac.th.mock`, // สมมติอีเมลนิสิต
+							password: 'password1234'
+						});
+					}
+				}}
 			>
 				เข้าสู่ระบบ
 			</Button>
