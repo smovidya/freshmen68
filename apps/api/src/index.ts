@@ -12,8 +12,7 @@ app.use(
 	cors({
 		origin: [
 			env.FRONTEND_URL || 'http://localhost:5173',
-			env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
-			'*.smovidya-chula.workers.dev'
+			env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'
 		],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
