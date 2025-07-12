@@ -1,0 +1,17 @@
+{
+  "name": "@freshmen68/auth",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250711.0",
+    "@types/bun": "latest",
+    "wrangler": "^4.24.3"
+  },
+  "dependencies": {
+    "@freshmen68/db": "workspace:*",
+    "dotenv": "^17.2.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

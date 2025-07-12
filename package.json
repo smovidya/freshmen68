@@ -1,0 +1,22 @@
+{
+  "name": "freshmen68",
+  "author": {
+    "url": "https://sucu.sc.chula.ac.th",
+    "email": "smoviya.it.team@gmail.com",
+    "name": "SMO Vidya IT Team"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "turbo": "^2.5.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "packageManager": "bun@1.2.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

@@ -1,0 +1,15 @@
+name: freshmen68
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5541:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

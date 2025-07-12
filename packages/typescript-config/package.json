@@ -1,0 +1,10 @@
+{
+  "name": "@freshmen68/typescript-config",
+  "version": "0.0.2",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
