@@ -1,0 +1,13 @@
+{
+  "name": "@freshmen68/dto",
+  "module": "index.ts",
+  "type": "module",
+  "version": "0.0.1",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5",
+    "zod": "^4.0.5"
+  }
+}

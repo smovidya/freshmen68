@@ -63,9 +63,11 @@
 	"dependencies": {
 		"@fontsource-variable/noto-sans-thai": "^5.2.6",
 		"@freshmen68/trpc": "workspace:*",
+		"@freshmen68/dto": "workspace:*",
 		"@trpc/client": "^11.4.3",
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
-		"postgres": "^3.4.7"
+		"postgres": "^3.4.7",
+		"zod": "^4.0.5"
 	}
 }
