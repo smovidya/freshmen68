@@ -8,7 +8,7 @@ import { cors } from "hono/cors";
 const app = new Hono();
 
 app.use(
-	"/api/auth/*", // or replace with "*" to enable cors for all routes
+	"*", // or replace with "*" to enable cors for all routes
 	cors({
 		origin: [
 			env.FRONTEND_URL || 'http://localhost:5173',
