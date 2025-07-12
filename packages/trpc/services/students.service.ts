@@ -3,20 +3,8 @@ import type { registrationSchema } from "@freshmen68/dto";
 import { eq } from "drizzle-orm";
 import z from "zod/v4";
 import { generateTeamCode } from "./team.service";
+import { createRandomGroupNumberPreferenceOrder } from "./group.service";
 
-
-function createRandomGroupNumberPreferenceOrder() {
-  const numbers = [1, 3, 4, 5, 6, 7];
-
-  // Fisher-Yates shuffle algorithm
-  for (let i = numbers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [numbers[i], numbers[j]] = [numbers[j]!, numbers[i]!];
-  }
-
-  // TODO: may be change the format
-  return numbers.join(',');
-}
 
 export async function createStudentWithTeam(input: z.infer<typeof registrationSchema>, db: Db | Tx) {
   return await db.transaction(async (tx) => {
@@ -28,7 +16,7 @@ export async function createStudentWithTeam(input: z.infer<typeof registrationSc
       .insert(tables.teams)
       .values({
         creatorId: '', // We'll update this after creating the student
-        groupNumberPreferenceOrder: createRandomGroupNumberPreferenceOrder(),
+        groupNumberPreferenceOrder: createRandomGroupNumberPreferenceOrder().join(','),
         teamCodes: teamCode,
       })
       .returning();

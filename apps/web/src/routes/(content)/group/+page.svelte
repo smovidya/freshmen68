@@ -2,6 +2,13 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import TeamDisplay from './team-display.svelte';
 	import GroupSelector from './group-selector.svelte';
+	import type { PageProps } from './$types';
+
+	let { data }: PageProps = $props();
+
+	async function save() {
+
+	}
 </script>
 
 <h1 class="mt-6 text-center text-5xl">สุ่มกรุ๊ปที่นี่</h1>
@@ -28,7 +35,7 @@
 		หลังจากกดบันทึก น้องสามารกกลับมาแก้ไขเพื่อเชิญเพื่อนและแก้อันดับที่เลือกได้ จนกว่าจะ 24:00 น.
 		ของวันที่ 21 กรกฎาคม เมื่อพ้นไปแล้วจะบันทึกตามข้อมูลปัจจุบันอัตโนมัติ
 	</p>
-	<Button variant="secondary" size="lg" class="bg-neutral-300 hover:bg-neutral-300/90 w-full mt-4"
+	<Button variant="secondary" size="lg" class="mt-4 w-full bg-neutral-300 hover:bg-neutral-300/90"
 		>บันทึก</Button
 	>
 </section>

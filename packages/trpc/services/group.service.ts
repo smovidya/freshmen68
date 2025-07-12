@@ -18,3 +18,37 @@ export async function updateGroupPreference(userId: string, preference: z.infer<
       )
     );
 }
+export async function getGroupPreference(userId: string, db: Db | Tx) {
+  const result = await db
+    .select({
+      groupNumberPreferenceOrder: tables.teams.groupNumberPreferenceOrder
+    })
+    .from(tables.students)
+    .innerJoin(tables.teams, eq(tables.teams.id, tables.students.teamOwnedId))
+    .where(eq(tables.students.id, userId))
+    .limit(1);
+
+  if (result.length === 0) {
+    throw new Error('User or team not found');
+  }
+
+  const preferenceString = result[0]!.groupNumberPreferenceOrder;
+
+  // Convert comma-separated string back to array
+  return preferenceString ? preferenceString.split(",") : [];
+}
+
+
+export function createRandomGroupNumberPreferenceOrder() {
+  const numbers = [1, 3, 4, 5, 6, 7];
+
+  // Fisher-Yates shuffle algorithm
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [numbers[i], numbers[j]] = [numbers[j]!, numbers[i]!];
+  }
+
+  // TODO: may be change the format
+  return numbers;
+}
+

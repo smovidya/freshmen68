@@ -1,5 +1,6 @@
 import { eq, count } from "drizzle-orm";
 import { tables, type Db, type Tx } from "@freshmen68/db";
+import { createRandomGroupNumberPreferenceOrder } from "./group.service";
 
 export async function joinTeam(userId: string, teamCode: string, db: Db | Tx) {
   return await db.transaction(async (tx) => {
@@ -73,4 +74,56 @@ export async function generateTeamCode(db: Db | Tx): Promise<string> {
   }
 
   throw new Error(`Failed to generate unique team code after ${maxAttempts} attempts`);
+}
+
+export async function getOwnedTeam(userId: string, db: Db | Tx) {
+  const members = await getOwnedTeamMember(userId, db);
+  const [meta] = await db
+    .select({
+      groupNumberPreferenceOrder: tables.teams.groupNumberPreferenceOrder,
+      resultGroupNumber: tables.teams.resultGroupNumber,
+      teamCodes: tables.teams.teamCodes
+    })
+    .from(tables.teams)
+    .where(
+      eq(
+        tables.teams.id,
+        db.select({ teamId: tables.students.teamOwnedId })
+          .from(tables.students)
+          .where(eq(tables.students.id, userId))
+      )
+    )
+    .limit(1);
+
+  return {
+    teamCodes: meta!.teamCodes,
+    resultGroupNumber: meta!.resultGroupNumber,
+    groupPreferenceOrder: meta!
+      .groupNumberPreferenceOrder
+      ?.split(",")
+      .map(it => parseInt(it))
+      ?? createRandomGroupNumberPreferenceOrder(), // this already exist tho
+    members
+  };
+}
+
+export async function getOwnedTeamMember(userId: string, db: Db | Tx) {
+  const students = await db
+    .select({
+      firstname: tables.students.firstName,
+      lastName: tables.students.lastName,
+      nickname: tables.students.nickname,
+      department: tables.students.department,
+    })
+    .from(tables.students)
+    .where(
+      eq(
+        tables.students.teamId,
+        db.select({ teamId: tables.students.teamOwnedId })
+          .from(tables.students)
+          .where(eq(tables.students.id, userId))
+      )
+    );
+
+  return students;
 }

@@ -1,9 +1,9 @@
 import z from "zod/v4";
 import { router, signedInProcedure } from ".";
-import { joinTeam, regenerateTeamCode } from "../services/team.service";
+import { getOwnedTeam, joinTeam, regenerateTeamCode } from "../services/team.service";
 import { db } from "@freshmen68/db";
 import { TRPCError } from "@trpc/server";
-import { updateGroupPreference } from "../services/group.service";
+import { getGroupPreference, updateGroupPreference } from "../services/group.service";
 import { groupPreferenceSchema } from "@freshmen68/dto";
 
 export const teamRouter = router({
@@ -33,5 +33,9 @@ export const teamRouter = router({
     .input(groupPreferenceSchema)
     .mutation(async ({ ctx, input }) => {
       await updateGroupPreference(ctx.user.id, input, db);
-    })
+    }),
+  getOwnedTeam: signedInProcedure
+    .query(async ({ ctx }) => {
+      return await getOwnedTeam(ctx.user.id, db);
+    }),
 });
