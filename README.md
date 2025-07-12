@@ -50,3 +50,26 @@ bun run dev
 ```
 
 Navigate to `http://localhost:5173` to see the web application and `http://localhost:8787` for the API.
+
+## Deployment
+
+For deployment, we use Cloudflare Workers for both the API and web applications. If you are the maintainer, you can deploy using the following commands:
+```bash
+bun turbo deploy
+```
+
+### Build configuration
+
+I took too long to come up with these value so put here for future reference.
+
+```
+Build configuration
+Build command:
+    bun turbo build -- --filter api
+Deploy command:
+    bun run deploy
+Version command:
+    bunx wrangler versions upload
+Root directory:
+    /
+```
