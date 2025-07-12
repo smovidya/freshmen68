@@ -5,6 +5,7 @@
     "email": "smoviya.it.team@gmail.com",
     "name": "SMO Vidya IT Team"
   },
+  "license": "MIT",
   "devDependencies": {
     "@types/bun": "latest",
     "turbo": "^2.5.4"
