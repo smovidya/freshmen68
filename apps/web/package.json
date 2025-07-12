@@ -61,13 +61,15 @@
 		"vite-plugin-devtools-json": "^0.2.1"
 	},
 	"dependencies": {
-		"@fontsource-variable/noto-sans-thai": "^5.2.6",
 		"@freshmen68/trpc": "workspace:*",
-		"@freshmen68/dto": "workspace:*",
 		"@trpc/client": "^11.4.3",
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
 		"postgres": "^3.4.7",
+		"@freshmen68/trpc": "workspace:*"
+=======
+		"drizzle-orm": "^0.40.0",
+		"postgres": "^3.4.5",
 		"zod": "^4.0.5"
 	}
 }
