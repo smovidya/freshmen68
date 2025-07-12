@@ -3,15 +3,16 @@
 	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
 	import * as InputOTP from '$lib/components/ui/input-otp';
 
-	let value = $state('');
-
-	function get() {
-		return value;
-	}
-
-	function set(text: string) {
-		value = text.toUpperCase();
-	}
+	/// arggghhh, i want $state.from https://github.com/sveltejs/svelte/issues/12956
+	let _codeInput = $state('');
+	const codeInput = {
+		get current() {
+			return _codeInput;
+		},
+		set current(text: string) {
+			_codeInput = text.toUpperCase();
+		}
+	};
 </script>
 
 <div class="mt-4 flex flex-col items-center gap-2 md:flex-row">
@@ -34,7 +35,11 @@
 		<h3 class="text-2xl font-medium">เข้าร่วมก๊วนกับเพื่อน</h3>
 		<p class="mt-2 h-12 leading-5">ใส่โค้ดที่ได้จากเพื่อนเพื่อไปอยู่ด้วนกันเล้ย</p>
 		<div class="mt-4">
-			<InputOTP.Root maxlength={4} bind:value={get, set} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+			<InputOTP.Root
+				maxlength={4}
+				bind:value={codeInput.current}
+				pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+			>
 				{#snippet children({ cells })}
 					<InputOTP.Group>
 						{#each cells as cell}
