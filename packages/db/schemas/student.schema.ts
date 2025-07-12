@@ -61,7 +61,9 @@ export const teams = pgTable('teams', {
   isSubmitted: boolean('is_submitted')
     .$defaultFn(() => false)
     .notNull(),
-  resultGroupNumber: text('result_group_number'),
+  resultGroupNumber: text('result_group_number')
+    .references(() => availableGroups.id, { onDelete: 'cascade' }),
+  teamCodes: text('team_codes').unique().notNull(),
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
