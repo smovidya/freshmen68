@@ -15,27 +15,39 @@
 		SelectTrigger
 	} from '$lib/components/ui/select/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { trpcClient } from '$lib/trpc';
 	import { registrationSchema } from '@freshmen68/dto';
+	import { toast } from 'svelte-sonner';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 
 	const form = superForm(defaults(zod4(registrationSchema)), {
 		SPA: true,
 		validators: zod4(registrationSchema),
-		onSubmit: ({ formData }) => {
-			console.log('Form submitted:', formData);
-			// Handle form submission here
+		onUpdate: async ({ form }) => {
+			if (!form.valid) {
+				return
+			}
+			console.log('Form submitted:', form.data);
+			try {
+				trpcClient.registration.register.mutate({
+					...form.data
+				})
+			} catch {
+				toast.error("เกิดข้อผิดพลาดขึ้น")
+			}
 		}
 	});
 
 	const { form: formData, enhance } = form;
 
 	const titleOptions = [
-		{ value: 'mr', label: 'นาย' },
-		{ value: 'ms', label: 'นางสาว' },
-		{ value: 'mrs', label: 'นาง' }
+		{ value: 'นาย', label: 'นาย' },
+		{ value: 'นางสาว', label: 'นางสาว' },
+		{ value: 'นาง', label: 'นาง' }
 	];
 
+	// TODO: get department list
 	const departmentOptions = [
 		{ value: 'engineering', label: 'วิศวกรรมศาสตร์' },
 		{ value: 'medicine', label: 'แพทยศาสตร์' },
@@ -56,15 +68,6 @@
 		{ value: 'allied-health', label: 'สหเวชศาสตร์' },
 		{ value: 'veterinary', label: 'สัตวแพทยศาสตร์' },
 		{ value: 'sports-science', label: 'วิทยาศาสตร์การกีฬา' }
-	];
-
-	const relationshipOptions = [
-		{ value: 'parent', label: 'ผู้ปกครอง' },
-		{ value: 'guardian', label: 'ผู้อุปการะ' },
-		{ value: 'sibling', label: 'พี่น้อง' },
-		{ value: 'relative', label: 'ญาติ' },
-		{ value: 'friend', label: 'เพื่อน' },
-		{ value: 'other', label: 'อื่นๆ' }
 	];
 </script>
 
