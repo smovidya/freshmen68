@@ -25,10 +25,15 @@ export const students = pgTable('students', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .$onUpdateFn(() => /* @__PURE__ */ new Date())
     .notNull(),
+  teamOwnedId: text('team_owner_id')
+    .notNull()
+    .references(() => teams.id, { onDelete: 'restrict' }),
+  teamId: text('team_id')
+    .references(() => teams.id, { onDelete: 'set null' }),
 }, (table) => [
   index('idx_students_student_id').on(table.studentId),
   index('idx_students_email').on(table.email),
-])
+]);
 
 export const availableGroups = pgTable('available_groups', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -51,14 +56,12 @@ export const availableGroups = pgTable('available_groups', {
 export const teams = pgTable('teams', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   creatorId: text('creator_id')
-    .notNull()
-    .references(() => students.id, { onDelete: 'cascade' }),
+    .notNull(),
   groupNumberPreferenceOrder: text('group_number_preference_order'),
   isSubmitted: boolean('is_submitted')
     .$defaultFn(() => false)
     .notNull(),
-  resultGroupNumber: text('result_group_number')
-    .references(() => availableGroups.id, { onDelete: 'cascade' }),
+  resultGroupNumber: text('result_group_number'),
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
@@ -66,18 +69,18 @@ export const teams = pgTable('teams', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .$onUpdateFn(() => /* @__PURE__ */ new Date())
     .notNull(),
-})
+});
 
 export const studentsRelations = relations(students, ({ one }) => ({
   teamOwned: one(teams, {
-    fields: [students.id],
-    references: [teams.creatorId],
+    fields: [students.teamOwnedId],
+    references: [teams.id],
   }),
   team: one(teams, {
-    fields: [students.id],
-    references: [teams.resultGroupNumber],
+    fields: [students.teamId],
+    references: [teams.id],
   }),
-}))
+}));
 
 export const availableGroupsRelations = relations(availableGroups, ({ many }) => ({
   teams: many(teams),

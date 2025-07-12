@@ -1,7 +1,7 @@
+import { env } from 'cloudflare:workers';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schemas/schema';
-import { env } from 'cloudflare:workers';
 
 const client = postgres(env.DATABASE_URL);
 
