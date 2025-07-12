@@ -306,12 +306,11 @@
 						<Textarea
 							{...props}
 							bind:value={$formData.foodLimitations}
-							placeholder="มังสวิรัติ, ไม่ทานเนื้อววั"
+							placeholder="เช่น มังสวิรัติ, เจ, ฮาลาล, โคเชอร์ เป็นต้น"
 							rows={2}
 						/>
 					{/snippet}
 				</FormControl>
-				<FormDescription>เช่น มังสวิรัติ, เจ, ฮาลาล, โคเชอร์ เป็นต้น</FormDescription>
 				<FormFieldErrors />
 			</FormField>
 		</div>
