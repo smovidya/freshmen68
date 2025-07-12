@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import GroupDisplay from './group-display.svelte';
-	import TeamSelector from './team-selector.svelte';
+	import TeamDisplay from './team-display.svelte';
+	import GroupSelector from './group-selector.svelte';
 </script>
 
 <h1 class="mt-6 text-center text-5xl">สุ่มกรุ๊ปที่นี่</h1>
@@ -10,7 +10,7 @@
 	<h2 class="text-xl font-medium">พาเพื่อนเข้ากลุ่มด้วยกัน</h2>
 	<p>น้อง ๆ สามารถเชิญเพื่อนอีก 2 คน (รวมน้องเป็น 3) โดยจะโดนจัดให้อยู่กรุ๊ปเดียวกัน</p>
 
-	<GroupDisplay />
+	<TeamDisplay />
 </section>
 
 <section class="mt-6">
@@ -20,7 +20,7 @@
 		และจะแสดงอันดับที่คนเชิญน้องเลือกไว้แทน
 	</p>
 
-	<TeamSelector />
+	<GroupSelector />
 </section>
 
 <section class="mt-8">
