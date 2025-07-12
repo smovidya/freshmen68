@@ -2,28 +2,8 @@ import { tables, type Db, type Tx } from "@freshmen68/db";
 import type { registrationSchema } from "@freshmen68/dto";
 import { eq } from "drizzle-orm";
 import z from "zod/v4";
+import { generateTeamCode } from "./team.service";
 
-async function generateTeamCode(db: Db | Tx): Promise<string> {
-  const maxAttempts = 100;
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    // Generate 6-character alphanumeric code
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    // Check if code already exists
-    const existingTeam = await db
-      .select({ id: tables.teams.id })
-      .from(tables.teams)
-      .where(eq(tables.teams.teamCodes, code))
-      .limit(1);
-
-    if (existingTeam.length === 0) {
-      return code;
-    }
-  }
-
-  throw new Error(`Failed to generate unique team code after ${maxAttempts} attempts`);
-}
 
 function createRandomGroupNumberPreferenceOrder() {
   const numbers = [1, 3, 4, 5, 6, 7];
