@@ -65,11 +65,15 @@
 		"@trpc/client": "^11.4.3",
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
+<<<<<<< HEAD
 		"postgres": "^3.4.7",
 		"@freshmen68/trpc": "workspace:*"
 =======
 		"drizzle-orm": "^0.40.0",
 		"postgres": "^3.4.5",
 		"zod": "^4.0.5"
+=======
+		"postgres": "^3.4.7"
+>>>>>>> 980f79d (chore: unfuck lock file)
 	}
 }
