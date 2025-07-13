@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import type { Team } from '$lib/type';
+	import type { OwnedTeam } from '$lib/type';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
 	interface Props {
-		team: Team;
+		team: OwnedTeam;
 	}
 
 	let { team }: Props = $props();

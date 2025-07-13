@@ -9,12 +9,26 @@
 
 	let { data }: PageProps = $props();
 
-	async function saveOrdering() {}
+	async function saveOrdering() {	
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
+
+	async function joinTeam(teamCodes: string) {
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
+
+	async function regenerateTeamCodes() {
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
+
+	async function kickMember(email: string) {
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
 </script>
 
 <nav class="flex items-center justify-between gap-4">
 	<BackButton href="/menu" />
-	<div class="text-center ">
+	<div class="text-center">
 		<h1 class="text-3xl font-medium">เลือกกรุ๊ป</h1>
 		<!-- <p class="text-zinc-700">เรียงลำดับกรุ๊ปรับน้องตามที่น้อง ๆ สนใจ พร้อมจับมือเพื่อนไปด้วยอีก 2 คน</p> -->
 	</div>
@@ -29,9 +43,9 @@
 	{#if data.joinedTeam}
 		<TeamDisplayMember team={data.joinedTeam} />
 	{:else if data.ownedTeam.members.length > 0}
-		<TeamDisplayHead team={data.ownedTeam} />
+		<TeamDisplayHead {regenerateTeamCodes} team={data.ownedTeam} />
 	{:else}
-		<TeamDisplaySingle team={data.ownedTeam} />
+		<TeamDisplaySingle {regenerateTeamCodes} {joinTeam} team={data.ownedTeam} />
 	{/if}
 </section>
 

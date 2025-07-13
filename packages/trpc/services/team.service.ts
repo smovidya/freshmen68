@@ -106,6 +106,7 @@ export async function getOwnedTeam(email: string, db: Db | Tx) {
       lastName: tables.students.lastName,
       nickname: tables.students.nickname,
       department: tables.students.department,
+      email: tables.students.email
     })
     .from(tables.students)
     .where(eq(tables.students.teamId, team.teamId));
@@ -116,6 +117,7 @@ export async function getOwnedTeam(email: string, db: Db | Tx) {
       lastName: tables.students.lastName,
       nickname: tables.students.nickname,
       department: tables.students.department,
+      email: tables.students.email
     })
     .from(tables.students)
     .where(eq(tables.students.teamOwnedId, team.teamId));
@@ -159,6 +161,7 @@ export async function getJoinedTeam(email: string, db: Db | Tx) {
       lastName: tables.students.lastName,
       nickname: tables.students.nickname,
       department: tables.students.department,
+      email: tables.students.email
     })
     .from(tables.students)
     .where(eq(tables.students.teamId, team.teamId));
@@ -169,6 +172,7 @@ export async function getJoinedTeam(email: string, db: Db | Tx) {
       lastName: tables.students.lastName,
       nickname: tables.students.nickname,
       department: tables.students.department,
+      email: tables.students.email
     })
     .from(tables.students)
     .where(eq(tables.students.teamOwnedId, team.teamId));
@@ -180,25 +184,4 @@ export async function getJoinedTeam(email: string, db: Db | Tx) {
     owner: owner!,
     members
   };
-}
-
-export async function getOwnedTeamMember(email: string, db: Db | Tx) {
-  const students = await db
-    .select({
-      firstname: tables.students.firstName,
-      lastName: tables.students.lastName,
-      nickname: tables.students.nickname,
-      department: tables.students.department,
-    })
-    .from(tables.students)
-    .where(
-      eq(
-        tables.students.teamId,
-        db.select({ teamId: tables.students.teamOwnedId })
-          .from(tables.students)
-          .where(eq(tables.students.email, email))
-      )
-    );
-
-  return students;
 }

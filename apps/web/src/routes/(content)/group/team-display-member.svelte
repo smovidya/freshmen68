@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getDisplayName } from '$lib/idk';
-	import type { Team } from '$lib/type';
+	import type { JoinedTeam } from '$lib/type';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
 
 	interface Props {
-		team: Team;
+		team: JoinedTeam;
 	}
 
 	let { team }: Props = $props();
@@ -17,7 +17,7 @@
 			number: 1
 		},
 		{
-			name: 'sulleta',
+			name: 'suletta',
 			number: 2
 		}
 	];

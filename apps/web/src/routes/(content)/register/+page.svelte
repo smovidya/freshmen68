@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { authClient } from '$lib/auth/client';
 	import BackButton from '$lib/components/back-button.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -31,19 +32,23 @@
 
 	const form = superForm(defaults(zod4(registrationSchema)), {
 		SPA: true,
+		resetForm: false,
 		validators: zod4(registrationSchema),
 		onUpdate: async ({ form }) => {
 			if (!form.valid) {
 				return;
 			}
-			console.log('Form submitted:', form.data);
+			// console.log('Form submitted:', form.data);
 			try {
-				trpcClient().user.register.mutate({
+				await trpcClient().user.register.mutate({
 					...form.data
 				});
+				toast.success('ลงทะเบียนสำเร็จ 🎉');
 			} catch {
 				toast.error('เกิดข้อผิดพลาดขึ้น');
+				return;
 			}
+			await goto('/menu');
 		}
 	});
 

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
 	import * as InputOTP from '$lib/components/ui/input-otp';
-	import type { Team } from '$lib/type';
+	import type { OwnedTeam } from '$lib/type';
+	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
+	import { LoaderIcon, SparkleIcon } from 'lucide-svelte';
+	import { Spring } from 'svelte/motion';
 
 	interface Props {
-		team: Team;
+		team: OwnedTeam;
+		joinTeam: (teamCodes: string) => Promise<unknown>;
+		regenerateTeamCodes: () => Promise<unknown>;
 	}
 
-	let { team }: Props = $props();
+	let { team, joinTeam, regenerateTeamCodes }: Props = $props();
 
 	/// arggghhh, i want $state.from https://github.com/sveltejs/svelte/issues/12956
 	let _codeInput = $state('');
@@ -20,6 +24,45 @@
 			_codeInput = text.toUpperCase();
 		}
 	};
+
+	let sign = -1;
+	const offset = new Spring(0, {
+		damping: 0.12
+	});
+
+	async function shake() {
+		sign *= -1;
+		offset.damping = 1;
+		offset.stiffness = 0.9;
+		await offset.set(10 * sign);
+		offset.damping = 0.12;
+		offset.stiffness = 0.15;
+		offset.set(0, {});
+	}
+
+	let loading = $state(false);
+	async function onJoinTeamClick() {
+		if (loading) {
+			return;
+		}
+		if (codeInput.current.length < 4) {
+			shake();
+			return;
+		}
+		loading = true;
+		await joinTeam(codeInput.current);
+		loading = false;
+	}
+
+	let loading2 = $state(false);
+	async function onRegenerateTeamCodesClick() {
+		if (loading2) {
+			return;
+		}
+		loading2 = true;
+		await regenerateTeamCodes();
+		loading2 = false;
+	}
 </script>
 
 <div class="mt-4 flex flex-col items-center gap-3 md:flex-row">
@@ -29,8 +72,13 @@
 			ใคร ๆ ก็อยากเป็นหัวแถว ส่งโค้ดนี้ให้เพื่อนเพื่อเชิญเพื่อนเข้าทีมเลย!
 		</p>
 		<div class="mt-4 flex flex-wrap items-center gap-4">
-			<code class="text-5xl tracking-[0.2em]">594F</code>
-			<Button variant="secondary">สร้างใหม่</Button>
+			<code class="text-5xl tracking-[0.2em]">{team.teamCodes}</code>
+			<Button variant="secondary" class="w-24" disabled={loading2} onclick={onRegenerateTeamCodesClick}>
+				สร้างใหม่
+				{#if loading2}
+					<LoaderIcon class="animate-spin" />
+				{/if}
+			</Button>
 		</div>
 		<div class="min-h-8 flex-1"></div>
 		<p class="mb-1">หรือถ้าน้องอินโทรเวิร์ด ไม่ต้องส่งให้ใครก็ได้นะ</p>
@@ -39,11 +87,16 @@
 	<div class="flex w-full flex-col rounded-2xl bg-white p-6 shadow-md md:h-72 md:max-w-84">
 		<h3 class="text-2xl font-semibold">เข้าร่วมก๊วนกับเพื่อน</h3>
 		<p class="mt-2 h-12 leading-5">ใส่โค้ดที่ได้จากเพื่อนเพื่อไปอยู่ด้วนกันเล้ย</p>
-		<div class="mt-4">
+		<div class="mt-4" style="translate: {offset.current}px 0;">
 			<InputOTP.Root
 				maxlength={4}
 				bind:value={codeInput.current}
 				pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+				onkeydown={(e) => {
+					if (e.key === 'Enter') {
+						onJoinTeamClick();
+					}
+				}}
 			>
 				{#snippet children({ cells })}
 					<InputOTP.Group>
@@ -55,6 +108,11 @@
 			</InputOTP.Root>
 		</div>
 		<div class="min-h-8 flex-1"></div>
-		<Button variant="secondary">เข้าร่วม</Button>
+		<Button variant="secondary" disabled={loading} onclick={onJoinTeamClick}>
+			เข้าร่วม
+			{#if loading}
+				<LoaderIcon class="animate-spin" />
+			{/if}
+		</Button>
 	</div>
 </div>
