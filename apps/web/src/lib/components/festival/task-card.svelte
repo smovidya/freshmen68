@@ -1,0 +1,45 @@
+<script lang="ts">
+	const {
+		href,
+		title,
+		description,
+		status = 'ยังไม่ดำเนินการ',
+		icon = 'file-user'
+	}: {
+		href: string;
+		title: string;
+		description: string;
+		status?: string;
+		icon?: any;
+	} = $props();
+</script>
+
+<a
+	{href}
+	class="-m-2 flex flex-row items-center gap-4 rounded-lg p-2 transition-all hover:bg-white/50"
+>
+	<div
+		class="mr-2 flex size-20 shrink-0 flex-row items-center justify-center rounded-full bg-white/60 align-middle shadow-sm"
+	>
+		<icon class="size-8"></icon>
+	</div>
+	<div class="w-full">
+		<h2 class="mb-1 text-xl font-bold">{title}</h2>
+		<p class="w-full text-sm text-gray-700">{description}</p>
+		<span class="text-muted-foreground text-xs">{status}</span>
+	</div>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		class="lucide lucide-chevron-right m-4 size-7 shrink-0 text-gray-600"
+	>
+		<path d="m9 18 6-6-6-6" />
+	</svg>
+</a>
