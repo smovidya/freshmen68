@@ -1,15 +1,16 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { env, WorkerEntrypoint } from 'cloudflare:workers';
 import { appRouter } from '@freshmen68/trpc';
-import { createAuth, auth } from "@freshmen68/auth"
+import { createAuth, auth } from "@freshmen68/auth";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { createDatabaseConnection } from '@freshmen68/db';
 
 const app = new Hono<{
 	Variables: {
 		user: typeof auth.$Infer.Session.user | null;
-		session: typeof auth.$Infer.Session.session | null
-	}
+		session: typeof auth.$Infer.Session.session | null;
+	};
 }>();
 
 app.use(
@@ -35,6 +36,9 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => {
 });
 
 app.use("*", async (c, next) => {
+	// if (env.WORKER_ENV === "dev") {
+	// 	return next();
+	// }
 	const auth = createAuth({
 		env,
 	});
@@ -60,6 +64,7 @@ app.on(["POST", "GET"], "/trpc/*", (c) => {
 		createContext: () => ({
 			user: c.get("user"),
 			session: c.get("session"),
+			db: createDatabaseConnection(env.DATABASE_URL)
 		}),
 	});
 });

@@ -7,3 +7,4 @@ export const authClient = createAuthClient({
 	baseURL: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
 	plugins: [genericOAuthClient(), inferAdditionalFields<typeof auth>()]
 });
+

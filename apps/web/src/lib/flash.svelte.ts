@@ -1,0 +1,29 @@
+import { page } from "$app/state";
+import { toast } from "svelte-sonner";
+
+const flashMessageHandlers = {
+  "already-registered": () => {
+    toast.info("ลงทะเบียนแล้ว")
+  }
+};
+
+export type FlashMessageType = keyof typeof flashMessageHandlers;
+
+export function flashParams(type: FlashMessageType) {
+  return `flash=${type}`;
+}
+
+export function registerFlashConsumer() {
+  const stop = $effect.root(() => {
+    $effect(() => {
+      const messageType = page.url.searchParams.get("flash");
+      if (!messageType || !Object.keys(flashMessageHandlers).includes(messageType)) {
+        console.log(messageType, Object.keys(flashMessageHandlers))
+        return;
+      }
+      flashMessageHandlers[messageType as FlashMessageType]();
+    });
+  });
+
+  return stop;
+}
