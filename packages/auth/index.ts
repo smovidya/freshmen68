@@ -30,12 +30,23 @@ export const createAuth = ({
 			user: {
 				create: {
 					async before(user, context) {
-						if (!user.email.endsWith('23@student.chula.ac.th')) {
-							return;
+						// TODO: remove .mock suffix in production
+						if (user.email.endsWith('@student.chula.ac.th.mock')) {
+							const ouid = user.email.split('@')[0];
+							// Science students only
+							if (!ouid?.endsWith('23')) {
+								return
+							}
+							return {
+								data: {
+									...user,
+									ouid: ouid,
+								}
+							}
 						}
-						return {
-							data: user
-						};
+
+						// disallow non-student emails
+						return
 					}
 				}
 			}
@@ -55,6 +66,16 @@ export const createAuth = ({
 			google: {
 				clientId: env.GOOGLE_CLIENT_ID as string,
 				clientSecret: env.GOOGLE_CLIENT_SECRET as string
+			}
+		},
+		user: {
+			additionalFields: {
+				ouid: {
+					type: 'string',
+					label: 'OUID',
+					unique: true,
+					input: false,
+				}
 			}
 		},
 		plugins: [
@@ -83,5 +104,3 @@ export const createAuth = ({
 export const auth = createAuth({
 	env
 })
-
-export type Auth = ReturnType<typeof createAuth>;
