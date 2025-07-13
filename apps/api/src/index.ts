@@ -1,11 +1,16 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { env, WorkerEntrypoint } from 'cloudflare:workers';
 import { appRouter } from '@freshmen68/trpc';
-import { createAuth } from "@freshmen68/auth"
+import { createAuth, auth } from "@freshmen68/auth"
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
-const app = new Hono();
+const app = new Hono<{
+	Variables: {
+		user: typeof auth.$Infer.Session.user | null;
+		session: typeof auth.$Infer.Session.session | null
+	}
+}>();
 
 app.use(
 	"*", // or replace with "*" to enable cors for all routes
@@ -29,12 +34,33 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => {
 	return auth.handler(c.req.raw);
 });
 
+app.use("*", async (c, next) => {
+	const auth = createAuth({
+		env,
+	});
+
+	const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+	if (!session) {
+		c.set("user", null);
+		c.set("session", null);
+		return next();
+	}
+
+	c.set("user", session.user);
+	c.set("session", session.session);
+	return next();
+});
+
 app.on(["POST", "GET"], "/trpc/*", (c) => {
 	return fetchRequestHandler({
 		endpoint: '/trpc',
 		req: c.req.raw,
 		router: appRouter,
-		createContext: () => ({}),
+		createContext: () => ({
+			user: c.get("user"),
+			session: c.get("session"),
+		}),
 	});
 });
 
