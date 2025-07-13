@@ -38,7 +38,6 @@ async function seed() {
       medicalConditions: "input.medicalConditions",
       nickname: "input.nickname",
       teamOwnedId: team.id,
-      teamId: team.id, // Student belongs to their own team
       id: "奏"
     }).returning();
   });

@@ -2,8 +2,8 @@ import { tables, type Db, type Tx } from "@freshmen68/db";
 import type { registrationSchema } from "@freshmen68/dto";
 import { eq } from "drizzle-orm";
 import z from "zod/v4";
-import { generateTeamCode } from "./team.service";
 import { createRandomGroupNumberPreferenceOrder } from "./group.service";
+import { generateTeamCode } from "./team.service";
 
 
 export async function isRegistered(email: string, db: Db | Tx) {
@@ -52,7 +52,6 @@ export async function createStudentWithTeam(input: z.infer<typeof registrationSc
       medicalConditions: input.medicalConditions,
       nickname: input.nickname,
       teamOwnedId: team.id,
-      teamId: team.id, // Student belongs to their own team
     }).returning();
 
     if (!student) {

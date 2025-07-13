@@ -1,4 +1,3 @@
-import { db } from "@freshmen68/db";
 import { groupPreferenceSchema } from "@freshmen68/dto";
 import { TRPCError } from "@trpc/server";
 import z from "zod/v4";
