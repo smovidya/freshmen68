@@ -1,9 +1,11 @@
 import type { auth } from '@freshmen68/auth';
+import type { Db } from '@freshmen68/db';
 import { initTRPC, TRPCError } from '@trpc/server';
 
 export type Context = {
   user: typeof auth.$Infer.Session.user | null;
   session: typeof auth.$Infer.Session.session | null;
+  db: Db;
 };
 
 const t = initTRPC.context<Context>().create();
@@ -18,6 +20,7 @@ export const signedInProcedure = t.procedure.use(({ ctx, next }) => {
   }
   return next({
     ctx: {
+      ...ctx,
       user: ctx.user,
       session: ctx.session,
     }

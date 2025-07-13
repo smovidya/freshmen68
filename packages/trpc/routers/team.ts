@@ -10,7 +10,7 @@ export const teamRouter = router({
   join: signedInProcedure
     .input(z.string().length(4))
     .mutation(async ({ ctx, input }) => {
-      const result = await joinTeam(ctx.user.id, input, db);
+      const result = await joinTeam(ctx.user.id, input, ctx.db);
 
       if (result === "team-full") {
         throw new TRPCError({
@@ -27,19 +27,19 @@ export const teamRouter = router({
     }),
   regenerateTeamCode: signedInProcedure
     .mutation(async ({ ctx }) => {
-      await regenerateTeamCode(ctx.user.id, db);
+      await regenerateTeamCode(ctx.user.id, ctx.db);
     }),
   updateGroupPreference: signedInProcedure
     .input(groupPreferenceSchema)
     .mutation(async ({ ctx, input }) => {
-      await updateGroupPreference(ctx.user.id, input, db);
+      await updateGroupPreference(ctx.user.id, input, ctx.db);
     }),
   getOwnedTeam: signedInProcedure
     .query(async ({ ctx }) => {
-      return await getOwnedTeam(ctx.user.id, db);
+      return await getOwnedTeam(ctx.user.id, ctx.db);
     }),
   getJoinedTeam: signedInProcedure
     .query(async ({ ctx }) => {
-      return await getJoinedTeam(ctx.user.id, db);
+      return await getJoinedTeam(ctx.user.id, ctx.db);
     })
 });

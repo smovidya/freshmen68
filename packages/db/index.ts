@@ -9,6 +9,12 @@ export const db = drizzle(client, {
   schema
 });
 
+export function createDatabaseConnection(databaseUrl: string) {
+  return drizzle(postgres(databaseUrl), {
+    schema
+  });
+}
+
 export type Db = typeof db;
 export type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
