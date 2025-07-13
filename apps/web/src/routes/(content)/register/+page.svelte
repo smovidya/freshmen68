@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { authClient } from '$lib/auth/client';
+	import BackButton from '$lib/components/back-button.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import {
 		FormControl,
@@ -78,20 +79,17 @@
 	];
 </script>
 
-<section class="bg-primary flex flex-col items-center gap-3 p-6 pb-4">
-	<div class="flex size-32 items-center justify-center rounded-full bg-white"></div>
-	<div class="text-center">
-		<h1 class="text-2xl font-medium">แบบฟอร์มลงทะเบียน</h1>
-		<span class="opacity-70">Registration</span>
-	</div>
-</section>
+<section class="mx-auto max-w-[60rem] px-5 py-14">
+	<nav class="flex items-center justify-between gap-4">
+		<BackButton href="/menu" />
+		<h1 class="text-center text-3xl font-medium">ฟอร์มลงทะเบียน</h1>
+		<div class="w-10"></div>
+	</nav>
 
-<section class="mx-auto max-w-4xl p-6">
-	<form method="POST" use:enhance class="space-y-8">
+	<form method="POST" use:enhance class="mt-12">
 		<!-- Personal Information -->
-		<div class="space-y-6">
-			<h2 class="border-b pb-2 text-xl font-semibold">ข้อมูลส่วนตัว</h2>
-
+		<h2 class="mt-8 text-2xl font-semibold">ข้อมูลส่วนตัว</h2>
+		<div class="mt-3 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 				<FormField {form} name="title">
 					<FormControl>
@@ -173,9 +171,8 @@
 		</div>
 
 		<!-- Contact Information -->
-		<div class="space-y-6">
-			<h2 class="border-b pb-2 text-xl font-semibold">ข้อมูลการติดต่อ</h2>
-
+		<h2 class="mt-8 text-2xl font-semibold">ข้อมูลการติดต่อ</h2>
+		<div class="mt-3 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div class="space-y-2">
 					<Label for="email">อีเมล</Label>
@@ -201,9 +198,8 @@
 		</div>
 
 		<!-- Emergency Contact -->
-		<div class="space-y-6">
-			<h2 class="border-b pb-2 text-xl font-semibold">ผู้ติดต่อฉุกเฉิน</h2>
-
+		<h2 class="mt-8 text-2xl font-semibold">ผู้ติดต่อฉุกเฉิน</h2>
+		<div class="mt-3 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<FormField {form} name="emergencyContactName">
 					<FormControl>
@@ -251,9 +247,8 @@
 		</div>
 
 		<!-- Medical Information -->
-		<div class="space-y-6">
-			<h2 class="border-b pb-2 text-xl font-semibold">ข้อมูลทางการแพทย์ (ไม่บังคับ)</h2>
-
+		<h2 class="mt-8 text-2xl font-semibold">ข้อมูลทางการแพทย์ (ไม่บังคับ)</h2>
+		<div class="mt-3 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<FormField {form} name="medicalConditions">
 				<FormControl>
 					{#snippet children({ props })}
@@ -318,7 +313,7 @@
 
 		<!-- Submit Button -->
 		<div class="flex justify-end pt-6">
-			<Button type="submit" size="lg" class="w-full">ลงทะเบียน</Button>
+			<Button type="submit" size="lg" class="text-md mt-4 h-12 w-full ">ลงทะเบียน</Button>
 		</div>
 	</form>
 </section>

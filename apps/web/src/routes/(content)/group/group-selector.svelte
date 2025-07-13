@@ -50,7 +50,7 @@
 		{#each items as item (item.id)}
 			<div
 				animate:flip={{ duration: flipDurationMs }}
-				class="flex w-full items-center justify-between rounded-md bg-white shadow p-4"
+				class="flex w-full items-center justify-between rounded-md bg-white shadow-md p-4"
 			>
 				<div class="flex">
 					{item.name} (แม่มดจาก)ดาวพุธ

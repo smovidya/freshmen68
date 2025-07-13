@@ -12,13 +12,13 @@ export const load: PageLoad = async ({ depends, fetch }) => {
   ]).catch((e) => {
     console.warn(e);
     // actually wtf
-    redirect(307, `/?${flashParams("please-register")}`);
+    redirect(307, `/menu?${flashParams("please-register")}`);
   });
 
   const groupDetail = [{}];
 
   if (!ownedTeam) {
-    redirect(307, `/?${flashParams("please-register")}`);
+    redirect(307, `/menu?${flashParams("please-register")}`);
   }
 
   console.log(joinedTeam)

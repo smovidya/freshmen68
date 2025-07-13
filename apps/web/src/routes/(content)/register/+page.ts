@@ -11,6 +11,6 @@ export const load: PageLoad = async ({ fetch }) => {
   });
 
   if (isRegistered) {
-    redirect(307, `/?${flashParams('already-registered')}`);
+    // redirect(307, `/menu?${flashParams('already-registered')}`);
   }
 };

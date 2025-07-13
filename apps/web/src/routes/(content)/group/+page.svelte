@@ -12,12 +12,13 @@
 	async function saveOrdering() {}
 </script>
 
-<nav class="flex gap-4 items-center justify-between">
+<nav class="flex items-center justify-between gap-4">
 	<BackButton href="/menu" />
-	<h1 class="text-center text-4xl">สุ่มกรุ๊ปที่นี่</h1>
-	<div class="w-10">
-
+	<div class="text-center ">
+		<h1 class="text-3xl font-medium">เลือกกรุ๊ป</h1>
+		<!-- <p class="text-zinc-700">เรียงลำดับกรุ๊ปรับน้องตามที่น้อง ๆ สนใจ พร้อมจับมือเพื่อนไปด้วยอีก 2 คน</p> -->
 	</div>
+	<div class="w-10"></div>
 </nav>
 
 <section class="mt-12">
@@ -45,11 +46,11 @@
 		<GroupSelector />
 	</section>
 
-	<section class="mt-8">
+	<section class="mt-12">
 		<p class="">
 			หลังจากกดบันทึก น้องสามารกกลับมาแก้ไขเพื่อเชิญเพื่อนและแก้อันดับที่เลือกได้ จนกว่าจะ 24:00 น.
 			ของวันที่ 21 กรกฎาคม เมื่อพ้นไปแล้วจะบันทึกตามข้อมูลปัจจุบันอัตโนมัติ
 		</p>
-		<Button size="lg" class="text-md mt-4 h-12 w-full ">บันทึก</Button>
+		<Button size="lg" class="text-md mt-4 h-12 w-full ">บันทึกลำดับ</Button>
 	</section>
 {/if}
