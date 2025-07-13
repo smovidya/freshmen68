@@ -1,11 +1,11 @@
 <script lang="ts">
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { getDisplayName } from '$lib/idk.svelte';
 	import type { OwnedTeam } from '$lib/type';
 	import { LoaderIcon } from 'lucide-svelte';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
-	import { getDisplayName } from '$lib/idk';
 	interface Props {
 		team: OwnedTeam;
 		regenerateTeamCodes: () => Promise<unknown>;

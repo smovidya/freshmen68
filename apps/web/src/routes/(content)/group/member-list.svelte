@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getDisplayName } from '$lib/idk';
-	import type { OwnedTeam, JoinedTeam } from '$lib/type';
+	import { getDisplayName } from '$lib/idk.svelte';
+	import type { JoinedTeam, OwnedTeam } from '$lib/type';
 
 	interface Props {
 		team: OwnedTeam | JoinedTeam;

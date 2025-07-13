@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getDisplayName } from '$lib/idk';
+	import { getDisplayName } from '$lib/idk.svelte';
 	import type { JoinedTeam } from '$lib/type';
 	import { LoaderIcon } from 'lucide-svelte';
 	import Bubbles from './bubbles.svelte';

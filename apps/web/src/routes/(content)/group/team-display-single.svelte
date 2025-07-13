@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as InputOTP from '$lib/components/ui/input-otp';
+	import { ShufflingText } from '$lib/idk.svelte';
 	import type { OwnedTeam } from '$lib/type';
 	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
 	import { LoaderIcon, SparkleIcon } from 'lucide-svelte';
@@ -13,6 +14,11 @@
 	}
 
 	let { team, joinTeam, regenerateTeamCodes }: Props = $props();
+
+	const teamCodes = new ShufflingText(team.teamCodes);
+	$effect(() => {
+		teamCodes.set(team.teamCodes);
+	});
 
 	/// arggghhh, i want $state.from https://github.com/sveltejs/svelte/issues/12956
 	let _codeInput = $state('');
@@ -56,14 +62,12 @@
 		loading = false;
 	}
 
-	let loading2 = $state(false);
 	async function onRegenerateTeamCodesClick() {
-		if (loading2) {
+		if (teamCodes.shuffling) {
 			return;
 		}
-		loading2 = true;
+		teamCodes.startShuffle();
 		await regenerateTeamCodes();
-		loading2 = false;
 	}
 </script>
 
@@ -74,17 +78,14 @@
 			ใคร ๆ ก็อยากเป็นหัวแถว ส่งโค้ดนี้ให้เพื่อนเพื่อเชิญเพื่อนเข้าทีมเลย!
 		</p>
 		<div class="mt-4 flex flex-wrap items-center gap-4">
-			<code class="text-5xl tracking-[0.2em]">{team.teamCodes}</code>
+			<code class="text-5xl tracking-[0.2em]">{teamCodes.current}</code>
 			<Button
 				variant="secondary"
 				class="w-24"
-				disabled={loading2}
+				disabled={teamCodes.shuffling}
 				onclick={onRegenerateTeamCodesClick}
 			>
 				สร้างใหม่
-				{#if loading2}
-					<LoaderIcon class="animate-spin" />
-				{/if}
 			</Button>
 		</div>
 		<div class="min-h-8 flex-1"></div>
