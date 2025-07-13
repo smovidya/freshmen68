@@ -15,6 +15,13 @@
       "when": 1752343182488,
       "tag": "0001_supreme_jetstream",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752428897143,
+      "tag": "0002_skinny_silvermane",
+      "breakpoints": true
     }
   ]
 }
