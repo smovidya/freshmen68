@@ -6,7 +6,8 @@ import { generateTeamCode } from "./team.service";
 import { createRandomGroupNumberPreferenceOrder } from "./group.service";
 
 
-export async function createStudentWithTeam(input: z.infer<typeof registrationSchema>, db: Db | Tx) {
+export async function createStudentWithTeam(input: z.infer<typeof registrationSchema>, email: string, db: Db | Tx) {
+  const studentId = email.split("@")[0]!;
   return await db.transaction(async (tx) => {
     // Generate unique team code
     const teamCode = await generateTeamCode(tx);
@@ -27,14 +28,14 @@ export async function createStudentWithTeam(input: z.infer<typeof registrationSc
 
     const [student] = await tx.insert(tables.students).values({
       department: input.department,
-      email: input.email,
+      email,
       emergencyContactName: input.emergencyContactName,
       emergencyContactPhone: input.emergencyContactPhone,
       emergencyContactRelationship: input.emergencyContactRelationship,
       firstName: input.firstName,
       lastName: input.lastName,
       phone: input.phone,
-      studentId: input.studentId,
+      studentId,
       title: input.title,
       dragAllergies: input.drugAllergies,
       foodAllergies: input.foodAllergies,
@@ -57,4 +58,18 @@ export async function createStudentWithTeam(input: z.infer<typeof registrationSc
 
     return { student, team };
   });
+}
+
+export async function getStudentByEmail(email: string, db: Db | Tx) {
+  const student = await db
+    .select()
+    .from(tables.students)
+    .where(eq(tables.students.email, email))
+    .limit(1);
+
+  if (student.length === 0) {
+    return null;
+  }
+
+  return student[0];
 }

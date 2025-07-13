@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { authClient } from '$lib/auth/client';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import {
 		FormControl,
@@ -8,6 +9,7 @@
 		FormLabel
 	} from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import Label from '$lib/components/ui/label/label.svelte';
 	import {
 		Select,
 		SelectContent,
@@ -18,23 +20,28 @@
 	import { trpcClient } from '$lib/trpc';
 	import { registrationSchema } from '@freshmen68/dto';
 	import { toast } from 'svelte-sonner';
+	import { fromStore } from 'svelte/store';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 
+	let session = fromStore(authClient.useSession())
+	let email = $derived(session.current.data?.user.email!)
+	let studentId = $derived(email?.split("@")[0])
+	
 	const form = superForm(defaults(zod4(registrationSchema)), {
 		SPA: true,
 		validators: zod4(registrationSchema),
 		onUpdate: async ({ form }) => {
 			if (!form.valid) {
-				return
+				return;
 			}
 			console.log('Form submitted:', form.data);
 			try {
-				trpcClient.registration.register.mutate({
+				trpcClient.user.register.mutate({
 					...form.data
-				})
+				});
 			} catch {
-				toast.error("เกิดข้อผิดพลาดขึ้น")
+				toast.error('เกิดข้อผิดพลาดขึ้น');
 			}
 		}
 	});
@@ -71,10 +78,10 @@
 	];
 </script>
 
-<section class="bg-muted flex flex-col items-center gap-3 p-6 pb-4">
-	<div class="flex size-48 items-center justify-center rounded-full bg-blue-500"></div>
+<section class="bg-primary flex flex-col items-center gap-3 p-6 pb-4">
+	<div class="flex size-32 items-center justify-center rounded-full bg-white"></div>
 	<div class="text-center">
-		<h1 class="text-2xl font-medium">ลงทะเบียน</h1>
+		<h1 class="text-2xl font-medium">แบบฟอร์มลงทะเบียน</h1>
 		<span class="text-muted-foreground">Registration</span>
 	</div>
 </section>
@@ -138,15 +145,10 @@
 					<FormFieldErrors />
 				</FormField>
 
-				<FormField {form} name="studentId">
-					<FormControl>
-						{#snippet children({ props })}
-							<FormLabel>รหัสนิสิต</FormLabel>
-							<Input {...props} bind:value={$formData.studentId} placeholder="6612345678" />
-						{/snippet}
-					</FormControl>
-					<FormFieldErrors />
-				</FormField>
+				<div class="space-y-2">
+					<Label for="student-id">รหัสนิสิต</Label>
+					<Input id="student-id" value={studentId} disabled />
+				</div>
 			</div>
 
 			<FormField {form} name="department">
@@ -175,20 +177,16 @@
 			<h2 class="border-b pb-2 text-xl font-semibold">ข้อมูลการติดต่อ</h2>
 
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-				<FormField {form} name="email">
-					<FormControl>
-						{#snippet children({ props })}
-							<FormLabel>อีเมล</FormLabel>
-							<Input
-								{...props}
-								type="email"
-								bind:value={$formData.email}
-								placeholder="somchai.j@somchai.com"
-							/>
-						{/snippet}
-					</FormControl>
-					<FormFieldErrors />
-				</FormField>
+				<div class="space-y-2">
+					<Label for="email">อีเมล</Label>
+					<Input
+						type="email"
+						id="email"
+						value={email}
+						placeholder="somchai.j@somchai.com"
+						disabled
+					/>
+				</div>
 
 				<FormField {form} name="phone">
 					<FormControl>
