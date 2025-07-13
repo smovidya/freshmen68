@@ -17,6 +17,12 @@ export async function isRegistered(email: string, db: Db | Tx) {
 
 export async function createStudentWithTeam(input: z.infer<typeof registrationSchema>, email: string, db: Db | Tx) {
   const studentId = email.split("@")[0]!;
+  
+  // Check if student already exists
+  if (await isRegistered(email, db)) {
+    throw new Error('Student is already registered');
+  }
+  
   return await db.transaction(async (tx) => {
     // Generate unique team code
     const teamCode = await generateTeamCode(tx);
