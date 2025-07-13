@@ -1,14 +1,18 @@
 import { registrationSchema } from '@freshmen68/dto';
 import { router, signedInProcedure } from '../core';
-import { createStudentWithTeam, isRegistered } from '../services/students.service';
+import { createStudentWithTeam, getStudentByEmail, isRegistered } from '../services/students.service';
 
 export const userRouter = router({
   whoami: signedInProcedure.query(({ ctx }) => {
     return ctx.user;
   }),
+  getStudentInfo: signedInProcedure
+    .query(async ({ ctx }) => {
+      return await getStudentByEmail(ctx.user.email, ctx.db)
+    }),
   isRegistered: signedInProcedure
     .query(async ({ ctx }) => {
-      return isRegistered(ctx.user.email, ctx.db);
+      return await isRegistered(ctx.user.email, ctx.db);
     }),
   register: signedInProcedure
     .input(registrationSchema)

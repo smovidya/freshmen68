@@ -1,10 +1,11 @@
-import { trpcClient } from "$lib/trpc";
-import { error, redirect } from "@sveltejs/kit";
-import type { PageLoad } from "./$types";
 import { flashParams } from "$lib/flash.svelte";
+import { trpcClient } from "$lib/trpc";
+import { redirect } from "@sveltejs/kit";
+import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ depends, fetch }) => {
   depends("data:owned-team", "data:joined-team");
+
   const [ownedTeam, joinedTeam] = await Promise.all([
     trpcClient({ fetch }).team.getOwnedTeam.query(),
     trpcClient({ fetch }).team.getJoinedTeam.query()
@@ -20,10 +21,11 @@ export const load: PageLoad = async ({ depends, fetch }) => {
     redirect(307, `/?${flashParams("please-register")}`);
   }
 
+  console.log(joinedTeam)
+
   return {
     ownedTeam,
     joinedTeam,
     groupDetail,
   };
-
 };

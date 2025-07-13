@@ -70,7 +70,12 @@ export async function createStudentWithTeam(input: z.infer<typeof registrationSc
 
 export async function getStudentByEmail(email: string, db: Db | Tx) {
   const student = await db
-    .select()
+    .select({
+      firstname: tables.students.firstName,
+      lastName: tables.students.lastName,
+      nickname: tables.students.nickname,
+      department: tables.students.department,
+    })
     .from(tables.students)
     .where(eq(tables.students.email, email))
     .limit(1);
