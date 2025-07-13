@@ -25,6 +25,7 @@
 	import { fromStore } from 'svelte/store';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
+	import type { Snapshot } from './$types';
 
 	let session = fromStore(authClient.useSession());
 	let email = $derived(session.current.data?.user.email!);
@@ -60,28 +61,33 @@
 		{ value: 'นาง', label: 'นาง' }
 	];
 
-	// TODO: get department list
 	const departmentOptions = [
-		{ value: 'engineering', label: 'วิศวกรรมศาสตร์' },
-		{ value: 'medicine', label: 'แพทยศาสตร์' },
-		{ value: 'arts', label: 'อักษรศาสตร์' },
-		{ value: 'science', label: 'วิทยาศาสตร์' },
-		{ value: 'commerce', label: 'พาณิชยศาสตร์และการบัญชี' },
-		{ value: 'political-science', label: 'รัฐศาสตร์' },
-		{ value: 'economics', label: 'เศรษฐศาสตร์' },
-		{ value: 'education', label: 'ครุศาสตร์' },
-		{ value: 'communication-arts', label: 'นิเทศศาสตร์' },
-		{ value: 'psychology', label: 'จิตวิทยา' },
-		{ value: 'architecture', label: 'สถาปัตยกรรมศาสตร์' },
-		{ value: 'dentistry', label: 'ทันตแพทยศาสตร์' },
-		{ value: 'pharmaceutical-sciences', label: 'เภสัชศาสตร์' },
-		{ value: 'law', label: 'นิติศาสตร์' },
-		{ value: 'fine-arts', label: 'ศิลปกรรมศาสตร์' },
-		{ value: 'nursing', label: 'พยาบาลศาสตร์' },
-		{ value: 'allied-health', label: 'สหเวชศาสตร์' },
-		{ value: 'veterinary', label: 'สัตวแพทยศาสตร์' },
-		{ value: 'sports-science', label: 'วิทยาศาสตร์การกีฬา' }
+		{ value: 'Mathcom', label: 'ภาควิชาคณิตศาสตร์และวิทยาการคอมพิวเตอร์' },
+		{ value: 'Chem', label: 'ภาควิชาเคมี' },
+		{ value: 'physics', label: 'ภาควิชาฟิสิกส์' },
+		{ value: 'Bio', label: 'ภาควิชาชีววิทยา' },
+		{ value: 'botany', label: 'ภาควิชาพฤกษศาสตร์' },
+		{ value: 'Chem tech', label: 'ภาควิชาเคมีเทคนิค' },
+		{ value: 'environmental-science', label: 'ภาควิชาวิทยาศาสตร์สิ่งแวดล้อม' },
+		{ value: 'materials-science', label: 'ภาควิชาวัสดุศาสตร์' },
+		{ value: 'Bio tech', label: 'ภาควิชาเทคโนโลยีชีวภาพ (นานาชาติ)' },
+		{ value: 'microbiology', label: 'ภาควิชาจุลชีววิทยา' },
+		{ value: 'marine-science', label: 'ภาควิชาวิทยาศาสตร์ทางทะเล' },
+		{ value: 'applied-chemistry', label: 'ภาควิชาเคมีประยุกต์' },
+		{ value: 'Food tech?', label: 'ภาควิชาเทคโนโลยีทางอาหาร' },
+		{ value: 'Geo???', label: 'ภาควิชาธรณีวิทยา' },
+		{ value: 'Bio chem', label: 'ภาควิชาชีวเคมี' },
+		{ value: 'Imprint', label: 'ภาควิชาเทคโนโลยีทางภาพและการพิมพ์' }
 	];
+
+	export const snapshot: Snapshot = {
+		capture() {
+			return $formData;
+		},
+		restore(snapshot) {
+			$formData = snapshot;
+		}
+	};
 </script>
 
 <section class="mx-auto max-w-[60rem] px-5 py-14">
