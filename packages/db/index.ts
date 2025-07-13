@@ -12,4 +12,4 @@ export const db = drizzle(client, {
 export type Db = typeof db;
 export type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
-export { schema as tables };
+export { schema as tables, schema };
