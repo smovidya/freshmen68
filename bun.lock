@@ -32,6 +32,7 @@
       "name": "@freshmen68/web",
       "version": "0.0.1",
       "dependencies": {
+        "@fontsource-variable/noto-sans-thai": "^5.2.6",
         "@freshmen68/trpc": "workspace:*",
         "@trpc/client": "^11.4.3",
         "better-auth": "^1.2.12",
@@ -259,6 +260,8 @@
     "@floating-ui/dom": ["@floating-ui/dom@1.7.2", "", { "dependencies": { "@floating-ui/core": "^1.7.2", "@floating-ui/utils": "^0.2.10" } }, "sha512-7cfaOQuCS27HD7DX+6ib2OrnW+b4ZBwDNnCcT0uTyidcmyWb03FnQqJybDBoCnpdxwBSfA94UAYlRCt7mV+TbA=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.10", "", {}, "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="],
+
+    "@fontsource-variable/noto-sans-thai": ["@fontsource-variable/noto-sans-thai@5.2.6", "", {}, "sha512-Lt0D2ga3e+v+//STaRz+4wMaRXn0G4tLZOxGXod68NGZAKYhzu6BkNIb/vzLedDAbUnMCZbNg7Kimjqz1fAA3A=="],
 
     "@freshmen68/api": ["@freshmen68/api@workspace:apps/api"],
 

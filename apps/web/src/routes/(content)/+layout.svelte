@@ -1,5 +1,7 @@
 <script lang="ts">
 	import '../../app.css';
+	import '@fontsource-variable/noto-sans-thai';
+
 
 	let { children } = $props();
 </script>
