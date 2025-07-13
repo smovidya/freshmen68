@@ -82,6 +82,7 @@ export const studentsRelations = relations(students, ({ one }) => ({
   team: one(teams, {
     fields: [students.teamId],
     references: [teams.id],
+    relationName: "members"
   }),
 }));
 
@@ -90,7 +91,9 @@ export const availableGroupsRelations = relations(availableGroups, ({ many }) =>
 }));
 
 export const teamsRelations = relations(teams, ({ one, many }) => ({
-  users: many(user),
+  students: many(students, {
+    relationName: "members"
+  }),
   creator: one(students, {
     fields: [teams.creatorId],
     references: [students.id],
