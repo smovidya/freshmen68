@@ -77,38 +77,55 @@ export async function generateTeamCode(db: Db | Tx): Promise<string> {
 }
 
 export async function getOwnedTeam(email: string, db: Db | Tx) {
-  const members = await getOwnedTeamMember(email, db);
-  const [meta] = await db
+  const result = await db
     .select({
-      id: tables.teams.id,
+      teamId: tables.students.teamOwnedId,
       groupNumberPreferenceOrder: tables.teams.groupNumberPreferenceOrder,
       resultGroupNumber: tables.teams.resultGroupNumber,
       teamCodes: tables.teams.teamCodes
     })
-    .from(tables.teams)
-    .where(
-      eq(
-        tables.teams.id,
-        db.select({ teamId: tables.students.teamOwnedId })
-          .from(tables.students)
-          .where(eq(tables.students.email, email))
-      )
-    )
+    .from(tables.students)
+    .innerJoin(tables.teams, eq(tables.teams.id, tables.students.teamOwnedId))
+    .where(eq(tables.students.email, email))
     .limit(1);
 
-  if (!meta) {
-    return null;
+  if (result.length === 0) {
+    return null; // User doesn't own any team
   }
 
+  const team = result[0]!;
+
+  if (!team.teamId) {
+    return null; // User doesn't own any team
+  }
+
+  // Get all team members
+  const members = await db
+    .select({
+      firstname: tables.students.firstName,
+      lastName: tables.students.lastName,
+      nickname: tables.students.nickname,
+      department: tables.students.department,
+    })
+    .from(tables.students)
+    .where(eq(tables.students.teamId, team.teamId));
+
+  const [owner] = await db
+    .select({
+      firstname: tables.students.firstName,
+      lastName: tables.students.lastName,
+      nickname: tables.students.nickname,
+      department: tables.students.department,
+    })
+    .from(tables.students)
+    .where(eq(tables.students.teamOwnedId, team.teamId));
+
   return {
-    id: meta.id,
-    teamCodes: meta.teamCodes,
-    resultGroupNumber: meta.resultGroupNumber,
-    groupPreferenceOrder: meta
-      .groupNumberPreferenceOrder
-      ?.split(",")
-      .map(it => parseInt(it))
-      ?? createRandomGroupNumberPreferenceOrder(), // this already exist tho
+    id: team.teamId,
+    owner: owner!,
+    teamCodes: team.teamCodes,
+    resultGroupNumber: team.resultGroupNumber,
+    groupPreferenceOrder: team.groupNumberPreferenceOrder?.split(",").map(it => parseInt(it)) ?? createRandomGroupNumberPreferenceOrder(),
     members
   };
 }
@@ -146,10 +163,21 @@ export async function getJoinedTeam(email: string, db: Db | Tx) {
     .from(tables.students)
     .where(eq(tables.students.teamId, team.teamId));
 
+  const [owner] = await db
+    .select({
+      firstname: tables.students.firstName,
+      lastName: tables.students.lastName,
+      nickname: tables.students.nickname,
+      department: tables.students.department,
+    })
+    .from(tables.students)
+    .where(eq(tables.students.teamOwnedId, team.teamId));
+
   return {
     id: team.teamId,
     resultGroupNumber: team.resultGroupNumber,
     groupPreferenceOrder: team.groupNumberPreferenceOrder?.split(",").map(it => parseInt(it)) ?? [],
+    owner: owner!,
     members
   };
 }

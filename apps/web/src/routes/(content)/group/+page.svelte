@@ -19,9 +19,9 @@
 	{#if data.joinedTeam}
 		<TeamDisplayMember team={data.joinedTeam} />
 	{:else if data.ownedTeam.members.length > 0}
-		<TeamDisplayHead team={data.ownedTeam} student={data.student!} />
+		<TeamDisplayHead team={data.ownedTeam} />
 	{:else}
-		<TeamDisplayHead team={data.ownedTeam} student={data.student!} />
+		<TeamDisplayHead team={data.ownedTeam} />
 
 		<!-- <TeamDisplaySingle /> -->
 	{/if}

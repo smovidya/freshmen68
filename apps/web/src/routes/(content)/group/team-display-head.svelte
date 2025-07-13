@@ -5,12 +5,11 @@
 
 	interface Props {
 		team: Team;
-		student: Student;
 	}
 
-	let { team, student }: Props = $props();
+	let { team }: Props = $props();
 
-	const member: TeamMember[] = $derived([student, student, ...team.members]);
+	const member: TeamMember[] = $derived([team.owner, ...team.members]);
 </script>
 
 <div
