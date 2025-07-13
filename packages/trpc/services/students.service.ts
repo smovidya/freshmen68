@@ -6,6 +6,15 @@ import { generateTeamCode } from "./team.service";
 import { createRandomGroupNumberPreferenceOrder } from "./group.service";
 
 
+export async function isRegistered(email: string, db: Db | Tx) {
+  const existed = await db
+    .select({})
+    .from(tables.students)
+    .where(eq(tables.students.email, email));
+
+  return existed.length !== 0;
+}
+
 export async function createStudentWithTeam(input: z.infer<typeof registrationSchema>, email: string, db: Db | Tx) {
   const studentId = email.split("@")[0]!;
   return await db.transaction(async (tx) => {
