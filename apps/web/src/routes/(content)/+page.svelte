@@ -25,7 +25,7 @@
 			>
 				<div class="flex max-w-72 flex-row items-center justify-center gap-2">
 					{#if $session.data?.user}
-						<!-- already logged in -->						
+						<!-- already logged in -->
 						<Input
 							type="text"
 							name="studentId"
@@ -50,12 +50,14 @@
 								const { data, error } = await authClient.signUp.email({
 									email: `${studentId}@student.chula.ac.th.mock`,
 									password: 'password1234',
-									name: 'นิสิตสมมติ'
+									name: 'นิสิตสมมติ',
+									callbackURL: '/menu'
 								});
 								if (error?.code === 'USER_ALREADY_EXISTS') {
 									await authClient.signIn.email({
 										email: `${studentId}@student.chula.ac.th.mock`,
-										password: 'password1234'
+										password: 'password1234',
+										callbackURL: '/menu'
 									});
 								}
 							}}
@@ -86,12 +88,14 @@
 								const { data, error } = await authClient.signUp.email({
 									email: `${studentId}@student.chula.ac.th.mock`, // สมมติอีเมลนิสิต
 									password: 'password1234',
-									name: 'นิสิตสมมติ'
+									name: 'นิสิตสมมติ',
+									callbackURL: '/menu'
 								});
 								if (error?.code === 'USER_ALREADY_EXISTS') {
 									await authClient.signIn.email({
 										email: `${studentId}@student.chula.ac.th.mock`, // สมมติอีเมลนิสิต
-										password: 'password1234'
+										password: 'password1234',
+										callbackURL: '/menu'
 									});
 								}
 							}}
