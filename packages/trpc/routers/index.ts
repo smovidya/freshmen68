@@ -1,5 +1,5 @@
 import type { auth } from '@freshmen68/auth';
-import { initTRPC, TRPCError } from '@trpc/server';
+import { initTRPC, TRPCError, type inferRouterInputs, type inferRouterOutputs } from '@trpc/server';
 import { z } from 'zod';
 
 export type Context = {
@@ -34,3 +34,5 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
+export type AppRouterInput = inferRouterInputs<AppRouter>;
+export type AppRouterOutput = inferRouterOutputs<AppRouter>;

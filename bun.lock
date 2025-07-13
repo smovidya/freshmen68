@@ -63,6 +63,7 @@
         "formsnap": "^2.0.1",
         "globals": "^16.3.0",
         "layerchart": "2.0.0-next.27",
+        "lucide-svelte": "^0.525.0",
         "mode-watcher": "^1.1.0",
         "paneforge": "^1.0.0",
         "prettier": "^3.6.2",
@@ -116,6 +117,7 @@
       "name": "@freshmen68/trpc",
       "version": "0.0.1",
       "dependencies": {
+        "@freshmen68/auth": "workspace:*",
         "@freshmen68/db": "workspace:*",
         "@trpc/server": "^11.4.3",
       },
@@ -905,6 +907,8 @@
     "lodash.merge": ["lodash.merge@4.6.2", "", {}, "sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ=="],
 
     "loupe": ["loupe@3.1.4", "", {}, "sha512-wJzkKwJrheKtknCOKNEtDK4iqg/MxmZheEMtSTYvnzRdEYaZzmgH976nenp8WdJRdx5Vc1X/9MO0Oszl6ezeXg=="],
+
+    "lucide-svelte": ["lucide-svelte@0.525.0", "", { "peerDependencies": { "svelte": "^3 || ^4 || ^5.0.0-next.42" } }, "sha512-kfuN6JcCqTfCz2B76aXnyGLAzEBRSYw5GaUspM5RNHQZS5aI5yaKu06fbaofOk8cDvUtY0AUm/zAix7aUX6Q3A=="],
 
     "magic-string": ["magic-string@0.30.17", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0" } }, "sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA=="],
 
