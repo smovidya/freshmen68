@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -13,7 +13,8 @@ export const user = pgTable('user', {
 		.notNull(),
 	updatedAt: timestamp('updated_at')
 		.$defaultFn(() => /* @__PURE__ */ new Date())
-		.notNull()
+		.notNull(),
+	ouid: text('ouid').unique()
 });
 
 export const session = pgTable('session', {
