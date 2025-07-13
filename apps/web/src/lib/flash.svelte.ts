@@ -3,7 +3,10 @@ import { toast } from "svelte-sonner";
 
 const flashMessageHandlers = {
   "already-registered": () => {
-    toast.info("ลงทะเบียนแล้ว")
+    toast.info("ลงทะเบียนแล้ว");
+  },
+  "please-register": () => {
+    toast.info("กรุณาลงทะเบียนก่อน");
   }
 };
 
@@ -18,7 +21,7 @@ export function registerFlashConsumer() {
     $effect(() => {
       const messageType = page.url.searchParams.get("flash");
       if (!messageType || !Object.keys(flashMessageHandlers).includes(messageType)) {
-        console.log(messageType, Object.keys(flashMessageHandlers))
+        // console.log(messageType)
         return;
       }
       flashMessageHandlers[messageType as FlashMessageType]();

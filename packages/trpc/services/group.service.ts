@@ -3,7 +3,7 @@ import { tables, type Db, type Tx } from "@freshmen68/db";
 import type { groupPreferenceSchema } from "@freshmen68/dto";
 import type z from "zod/v4";
 
-export async function updateGroupPreference(userId: string, preference: z.infer<typeof groupPreferenceSchema>, db: Db | Tx) {
+export async function updateGroupPreference(email: string, preference: z.infer<typeof groupPreferenceSchema>, db: Db | Tx) {
   const preferenceString = preference.join(",");
 
   // Update the team's group preference using JOIN
@@ -14,19 +14,19 @@ export async function updateGroupPreference(userId: string, preference: z.infer<
     .where(
       and(
         eq(tables.teams.id, tables.students.teamOwnedId),
-        eq(tables.students.id, userId)
+        eq(tables.students.email, email)
       )
     );
 }
 
-export async function getGroupPreference(userId: string, db: Db | Tx) {
+export async function getGroupPreference(email: string, db: Db | Tx) {
   const result = await db
     .select({
       groupNumberPreferenceOrder: tables.teams.groupNumberPreferenceOrder
     })
     .from(tables.students)
     .innerJoin(tables.teams, eq(tables.teams.id, tables.students.teamOwnedId))
-    .where(eq(tables.students.id, userId))
+    .where(eq(tables.students.email, email))
     .limit(1);
 
   if (result.length === 0) {

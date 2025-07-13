@@ -2,7 +2,7 @@ import { eq, count } from "drizzle-orm";
 import { tables, type Db, type Tx } from "@freshmen68/db";
 import { createRandomGroupNumberPreferenceOrder } from "./group.service";
 
-export async function joinTeam(userId: string, teamCode: string, db: Db | Tx) {
+export async function joinTeam(email: string, teamCode: string, db: Db | Tx) {
   return await db.transaction(async (tx) => {
     const teams = await tx
       .select({
@@ -33,7 +33,7 @@ export async function joinTeam(userId: string, teamCode: string, db: Db | Tx) {
     await tx
       .update(tables.students)
       .set({ teamId: team.id })
-      .where(eq(tables.students.id, userId));
+      .where(eq(tables.students.email, email));
 
     return "ok";
   });
@@ -76,8 +76,8 @@ export async function generateTeamCode(db: Db | Tx): Promise<string> {
   throw new Error(`Failed to generate unique team code after ${maxAttempts} attempts`);
 }
 
-export async function getOwnedTeam(userId: string, db: Db | Tx) {
-  const members = await getOwnedTeamMember(userId, db);
+export async function getOwnedTeam(email: string, db: Db | Tx) {
+  const members = await getOwnedTeamMember(email, db);
   const [meta] = await db
     .select({
       id: tables.teams.id,
@@ -91,7 +91,7 @@ export async function getOwnedTeam(userId: string, db: Db | Tx) {
         tables.teams.id,
         db.select({ teamId: tables.students.teamOwnedId })
           .from(tables.students)
-          .where(eq(tables.students.id, userId))
+          .where(eq(tables.students.email, email))
       )
     )
     .limit(1);
@@ -113,7 +113,7 @@ export async function getOwnedTeam(userId: string, db: Db | Tx) {
   };
 }
 
-export async function getJoinedTeam(userId: string, db: Db | Tx) {
+export async function getJoinedTeam(email: string, db: Db | Tx) {
   const result = await db
     .select({
       teamId: tables.students.teamId,
@@ -122,7 +122,7 @@ export async function getJoinedTeam(userId: string, db: Db | Tx) {
     })
     .from(tables.students)
     .innerJoin(tables.teams, eq(tables.teams.id, tables.students.teamId))
-    .where(eq(tables.students.id, userId))
+    .where(eq(tables.students.email, email))
     .limit(1);
 
   if (result.length === 0) {
@@ -154,7 +154,7 @@ export async function getJoinedTeam(userId: string, db: Db | Tx) {
   };
 }
 
-export async function getOwnedTeamMember(userId: string, db: Db | Tx) {
+export async function getOwnedTeamMember(email: string, db: Db | Tx) {
   const students = await db
     .select({
       firstname: tables.students.firstName,
@@ -168,7 +168,7 @@ export async function getOwnedTeamMember(userId: string, db: Db | Tx) {
         tables.students.teamId,
         db.select({ teamId: tables.students.teamOwnedId })
           .from(tables.students)
-          .where(eq(tables.students.id, userId))
+          .where(eq(tables.students.email, email))
       )
     );
 

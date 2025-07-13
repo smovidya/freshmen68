@@ -8,6 +8,11 @@ export type Context = {
   db: Db;
 };
 
+export type AuthenticatedContext = Context & {
+  user: NonNullable<Context["user"]>;
+  session: NonNullable<Context["session"]>;
+};
+
 const t = initTRPC.context<Context>().create();
 
 export const publicProcedure = t.procedure;
