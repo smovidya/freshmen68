@@ -59,7 +59,7 @@ export async function generateTeamCode(db: Db | Tx): Promise<string> {
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     // Generate 6-character alphanumeric code
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const code = Math.random().toString(36).substring(2, 6).toUpperCase();
 
     // Check if code already exists
     const existingTeam = await db
@@ -97,7 +97,7 @@ export async function getOwnedTeam(userId: string, db: Db | Tx) {
     .limit(1);
 
   if (!meta) {
-    throw new Error("wtf how");
+    return null;
   }
 
   return {
