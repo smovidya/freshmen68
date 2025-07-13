@@ -2,6 +2,13 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
 	import * as InputOTP from '$lib/components/ui/input-otp';
+	import type { Team } from '$lib/type';
+
+	interface Props {
+		team: Team;
+	}
+
+	let { team }: Props = $props();
 
 	/// arggghhh, i want $state.from https://github.com/sveltejs/svelte/issues/12956
 	let _codeInput = $state('');

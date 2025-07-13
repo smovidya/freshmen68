@@ -4,6 +4,7 @@
 	import GroupSelector from './group-selector.svelte';
 	import TeamDisplayHead from './team-display-head.svelte';
 	import TeamDisplayMember from './team-display-member.svelte';
+	import TeamDisplaySingle from './team-display-single.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -16,15 +17,14 @@
 	<h2 class="text-xl font-medium">พาเพื่อนเข้ากลุ่มด้วยกัน</h2>
 	<p>น้อง ๆ สามารถเชิญเพื่อนอีก 2 คน (รวมน้องเป็น 3) โดยจะโดนจัดให้อยู่กรุ๊ปเดียวกัน</p>
 
-	{#if data.joinedTeam}
+	<TeamDisplayMember team={data.ownedTeam} />
+	<!-- {#if data.joinedTeam}
 		<TeamDisplayMember team={data.joinedTeam} />
 	{:else if data.ownedTeam.members.length > 0}
 		<TeamDisplayHead team={data.ownedTeam} />
 	{:else}
-		<TeamDisplayHead team={data.ownedTeam} />
-
-		<!-- <TeamDisplaySingle /> -->
-	{/if}
+		<TeamDisplaySingle team={data.ownedTeam} />
+	{/if} -->
 </section>
 
 {#if !data.joinedTeam}

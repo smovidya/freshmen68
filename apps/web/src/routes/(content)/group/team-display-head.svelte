@@ -1,15 +1,15 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import type { Student, Team, TeamMember } from '$lib/type';
+	import { getDisplayName } from '$lib/idk';
+	import type { Team, TeamMember } from '$lib/type';
 	import Bubbles from './bubbles.svelte';
+	import MemberList from './member-list.svelte';
 
 	interface Props {
 		team: Team;
 	}
 
 	let { team }: Props = $props();
-
-	const member: TeamMember[] = $derived([team.owner, ...team.members]);
 </script>
 
 <div
@@ -29,18 +29,6 @@
 		<div class="min-h-8 flex-1"></div>
 		<p class="mb-1">หรือถ้าน้องอินโทรเวิร์ด ไม่ต้องส่งให้ใครก็ได้นะ</p>
 	</div>
-	<Bubbles {member} />
-	<div class="self-stretch md:self-end">
-		<h3 class="text-xl font-medium">สมาชิกปัจจุบัน</h3>
-		<ul class="mt-2 leading-6">
-			<li>{member[0].nickname} {member[0].department} (หัวห้อง)</li>
-			{#each member.slice(1) as m}
-				<li>
-					{m.nickname}
-					{m.department}
-					<Button variant="secondary" class="h-6 pb-1" size="sm">ลบ</Button>
-				</li>
-			{/each}
-		</ul>
-	</div>
+	<Bubbles member={[team.owner, ...team.members]} />
+	<MemberList {team} />
 </div>
