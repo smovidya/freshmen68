@@ -46,14 +46,16 @@ export class ShufflingText {
       this.revealIntervalId = null;
     }
     this.current = this.target;
-    console.log("stop");
+    // console.log("stop");
 
   }
 
   set(text: string, ms = 750) {
     untrack(() => {
-
       this.target = text;
+      if (this.current === text) {
+        return;
+      }
       if (ms === 0) {
         this.current = text;
         return;
