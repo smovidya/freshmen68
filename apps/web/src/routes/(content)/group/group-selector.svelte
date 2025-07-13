@@ -47,19 +47,29 @@
 		onconsider={handleDndConsider}
 		onfinalize={handleDndFinalize}
 	>
-		{#each items as item (item.id)}
+		{#each items as item, index (item.id)}
 			<div
 				animate:flip={{ duration: flipDurationMs }}
-				class="flex w-full items-center justify-between rounded-md bg-white shadow-md p-4"
+				class="flex w-full items-center justify-between rounded-md bg-white p-4 shadow-md"
 			>
 				<div class="flex">
 					{item.name} (แม่มดจาก)ดาวพุธ
 				</div>
 				<div class="flex items-center gap-2">
-					<Button size="icon" variant="secondary" onclick={() => moveUp(item.id)}>
+					<Button
+						size="icon"
+						variant="secondary"
+						disabled={index === 0}
+						onclick={() => moveUp(item.id)}
+					>
 						<ArrowUp />
 					</Button>
-					<Button size="icon" variant="secondary" onclick={() => moveDown(item.id)}>
+					<Button
+						size="icon"
+						variant="secondary"
+						disabled={index === items.length - 1}
+						onclick={() => moveDown(item.id)}
+					>
 						<ArrowDown />
 					</Button>
 					<GripVertical />

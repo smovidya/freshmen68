@@ -1,32 +1,98 @@
 <script lang="ts">
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import type { OwnedTeam } from '$lib/type';
+	import { LoaderIcon } from 'lucide-svelte';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
+	import { getDisplayName } from '$lib/idk';
 	interface Props {
 		team: OwnedTeam;
+		regenerateTeamCodes: () => Promise<unknown>;
+		kickMember: (email: string) => Promise<unknown>;
 	}
 
-	let { team }: Props = $props();
+	let { team, regenerateTeamCodes, kickMember }: Props = $props();
+
+	let kickDialogOpen = $state(false);
+	let selectedMemberEmail = $state<string>('');
+	let regenerateLoading = $state(false);
+	let kickLoading = $state(false);
+
+	function openKickDialog(email: string) {
+		selectedMemberEmail = email;
+		kickDialogOpen = true;
+	}
+
+	async function confirmKick() {
+		if (selectedMemberEmail && !kickLoading) {
+			kickLoading = true;
+			await kickMember(selectedMemberEmail);
+			kickLoading = false;
+			kickDialogOpen = false;
+			selectedMemberEmail = '';
+		}
+	}
+
+	function cancelKick() {
+		kickDialogOpen = false;
+	}
+
+	async function onRegenerateTeamCodesClick() {
+		if (regenerateLoading) {
+			return;
+		}
+		regenerateLoading = true;
+		await regenerateTeamCodes();
+		regenerateLoading = false;
+	}
 </script>
 
+<AlertDialog.Root bind:open={kickDialogOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title
+				>เตะ {getDisplayName(team.members.find((it) => it.email === selectedMemberEmail)!)} ออกจากทีม</AlertDialog.Title
+			>
+			<AlertDialog.Description>คิดดีแล้วนะ</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel onclick={cancelKick}>ยกเลิก</AlertDialog.Cancel>
+			<AlertDialog.Action onclick={confirmKick} disabled={kickLoading}>
+				เตะออกจากทีม
+				{#if kickLoading}
+					<LoaderIcon class="animate-spin" />
+				{/if}
+			</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
+
 <div
-	class="flex w-full max-w-96 flex-col items-center justify-between gap-3 p-5 md:h-72 md:max-w-full md:flex-row md:gap-0 rounded-2xl bg-yellow-50/70 shadow-md backdrop-blur-lg"
+	class="flex w-full max-w-full flex-col items-center justify-between gap-3 rounded-2xl bg-white p-5 shadow-md md:h-72 md:flex-row md:gap-0"
 >
-	<div class="flex max-w-84 flex-col self-stretch">
+	<div class="flex flex-col self-stretch md:max-w-64 lg:max-w-72">
 		<h3 class="text-2xl font-semibold">สร้างก๊วนมาอยู่ด้วยกัน</h3>
 		<p class="mt-2 h-12 leading-5">
 			ใคร ๆ ก็อยากเป็นหัวแถว ส่งโค้ดนี้ให้เพื่อนเพื่อเชิญเพื่อนเข้าทีมเลย!
 		</p>
 		<div class="mt-4 flex flex-wrap items-center gap-4">
-			<code class="text-5xl tracking-[0.2em]">594F</code>
-			<Button variant="secondary" class="bg-neutral-400/60 hover:bg-neutral-400/40"
-				>สร้างใหม่</Button
+			<code class="text-5xl tracking-[0.2em]">{team.teamCodes}</code>
+			<Button
+				variant="secondary"
+				class="w-24"
+				disabled={regenerateLoading}
+				onclick={onRegenerateTeamCodesClick}
 			>
+				สร้างใหม่
+				{#if regenerateLoading}
+					<LoaderIcon class="animate-spin" />
+				{/if}
+			</Button>
 		</div>
 		<div class="min-h-8 flex-1"></div>
 		<p class="mb-1">หรือถ้าน้องอินโทรเวิร์ด ไม่ต้องส่งให้ใครก็ได้นะ</p>
 	</div>
 	<Bubbles member={[team.owner, ...team.members]} />
-	<MemberList {team} />
+	<MemberList {team} {openKickDialog} />
 </div>

@@ -8,7 +8,7 @@
 
 	interface Props {
 		team: OwnedTeam;
-		joinTeam: (teamCodes: string) => Promise<unknown>;
+		joinTeam: (teamCodes: string) => Promise<boolean>;
 		regenerateTeamCodes: () => Promise<unknown>;
 	}
 
@@ -25,16 +25,15 @@
 		}
 	};
 
-	let sign = -1;
 	const offset = new Spring(0, {
-		damping: 0.12
+		damping: 0.12,
+		stiffness: 0.15
 	});
 
 	async function shake() {
-		sign *= -1;
 		offset.damping = 1;
-		offset.stiffness = 0.9;
-		await offset.set(10 * sign);
+		offset.stiffness = 0.8;
+		await offset.set(10);
 		offset.damping = 0.12;
 		offset.stiffness = 0.15;
 		offset.set(0, {});
@@ -50,7 +49,10 @@
 			return;
 		}
 		loading = true;
-		await joinTeam(codeInput.current);
+		const ok = await joinTeam(codeInput.current);
+		if (!ok) {
+			shake();
+		}
 		loading = false;
 	}
 
@@ -73,7 +75,12 @@
 		</p>
 		<div class="mt-4 flex flex-wrap items-center gap-4">
 			<code class="text-5xl tracking-[0.2em]">{team.teamCodes}</code>
-			<Button variant="secondary" class="w-24" disabled={loading2} onclick={onRegenerateTeamCodesClick}>
+			<Button
+				variant="secondary"
+				class="w-24"
+				disabled={loading2}
+				onclick={onRegenerateTeamCodesClick}
+			>
 				สร้างใหม่
 				{#if loading2}
 					<LoaderIcon class="animate-spin" />

@@ -3,26 +3,13 @@ import { TRPCError } from "@trpc/server";
 import z from "zod/v4";
 import { router, signedInProcedure } from "../core";
 import { updateGroupPreference } from "../services/group.service";
-import { getJoinedTeam, getOwnedTeam, joinTeam, regenerateTeamCode } from "../services/team.service";
+import { getJoinedTeam, getOwnedTeam, joinTeam, kickOwnedTeamMemeber, leaveJoinedTeam, regenerateTeamCode } from "../services/team.service";
 
 export const teamRouter = router({
   join: signedInProcedure
     .input(z.string().length(4))
     .mutation(async ({ ctx, input }) => {
-      const result = await joinTeam(ctx.user.email, input, ctx.db);
-
-      if (result === "team-full") {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Team is already full"
-        });
-      }
-
-      if (result === "team-not-founded") {
-        throw new TRPCError({
-          code: "NOT_FOUND"
-        });
-      }
+      return await joinTeam(ctx.user.email, input, ctx.db);
     }),
   regenerateTeamCode: signedInProcedure
     .mutation(async ({ ctx }) => {
@@ -40,5 +27,14 @@ export const teamRouter = router({
   getJoinedTeam: signedInProcedure
     .query(async ({ ctx }) => {
       return await getJoinedTeam(ctx.user.email, ctx.db);
+    }),
+  leaveJoinedTeam: signedInProcedure
+    .mutation(async ({ ctx }) => {
+      return await leaveJoinedTeam(ctx.user.email, ctx.db);
+    }),
+  kickOwnedTeamMemeber: signedInProcedure
+    .input(z.email())
+    .mutation(async ({ ctx, input }) => {
+      return await kickOwnedTeamMemeber(ctx.user.email, input, ctx.db);
     })
 });

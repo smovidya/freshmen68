@@ -4,6 +4,24 @@ import { createRandomGroupNumberPreferenceOrder } from "./group.service";
 
 export async function joinTeam(email: string, teamCode: string, db: Db | Tx) {
   return await db.transaction(async (tx) => {
+    // Check if user is already in a team or owns a team
+    const [student] = await tx
+      .select({
+        teamId: tables.students.teamId,
+        teamOwnedId: tables.students.teamOwnedId
+      })
+      .from(tables.students)
+      .where(eq(tables.students.email, email))
+      .limit(1);
+
+    if (!student) {
+      return "user-not-founded";
+    }
+
+    if (student.teamId) {
+      return "already-in-team";
+    }
+
     const teams = await tx
       .select({
         id: tables.teams.id,
@@ -17,6 +35,10 @@ export async function joinTeam(email: string, teamCode: string, db: Db | Tx) {
     }
 
     const team = teams[0]!;
+
+    if (student.teamOwnedId === team.id) {
+      return "is-owner";
+    }
 
     const ret = await tx
       .select({ count: count() })
@@ -39,7 +61,7 @@ export async function joinTeam(email: string, teamCode: string, db: Db | Tx) {
   });
 }
 
-export async function regenerateTeamCode(ownerId: string, db: Db | Tx) {
+export async function regenerateTeamCode(ownerEmail: string, db: Db | Tx) {
   const teamCodes = await generateTeamCode(db);
   await db
     .update(tables.teams)
@@ -49,7 +71,7 @@ export async function regenerateTeamCode(ownerId: string, db: Db | Tx) {
         tables.teams.id,
         db.select({ teamId: tables.students.teamOwnedId })
           .from(tables.students)
-          .where(eq(tables.students.id, ownerId))
+          .where(eq(tables.students.email, ownerEmail))
       )
     );
 }
@@ -184,4 +206,73 @@ export async function getJoinedTeam(email: string, db: Db | Tx) {
     owner: owner!,
     members
   };
+}
+
+export async function leaveJoinedTeam(email: string, db: Db | Tx) {
+  return await db.transaction(async (tx) => {
+    // Check if user is actually in a team
+    const [student] = await tx
+      .select({
+        teamId: tables.students.teamId,
+        teamOwnedId: tables.students.teamOwnedId
+      })
+      .from(tables.students)
+      .where(eq(tables.students.email, email))
+      .limit(1);
+
+    if (!student || !student.teamId) {
+      return "not-in-team";
+    }
+
+    // Remove user from team
+    await tx
+      .update(tables.students)
+      .set({ teamId: null })
+      .where(eq(tables.students.email, email));
+
+    return "ok";
+  });
+}
+
+export async function kickOwnedTeamMemeber(ownerEmail: string, targetEmail: string, db: Db | Tx) {
+  return await db.transaction(async (tx) => {
+    // Get owner's team
+    const [owner] = await tx
+      .select({
+        teamOwnedId: tables.students.teamOwnedId
+      })
+      .from(tables.students)
+      .where(eq(tables.students.email, ownerEmail))
+      .limit(1);
+
+    if (!owner || !owner.teamOwnedId) {
+      return "not-team-owner";
+    }
+
+    // Check if target is in the owner's team
+    const [target] = await tx
+      .select({
+        teamId: tables.students.teamId,
+        teamOwnedId: tables.students.teamOwnedId
+      })
+      .from(tables.students)
+      .where(eq(tables.students.email, targetEmail))
+      .limit(1);
+
+    if (!target) {
+      return "target-not-found";
+    }
+
+    if (target.teamId !== owner.teamOwnedId) {
+      return "target-not-in-team";
+    }
+
+    // Remove target from team
+    await tx
+      .update(tables.students)
+      .set({ teamId: null })
+      .where(eq(tables.students.email, targetEmail));
+
+    return "ok";
+  });
 }

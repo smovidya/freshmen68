@@ -1,13 +1,14 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getDisplayName } from '$lib/idk';
-	import type { Team } from '$lib/type';
+	import type { OwnedTeam, JoinedTeam } from '$lib/type';
 
 	interface Props {
-		team: Team;
+		team: OwnedTeam | JoinedTeam;
+		openKickDialog?: (email: string) => void;
 	}
 
-	let { team }: Props = $props();
+	let { team, openKickDialog }: Props = $props();
 </script>
 
 <div class="self-stretch md:self-end">
@@ -17,7 +18,16 @@
 		{#each team.members as m}
 			<li>
 				{getDisplayName(m)}
-				<Button variant="secondary" class="h-6 pb-1" size="sm">ลบ</Button>
+				{#if openKickDialog}
+					<Button 
+						variant="secondary" 
+						class="h-6 pb-1" 
+						size="sm"
+						onclick={() => openKickDialog(m.email)}
+					>
+						ลบ
+					</Button>
+				{/if}
 			</li>
 		{/each}
 	</ul>

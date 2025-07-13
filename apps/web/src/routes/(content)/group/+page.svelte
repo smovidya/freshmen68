@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import BackButton from '$lib/components/back-button.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { trpcClient } from '$lib/trpc';
+	import { toast } from 'svelte-sonner';
 	import type { PageProps } from './$types';
 	import GroupSelector from './group-selector.svelte';
 	import TeamDisplayHead from './team-display-head.svelte';
@@ -8,21 +11,46 @@
 	import TeamDisplaySingle from './team-display-single.svelte';
 
 	let { data }: PageProps = $props();
+	const trpc = trpcClient();
 
-	async function saveOrdering() {	
+	async function saveOrdering() {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 	}
 
 	async function joinTeam(teamCodes: string) {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		const code = await trpc.team.join.mutate(teamCodes);
+		if (code === 'ok') {
+			await invalidate('data:joined-team');
+		}
+
+		if (code === 'is-owner') {
+			toast.error('อยู่ในทีมอยู่แล้ว');
+		}
+
+		if (code === 'team-full') {
+			toast.error('ทีมเต็มแล้ว');
+		}
+
+		if (code === 'team-not-founded') {
+			toast.error('ไม่พบทีมนี้');
+		}
+
+		return code === 'ok';
 	}
 
 	async function regenerateTeamCodes() {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await trpc.team.regenerateTeamCode.mutate();
+		await invalidate('data:owned-team');
 	}
 
 	async function kickMember(email: string) {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await trpc.team.kickOwnedTeamMemeber.mutate(email);
+		await invalidate('data:owned-team');
+	}
+
+	async function leaveTeam() {
+		await trpc.team.leaveJoinedTeam.mutate();
+		await invalidate('data:joined-team');
 	}
 </script>
 
@@ -39,11 +67,12 @@
 	<h2 class="text-xl font-semibold">พาเพื่อนเข้ากลุ่มด้วยกัน</h2>
 	<p>น้อง ๆ สามารถเชิญเพื่อนอีก 2 คน (รวมน้องเป็น 3) โดยจะโดนจัดให้อยู่กรุ๊ปเดียวกัน</p>
 
-	<!-- <TeamDisplayMember team={data.ownedTeam} /> -->
+	<!-- <TeamDisplayMember {leaveTeam} team={data.ownedTeam} /> -->
+	<!-- <TeamDisplayHead {regenerateTeamCodes} {kickMember} team={data.ownedTeam} /> -->
 	{#if data.joinedTeam}
-		<TeamDisplayMember team={data.joinedTeam} />
+		<TeamDisplayMember {leaveTeam} team={data.joinedTeam} />
 	{:else if data.ownedTeam.members.length > 0}
-		<TeamDisplayHead {regenerateTeamCodes} team={data.ownedTeam} />
+		<TeamDisplayHead {regenerateTeamCodes} {kickMember} team={data.ownedTeam} />
 	{:else}
 		<TeamDisplaySingle {regenerateTeamCodes} {joinTeam} team={data.ownedTeam} />
 	{/if}
