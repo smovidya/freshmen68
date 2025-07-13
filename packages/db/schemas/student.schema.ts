@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, boolean, integer, index } from 'drizzle-orm/pg-core';
-import { user } from './auth.schema';
 
 export const students = pgTable('students', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -19,6 +18,11 @@ export const students = pgTable('students', {
   dragAllergies: text('allergies'),
   foodAllergies: text('food_allergies'),
   foodLimitations: text('food_limitations'),
+  teamOwnedId: text('team_owned_id')
+    .notNull()
+    .references(() => teams.id, { onDelete: 'restrict' }),
+  teamId: text('team_id')
+    .references(() => teams.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
@@ -26,15 +30,23 @@ export const students = pgTable('students', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .$onUpdateFn(() => /* @__PURE__ */ new Date())
     .notNull(),
-  teamOwnedId: text('team_owner_id')
-    .notNull()
-    .references(() => teams.id, { onDelete: 'restrict' }),
-  teamId: text('team_id')
-    .references(() => teams.id, { onDelete: 'set null' }),
 }, (table) => [
   index('idx_students_student_id').on(table.studentId),
   index('idx_students_email').on(table.email),
 ]);
+
+export const studentsRelations = relations(students, ({ one }) => ({
+  teamOwned: one(teams, {
+    fields: [students.teamOwnedId],
+    references: [teams.id],
+    relationName: "team_owned",
+  }),
+  team: one(teams, {
+    fields: [students.teamId],
+    references: [teams.id],
+    relationName: "team",
+  }),
+}));
 
 export const availableGroups = pgTable('available_groups', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -53,6 +65,12 @@ export const availableGroups = pgTable('available_groups', {
 }, (table) => [
   index('idx_available_groups_number').on(table.number),
 ]);
+
+export const availableGroupsRelations = relations(availableGroups, ({ many }) => ({
+  teams: many(teams, {
+    relationName: "group",
+  }),
+}));
 
 export const teams = pgTable('teams', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -74,32 +92,19 @@ export const teams = pgTable('teams', {
     .notNull(),
 });
 
-export const studentsRelations = relations(students, ({ one }) => ({
-  teamOwned: one(teams, {
-    fields: [students.teamOwnedId],
-    references: [teams.id],
-  }),
-  team: one(teams, {
-    fields: [students.teamId],
-    references: [teams.id],
-    relationName: "members"
-  }),
-}));
-
-export const availableGroupsRelations = relations(availableGroups, ({ many }) => ({
-  teams: many(teams),
-}));
 
 export const teamsRelations = relations(teams, ({ one, many }) => ({
-  students: many(students, {
-    relationName: "members"
+  members: many(students, {
+    relationName: "team",
   }),
-  creator: one(students, {
+  owner: one(students, {
     fields: [teams.creatorId],
     references: [students.id],
+    relationName: "owner",
   }),
   group: one(availableGroups, {
     fields: [teams.resultGroupNumber],
     references: [availableGroups.id],
+    relationName: "group",
   }),
 }));
