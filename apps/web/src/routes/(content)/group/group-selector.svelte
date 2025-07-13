@@ -42,7 +42,7 @@
 
 <section class="mt-4">
 	<div
-		class="flex flex-col gap-1"
+		class="flex flex-col gap-1.5"
 		use:dndzone={{ items, flipDurationMs, dropTargetStyle: {} }}
 		onconsider={handleDndConsider}
 		onfinalize={handleDndFinalize}
@@ -50,7 +50,7 @@
 		{#each items as item (item.id)}
 			<div
 				animate:flip={{ duration: flipDurationMs }}
-				class="flex w-full items-center justify-between bg-neutral-300 p-4"
+				class="flex w-full items-center justify-between rounded-md bg-white shadow p-4"
 			>
 				<div class="flex">
 					{item.name} (แม่มดจาก)ดาวพุธ

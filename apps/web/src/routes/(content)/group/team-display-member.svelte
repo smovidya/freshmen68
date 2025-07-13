@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getDisplayName } from '$lib/idk';
-	import type { Student, Team, TeamMember } from '$lib/type';
+	import type { Team } from '$lib/type';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
 
@@ -23,14 +23,12 @@
 	];
 </script>
 
-joined {team.id}
-
 <div
-	class="flex w-full max-w-96 flex-col items-center justify-between gap-3 rounded-md bg-neutral-300 p-5 md:h-72 md:max-w-full md:flex-row md:gap-0"
+	class="flex w-full mt-3 flex-col items-center justify-between gap-12 md:gap-3 rounded-2xl bg-white p-5 shadow backdrop-blur-lg md:h-72 md:flex-row"
 >
-	<div class="flex max-w-80 flex-col self-stretch">
-		<h3 class="text-2xl font-medium">คุณอยู่กับ {getDisplayName(team.owner)}!</h3>
-		<p class="mt-2 leading-5">
+	<div class="flex md:max-w-64 flex-col self-stretch">
+		<h3 class="text-xl font-semibold">คุณอยู่กับ {getDisplayName(team.owner)}!</h3>
+		<p class="mt-2 leading-5 ">
 			{getDisplayName(team.owner)} สามารถแก้ไข การเรียงลำดับได้แค่คนเดียว งั้นเราไปคุยกับ{getDisplayName(
 				team.owner
 			)}
@@ -39,9 +37,7 @@ joined {team.id}
 		<div class="min-h-8 flex-1"></div>
 		<div class="mt-4 flex flex-col gap-2">
 			<p>ทะเลาะกันหรือเปล่า?</p>
-			<Button variant="secondary" class="bg-neutral-400/60 hover:bg-neutral-400/40"
-				>ออกจากทีมนี้</Button
-			>
+			<Button variant="secondary" class="max-w-42 md:max-w-full">ออกจากทีมนี้</Button>
 		</div>
 	</div>
 	<Bubbles member={[team.owner, ...team.members]} />
@@ -49,10 +45,10 @@ joined {team.id}
 </div>
 
 <section class="mt-8">
-	<h2 class="text-2xl font-medium">ที่{getDisplayName(team.owner)} เรียงไว้ตอนนี้</h2>
-	<div class="mt-2 flex flex-col gap-1">
+	<h2 class="text-2xl font-semibold">ที่{getDisplayName(team.owner)} เรียงไว้ตอนนี้</h2>
+	<div class="mt-2 flex flex-col gap-1.5">
 		{#each groups as group (group.number)}
-			<div class="flex w-full items-center justify-between bg-neutral-300 p-4">
+			<div class="flex w-full items-center justify-between rounded-md bg-white shadow p-4">
 				{group.name} ดาวพุธ
 			</div>
 		{/each}

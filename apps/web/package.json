@@ -60,28 +60,12 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
+		"@fontsource-variable/noto-sans-thai": "^5.2.6",
 		"@freshmen68/trpc": "workspace:*",
 		"@trpc/client": "^11.4.3",
-<<<<<<< HEAD
-<<<<<<< HEAD
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
-<<<<<<< HEAD
-		"postgres": "^3.4.7",
-		"@freshmen68/trpc": "workspace:*"
-=======
-		"drizzle-orm": "^0.40.0",
-		"postgres": "^3.4.5",
+		"svelte-dnd-action": "^0.9.63",
 		"zod": "^4.0.5"
-=======
-		"postgres": "^3.4.7"
->>>>>>> 980f79d (chore: unfuck lock file)
-=======
-		"better-auth": "^1.2.12"
->>>>>>> ccd495a (unfuck lockfile (2))
-=======
-		"better-auth": "^1.2.12",
-		"svelte-dnd-action": "^0.9.63"
->>>>>>> 13bde46 (feat: maake trpcClient a function becuase we can pass fetch to it)
 	}
 }

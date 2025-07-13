@@ -11,8 +11,8 @@
 </script>
 
 <div class="self-stretch md:self-end">
-	<h3 class="text-xl font-medium">สมาชิกปัจจุบัน</h3>
-	<ul class="mt-2 leading-6">
+	<h3 class="text-xl font-semibold">สมาชิกปัจจุบัน</h3>
+	<ul class="mt-1 leading-6">
 		<li>{getDisplayName(team.owner)} (หัวห้อง)</li>
 		{#each team.members as m}
 			<li>

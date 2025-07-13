@@ -1,10 +1,8 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getDisplayName } from '$lib/idk';
-	import type { Team, TeamMember } from '$lib/type';
+	import type { Team } from '$lib/type';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
-
 	interface Props {
 		team: Team;
 	}
@@ -13,10 +11,10 @@
 </script>
 
 <div
-	class="flex w-full max-w-96 flex-col items-center justify-between gap-3 rounded-md bg-neutral-300 p-5 md:h-72 md:max-w-full md:flex-row md:gap-0"
+	class="flex w-full max-w-96 flex-col items-center justify-between gap-3 p-5 md:h-72 md:max-w-full md:flex-row md:gap-0 rounded-2xl bg-yellow-50/70 shadow-md backdrop-blur-lg"
 >
-	<div class="flex max-w-80 flex-col self-stretch">
-		<h3 class="text-2xl font-medium">สร้างก๊วนมาอยู่ด้วยกัน</h3>
+	<div class="flex max-w-84 flex-col self-stretch">
+		<h3 class="text-2xl font-semibold">สร้างก๊วนมาอยู่ด้วยกัน</h3>
 		<p class="mt-2 h-12 leading-5">
 			ใคร ๆ ก็อยากเป็นหัวแถว ส่งโค้ดนี้ให้เพื่อนเพื่อเชิญเพื่อนเข้าทีมเลย!
 		</p>
