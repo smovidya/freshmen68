@@ -24,10 +24,10 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 
-	let session = fromStore(authClient.useSession())
-	let email = $derived(session.current.data?.user.email!)
-	let studentId = $derived(email?.split("@")[0])
-	
+	let session = fromStore(authClient.useSession());
+	let email = $derived(session.current.data?.user.email!);
+	let studentId = $derived(email?.split('@')[0]);
+
 	const form = superForm(defaults(zod4(registrationSchema)), {
 		SPA: true,
 		validators: zod4(registrationSchema),
@@ -37,7 +37,7 @@
 			}
 			console.log('Form submitted:', form.data);
 			try {
-				trpcClient.user.register.mutate({
+				trpcClient().user.register.mutate({
 					...form.data
 				});
 			} catch {
@@ -82,7 +82,7 @@
 	<div class="flex size-32 items-center justify-center rounded-full bg-white"></div>
 	<div class="text-center">
 		<h1 class="text-2xl font-medium">แบบฟอร์มลงทะเบียน</h1>
-		<span class="text-muted-foreground">Registration</span>
+		<span class="opacity-70">Registration</span>
 	</div>
 </section>
 

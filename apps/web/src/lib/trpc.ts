@@ -2,7 +2,11 @@ import { env } from '$env/dynamic/public';
 import type { AppRouter } from '@freshmen68/trpc';
 import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client';
 
-export const trpcClient = createTRPCClient<AppRouter>({
+interface Options {
+  fetch?: typeof fetch;
+}
+
+export const trpcClient = ({ fetch = globalThis.fetch }: Options = {}) => createTRPCClient<AppRouter>({
   links: [
     loggerLink(),
     httpBatchLink({
