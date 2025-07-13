@@ -1,5 +1,5 @@
 import { registrationSchema } from '@freshmen68/dto';
-import { router, signedInProcedure } from '.';
+import { router, signedInProcedure } from '../core';
 import { createStudentWithTeam } from '../services/students.service';
 import { db } from '@freshmen68/db';
 

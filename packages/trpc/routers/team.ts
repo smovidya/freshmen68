@@ -1,10 +1,10 @@
-import z from "zod/v4";
-import { router, signedInProcedure } from ".";
-import { getOwnedTeam, joinTeam, regenerateTeamCode } from "../services/team.service";
 import { db } from "@freshmen68/db";
-import { TRPCError } from "@trpc/server";
-import { getGroupPreference, updateGroupPreference } from "../services/group.service";
 import { groupPreferenceSchema } from "@freshmen68/dto";
+import { TRPCError } from "@trpc/server";
+import z from "zod/v4";
+import { router, signedInProcedure } from "../core";
+import { updateGroupPreference } from "../services/group.service";
+import { getJoinedTeam, getOwnedTeam, joinTeam, regenerateTeamCode } from "../services/team.service";
 
 export const teamRouter = router({
   join: signedInProcedure
@@ -38,4 +38,8 @@ export const teamRouter = router({
     .query(async ({ ctx }) => {
       return await getOwnedTeam(ctx.user.id, db);
     }),
+  getJoinedTeam: signedInProcedure
+    .query(async ({ ctx }) => {
+      return await getJoinedTeam(ctx.user.id, db);
+    })
 });

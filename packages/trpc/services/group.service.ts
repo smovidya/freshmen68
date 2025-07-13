@@ -18,6 +18,7 @@ export async function updateGroupPreference(userId: string, preference: z.infer<
       )
     );
 }
+
 export async function getGroupPreference(userId: string, db: Db | Tx) {
   const result = await db
     .select({

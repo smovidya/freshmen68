@@ -80,6 +80,7 @@ export async function getOwnedTeam(userId: string, db: Db | Tx) {
   const members = await getOwnedTeamMember(userId, db);
   const [meta] = await db
     .select({
+      id: tables.teams.id,
       groupNumberPreferenceOrder: tables.teams.groupNumberPreferenceOrder,
       resultGroupNumber: tables.teams.resultGroupNumber,
       teamCodes: tables.teams.teamCodes
@@ -95,14 +96,60 @@ export async function getOwnedTeam(userId: string, db: Db | Tx) {
     )
     .limit(1);
 
+  if (!meta) {
+    throw new Error("wtf how");
+  }
+
   return {
-    teamCodes: meta!.teamCodes,
-    resultGroupNumber: meta!.resultGroupNumber,
-    groupPreferenceOrder: meta!
+    id: meta.id,
+    teamCodes: meta.teamCodes,
+    resultGroupNumber: meta.resultGroupNumber,
+    groupPreferenceOrder: meta
       .groupNumberPreferenceOrder
       ?.split(",")
       .map(it => parseInt(it))
       ?? createRandomGroupNumberPreferenceOrder(), // this already exist tho
+    members
+  };
+}
+
+export async function getJoinedTeam(userId: string, db: Db | Tx) {
+  const result = await db
+    .select({
+      teamId: tables.students.teamId,
+      groupNumberPreferenceOrder: tables.teams.groupNumberPreferenceOrder,
+      resultGroupNumber: tables.teams.resultGroupNumber,
+    })
+    .from(tables.students)
+    .innerJoin(tables.teams, eq(tables.teams.id, tables.students.teamId))
+    .where(eq(tables.students.id, userId))
+    .limit(1);
+
+  if (result.length === 0) {
+    return null; // User hasn't joined any team
+  }
+
+  const team = result[0]!;
+
+  if (!team.teamId) {
+    return null; // User hasn't joined any team
+  }
+
+  // Get all team members
+  const members = await db
+    .select({
+      firstname: tables.students.firstName,
+      lastName: tables.students.lastName,
+      nickname: tables.students.nickname,
+      department: tables.students.department,
+    })
+    .from(tables.students)
+    .where(eq(tables.students.teamId, team.teamId));
+
+  return {
+    id: team.teamId,
+    resultGroupNumber: team.resultGroupNumber,
+    groupPreferenceOrder: team.groupNumberPreferenceOrder?.split(",").map(it => parseInt(it)) ?? [],
     members
   };
 }
