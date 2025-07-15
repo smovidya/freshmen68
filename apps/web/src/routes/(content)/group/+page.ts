@@ -3,7 +3,12 @@ import { trpcClient } from "$lib/trpc";
 import { redirect } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ depends, fetch }) => {
+export const load: PageLoad = async ({ depends, parent, fetch }) => {
+  const { student } = await parent();
+  if (!student) {
+    redirect(307, `/?${flashParams("please-login")}`);
+  }
+
   depends("data:owned-team", "data:joined-team");
 
   const [ownedTeam, joinedTeam] = await Promise.all([
@@ -21,7 +26,7 @@ export const load: PageLoad = async ({ depends, fetch }) => {
     redirect(307, `/menu?${flashParams("please-register")}`);
   }
 
-  console.log(joinedTeam)
+  console.log(joinedTeam);
 
   return {
     ownedTeam,

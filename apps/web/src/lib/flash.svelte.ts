@@ -7,6 +7,9 @@ const flashMessageHandlers = {
   },
   "please-register": () => {
     toast.info("กรุณาลงทะเบียนก่อน");
+  },
+  "please-login": () => {
+    toast.info("กรุณาเข้าสู่ระบบก่อน");
   }
 };
 

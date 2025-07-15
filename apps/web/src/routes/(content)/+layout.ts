@@ -2,10 +2,11 @@ import type { LayoutLoad } from "./$types";
 import { trpcClient } from "$lib/trpc";
 import { isTRPCClientError } from '@trpc/client';
 
-export const load: LayoutLoad = async () => {
+export const load: LayoutLoad = async ({ depends, fetch }) => {
+  // depends("data:auth");
   try {
     const [student] = await Promise.all([
-      trpcClient().user.getStudentInfo.query()
+      trpcClient({ fetch }).user.getStudentInfo.query()
     ]);
     return {
       student
