@@ -116,7 +116,7 @@
 			</InputOTP.Root>
 		</div>
 		<div class="min-h-8 flex-1"></div>
-		<Button variant="secondary" disabled={loading} onclick={onJoinTeamClick}>
+		<Button variant="secondary" class="bg-primary hover:bg-primary/90" disabled={loading} onclick={onJoinTeamClick}>
 			เข้าร่วม
 			{#if loading}
 				<LoaderIcon class="animate-spin" />

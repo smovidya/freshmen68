@@ -15,13 +15,13 @@
 	<h3 class="text-xl font-semibold">สมาชิกปัจจุบัน</h3>
 	<ul class="mt-1 leading-6">
 		<li>{getDisplayName(team.owner)} (หัวห้อง)</li>
-		{#each team.members as m}
+		{#each [...team.members] as m}
 			<li>
 				{getDisplayName(m)}
 				{#if openKickDialog}
 					<Button 
-						variant="secondary" 
-						class="h-6 pb-1" 
+						variant="destructive" 
+						class="h-6" 
 						size="sm"
 						onclick={() => openKickDialog(m.email)}
 					>

@@ -2,7 +2,7 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getDisplayName } from '$lib/idk.svelte';
-	import type { OwnedTeam } from '$lib/type';
+	import type { OwnedTeam, TeamMember } from '$lib/type';
 	import { LoaderIcon } from 'lucide-svelte';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
@@ -15,22 +15,23 @@
 	let { team, regenerateTeamCodes, kickMember }: Props = $props();
 
 	let kickDialogOpen = $state(false);
-	let selectedMemberEmail = $state<string>('');
+	// svelte-ignore non_reactive_update
+	let selectedMember: TeamMember | null = null;
 	let regenerateLoading = $state(false);
 	let kickLoading = $state(false);
 
 	function openKickDialog(email: string) {
-		selectedMemberEmail = email;
+		selectedMember = [team.owner, ...team.members].find((it) => it.email === email)!;
 		kickDialogOpen = true;
 	}
 
 	async function confirmKick() {
-		if (selectedMemberEmail && !kickLoading) {
+		if (selectedMember && !kickLoading) {
 			kickLoading = true;
-			await kickMember(selectedMemberEmail);
+			await kickMember(selectedMember.email);
 			kickLoading = false;
 			kickDialogOpen = false;
-			selectedMemberEmail = '';
+			selectedMember = null;
 		}
 	}
 
@@ -46,23 +47,37 @@
 		await regenerateTeamCodes();
 		regenerateLoading = false;
 	}
+
+	function withoutClass(thing: Record<string, unknown>) {
+		const { class: className, ...rest } = thing;
+		return rest;
+	}
 </script>
 
 <AlertDialog.Root bind:open={kickDialogOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
 			<AlertDialog.Title
-				>เตะ {getDisplayName(team.members.find((it) => it.email === selectedMemberEmail)!)} ออกจากทีม</AlertDialog.Title
+				>เตะ {selectedMember ? getDisplayName(selectedMember) : ''} ออกจากทีม</AlertDialog.Title
 			>
 			<AlertDialog.Description>คิดดีแล้วนะ</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={cancelKick}>ยกเลิก</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={confirmKick} disabled={kickLoading}>
-				เตะออกจากทีม
-				{#if kickLoading}
-					<LoaderIcon class="animate-spin" />
-				{/if}
+			<AlertDialog.Action>
+				{#snippet child({ props })}
+					<Button
+						{...withoutClass(props)}
+						onclick={confirmKick}
+						disabled={kickLoading}
+						variant="destructive"
+					>
+						<span> เตะออกจากทีม </span>
+						{#if kickLoading}
+							<LoaderIcon class="animate-spin" />
+						{/if}
+					</Button>
+				{/snippet}
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>

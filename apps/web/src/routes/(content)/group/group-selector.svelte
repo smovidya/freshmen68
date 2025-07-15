@@ -110,19 +110,21 @@
 				<div class="flex items-center gap-2">
 					<Button
 						size="icon"
-						variant="secondary"
-						disabled={index === 0}
-						onclick={() => moveUp(item.id)}
-					>
-						<ArrowUp />
-					</Button>
-					<Button
-						size="icon"
+						class="text-white bg-chart-1 hover:bg-chart-1/85"
 						variant="secondary"
 						disabled={index === groups.length - 1}
 						onclick={() => moveDown(item.id)}
 					>
 						<ArrowDown />
+					</Button>
+					<Button
+						size="icon"
+						class="text-white bg-chart-2 hover:bg-chart-2/85"
+						variant="secondary"
+						disabled={index === 0}
+						onclick={() => moveUp(item.id)}
+					>
+						<ArrowUp />
 					</Button>
 					<GripVertical />
 				</div>
@@ -134,8 +136,13 @@
 		หลังจากกดบันทึก น้องสามารกกลับมาแก้ไขเพื่อเชิญเพื่อนและแก้อันดับที่เลือกได้ จนกว่าจะ 24:00 น.
 		ของวันที่ 21 กรกฎาคม เมื่อพ้นไปแล้วจะบันทึกตามข้อมูลปัจจุบันอัตโนมัติ
 	</p>
-	<Button disabled={saving} onclick={onSaveClicked} size="lg" class="text-md mt-6 h-12 w-full "
-		>บันทึกลำดับ
+	<Button
+		disabled={saving}
+		onclick={onSaveClicked}
+		size="lg"
+		class="text-md bg-chart-2 hover:bg-chart-2/85 mt-6 h-12 w-full text-white"
+	>
+		<span> บันทึกลำดับ </span>
 		{#if saving}
 			<LoaderIcon class="animate-spin" />
 		{/if}
