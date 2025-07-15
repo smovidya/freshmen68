@@ -1,0 +1,9 @@
+
+[0m[2m[35m$[0m [2m[1mrun-eslint[0m
+[0m[31m
+Oops! Something went wrong! :(
+
+ESLint: 9.30.0
+
+BuildMessage {}[0m
+[0m[31merror[0m[2m:[0m "[1meslint[0m" exited with code 2

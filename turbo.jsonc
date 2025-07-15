@@ -1,0 +1,116 @@
+{
+	"$schema": "https://turborepo.com/schema.json",
+	"ui": "tui",
+	"tasks": {
+		"build": {
+			"dependsOn": [
+				"^build"
+			],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				".env*"
+			],
+			"outputs": [
+				".svelte-kit/**",
+				".vercel/**"
+			]
+		},
+		"lint": {
+			"dependsOn": [
+				"^lint"
+			]
+		},
+		"check-types": {
+			"dependsOn": [
+				"^check-types"
+			]
+		},
+		"dev": {
+			"dependsOn": [
+				"db:start",
+				"^dev"
+			],
+			"cache": false,
+			"persistent": true,
+			"env": [
+				"DATABASE_URL",
+				"PUBLIC_BETTER_AUTH_URL",
+				"GOOGLE_CLIENT_ID",
+				"GOOGLE_CLIENT_SECRET",
+				"PUBLIC_TRPC_URL",
+				"BETTER_AUTH_SECRET"
+			]
+		},
+		"db:start": {
+			"cache": false
+		},
+		"db:stop": {
+			"cache": false
+		},
+		"db:push": {
+			"dependsOn": [
+				"db:start"
+			],
+			"cache": false
+		},
+		"db:migrate": {
+			"dependsOn": [
+				"db:start"
+			],
+			"cache": false
+		},
+		"deploy": {
+			"dependsOn": [
+				"^deploy"
+			],
+			"cache": false
+		},
+		"check:lint": {
+			"dependsOn": [
+				"build"
+			],
+			"outputLogs": "new-only",
+			"env": [
+				"FIX_ESLINT"
+			]
+		},
+		"//#check:lint:all": {
+			"outputLogs": "new-only",
+			"outputs": [
+				"node_modules/.cache/run-eslint/.eslintcache"
+			],
+			"env": [
+				"FIX_ESLINT"
+			]
+		},
+		"//#check:format": {
+			"dependsOn": [],
+			"outputLogs": "new-only"
+		},
+		"fix:workers-types": {
+			"outputs": [
+				"worker-configuration.d.ts",
+				"topo"
+			],
+			"outputLogs": "new-only"
+		},
+		"//#build": {
+			"dependsOn": [
+				"^build"
+			],
+			"outputLogs": "new-only"
+		},
+		"build:wrangler": {
+			"dependsOn": [
+				"build"
+			],
+			"outputLogs": "new-only"
+		},
+		"check": {
+			"dependsOn": [
+				"check:lint"
+			],
+			"outputLogs": "new-only"
+		}
+	}
+}

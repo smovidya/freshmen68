@@ -1,28 +1,29 @@
 {
-  "name": "freshmen68",
-  "author": {
-    "url": "https://sucu.sc.chula.ac.th",
-    "email": "smoviya.it.team@gmail.com",
-    "name": "SMO Vidya IT Team"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@types/bun": "latest",
-    "turbo": "^2.5.4"
-  },
-  "peerDependencies": {
-    "typescript": "^5.8.3"
-  },
-  "packageManager": "bun@1.2.0",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "deploy": "turbo run deploy --parallel"
-  }
+	"name": "freshmen68",
+	"author": {
+		"url": "https://sucu.sc.chula.ac.th",
+		"email": "smoviya.it.team@gmail.com",
+		"name": "SMO Vidya IT Team"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@types/bun": "latest",
+		"turbo": "^2.5.4",
+		"@freshmen68/eslint-config": "workspace:*"
+	},
+	"peerDependencies": {
+		"typescript": "^5.8.3"
+	},
+	"packageManager": "bun@1.2.0",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel",
+		"deploy": "turbo run deploy --parallel"
+	}
 }

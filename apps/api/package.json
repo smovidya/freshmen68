@@ -2,6 +2,7 @@
 	"name": "@freshmen68/api",
 	"version": "0.0.1",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"deploy": "wrangler deploy --minify",
 		"dev": "wrangler dev",
@@ -11,6 +12,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
+		"@freshmen68/eslint-config": "workspace:*",
 		"typescript": "^5.5.2",
 		"vitest": "~3.2.0",
 		"wrangler": "4.24.3"

@@ -1,0 +1,16 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "Tools",
+	"extends": "@freshmen68/typescript-config/base.json",
+	"compilerOptions": {
+		"lib": [
+			"ESNext"
+		],
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleDetection": "force",
+		"jsx": "react-jsx",
+		"allowImportingTsExtensions": true,
+		"noFallthroughCasesInSwitch": true
+	}
+}

@@ -69,7 +69,7 @@ app.on(["POST", "GET"], "/trpc/*", (c) => {
 	});
 });
 
-export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
+export default class APIEntryPoint extends WorkerEntrypoint {
 	async fetch(request: Request): Promise<Response> {
 		return app.fetch(request);
 	}
