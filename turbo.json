@@ -61,9 +61,15 @@
     },
     "deploy": {
       "dependsOn": [
+        "build",
         "^deploy"
       ],
-      "cache": false
+      "cache": false,
+      "env": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "outputLogs": "new-only"
     }
   }
 }
