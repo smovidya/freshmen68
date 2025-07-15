@@ -99,6 +99,7 @@
 			<InputOTP.Root
 				maxlength={4}
 				bind:value={codeInput.current}
+				type="text"
 				pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
 				onkeydown={(e) => {
 					if (e.key === 'Enter') {
