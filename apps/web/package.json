@@ -66,6 +66,7 @@
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
 		"svelte-dnd-action": "^0.9.63",
-		"zod": "^4.0.5"
+		"zod": "^4.0.5",
+		"@freshmen68/flags": "workspace:*"
 	}
 }

@@ -4,24 +4,30 @@
 		title,
 		description,
 		status = 'ยังไม่ดำเนินการ',
-		icon = 'file-user'
+		icon = 'file-user',
+		disabled = false
 	}: {
 		href: string;
 		title: string;
 		description: string;
 		status?: string;
 		icon?: any;
+		disabled?: boolean;
 	} = $props();
+
+	const Icon = icon;
 </script>
 
 <a
-	{href}
-	class="-m-2 flex flex-row items-center gap-4 rounded-lg p-2 transition-all hover:bg-white/50"
+	href={disabled ? undefined : href}
+	data-sveltekit-preload-data="tap"
+	class="-m-2 flex flex-row items-center gap-4 rounded-lg p-2 transition-all hover:bg-white/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+	aria-disabled={disabled}
 >
 	<div
 		class="mr-2 flex size-20 shrink-0 flex-row items-center justify-center rounded-full bg-white/60 align-middle shadow-sm"
 	>
-		<icon class="size-8"></icon>
+		<Icon class="size-12 stroke-1 text-red-600" />
 	</div>
 	<div class="w-full">
 		<h2 class="mb-1 text-xl font-bold">{title}</h2>

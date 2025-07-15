@@ -33,6 +33,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@fontsource-variable/noto-sans-thai": "^5.2.6",
+        "@freshmen68/flags": "workspace:*",
         "@freshmen68/trpc": "workspace:*",
         "@trpc/client": "^11.4.3",
         "better-auth": "^1.2.12",
@@ -124,6 +125,10 @@
         "typescript": "^5",
         "zod": "^4.0.5",
       },
+    },
+    "packages/flags": {
+      "name": "@freshmen68/flags",
+      "version": "1.0.0",
     },
     "packages/trpc": {
       "name": "@freshmen68/trpc",
@@ -281,6 +286,8 @@
     "@freshmen68/db": ["@freshmen68/db@workspace:packages/db"],
 
     "@freshmen68/dto": ["@freshmen68/dto@workspace:packages/dto"],
+
+    "@freshmen68/flags": ["@freshmen68/flags@workspace:packages/flags"],
 
     "@freshmen68/trpc": ["@freshmen68/trpc@workspace:packages/trpc"],
 
