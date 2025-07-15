@@ -12,11 +12,15 @@ export const load: PageLoad = async ({ fetch, parent }) => {
 
   const isRegistered = await trpcClient({ fetch }).user.isRegistered.query();
 
-  console.log({
-    isRegistered
-  });
+  // console.log({
+  //   isRegistered
+  // });
 
   if (isRegistered && !dev) {
     redirect(307, `/menu?${flashParams('already-registered')}`);
   }
+
+  return {
+    isRegistered
+  };
 };

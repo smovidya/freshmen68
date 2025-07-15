@@ -26,6 +26,9 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { Snapshot } from './$types';
+	import { InfoIcon } from 'lucide-svelte';
+
+	let { data } = $props();
 
 	let session = fromStore(authClient.useSession());
 	let email = $derived(session.current.data?.user.email!);
@@ -61,6 +64,7 @@
 		{ value: 'นาง', label: 'นาง' }
 	];
 
+	// TODO: get correct name for this
 	const departmentOptions = [
 		{ value: 'Mathcom', label: 'ภาควิชาคณิตศาสตร์และวิทยาการคอมพิวเตอร์' },
 		{ value: 'Chem', label: 'ภาควิชาเคมี' },
@@ -96,6 +100,13 @@
 		<h1 class="text-center text-3xl font-medium">ฟอร์มลงทะเบียน</h1>
 		<div class="w-10"></div>
 	</nav>
+
+	{#if data.isRegistered}
+		<div class="mt-12 flex gap-3 rounded-2xl border border-zinc-300 bg-zinc-100 p-4">
+			<InfoIcon />
+			<span> คุณกรอกแบบฟอร์มนี้แล้ว </span>
+		</div>
+	{/if}
 
 	<form method="POST" use:enhance class="mt-12">
 		<!-- Personal Information -->

@@ -26,7 +26,7 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
     redirect(307, `/menu?${flashParams("please-register")}`);
   }
 
-  console.log(joinedTeam);
+  // console.log(joinedTeam);
 
   return {
     ownedTeam,
