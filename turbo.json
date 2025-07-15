@@ -60,10 +60,6 @@
       "cache": false
     },
     "deploy": {
-      "dependsOn": [
-        "build",
-        "^deploy"
-      ],
       "cache": false,
       "env": [
         "CLOUDFLARE_ACCOUNT_ID",
