@@ -69,7 +69,7 @@
 	<p>น้อง ๆ สามารถเชิญเพื่อนอีก 2 คน (รวมน้องเป็น 3) โดยจะโดนจัดให้อยู่กรุ๊ปเดียวกัน</p>
 
 	<!-- <TeamDisplayMember {leaveTeam} team={data.ownedTeam} /> -->
-	<TeamDisplayHead {regenerateTeamCodes} {kickMember} team={data.ownedTeam} />
+	<!-- <TeamDisplayHead {regenerateTeamCodes} {kickMember} team={data.ownedTeam} /> -->
 	{#if data.joinedTeam}
 		<TeamDisplayMember {leaveTeam} team={data.joinedTeam} />
 	{:else if data.ownedTeam.members.length > 0}
