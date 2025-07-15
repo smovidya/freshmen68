@@ -5,8 +5,8 @@ import type { PageLoad } from "./$types";
 import { dev } from "$app/environment";
 
 export const load: PageLoad = async ({ fetch, parent }) => {
-  const { student } = await parent();
-  if (!student) {
+  const { whoami } = await parent();
+  if (!whoami) {
     redirect(307, `/?${flashParams("please-login")}`);
   }
 

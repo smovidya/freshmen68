@@ -2,14 +2,13 @@ import type { LayoutLoad } from "./$types";
 import { trpcClient } from "$lib/trpc";
 import { isTRPCClientError } from '@trpc/client';
 
-export const load: LayoutLoad = async ({ depends, fetch }) => {
-  // depends("data:auth");
+export const load: LayoutLoad = async ({ fetch }) => {
   try {
-    const [student] = await Promise.all([
-      trpcClient({ fetch }).user.getStudentInfo.query()
-    ]);
+    const [whoami] = await Promise.allSettled([
+      trpcClient({ fetch }).user.whoami.query(),
+    ])
     return {
-      student
+      whoami
     };
   } catch (error) {
     if (isTRPCClientError(error)) {
@@ -18,7 +17,7 @@ export const load: LayoutLoad = async ({ depends, fetch }) => {
       console.error("Unexpected Error:", error);
     }
     return {
-      student: null
+      whoami: null
     };
   }
 };

@@ -4,8 +4,8 @@ import { redirect } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ depends, parent, fetch }) => {
-  const { student } = await parent();
-  if (!student) {
+  const { whoami } = await parent();
+  if (!whoami) {
     redirect(307, `/?${flashParams("please-login")}`);
   }
 
