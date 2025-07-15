@@ -7,8 +7,12 @@
 
 	let { children } = $props();
 
-	onMount(() => registerFlashConsumer())
+	onMount(() => registerFlashConsumer());
 </script>
+
+<svelte:head>
+	<title>เทศกาลต้อนรับนิสิตใหม่ คณะวิทย์จุฬา</title>
+</svelte:head>
 
 <Toaster />
 <div class="min-h-screen bg-radial from-[#F7CF76] to-[#F7CF76]/30">
