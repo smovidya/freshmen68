@@ -13,8 +13,9 @@
 	let { data }: PageProps = $props();
 	const trpc = trpcClient();
 
-	async function saveOrdering() {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+	async function updateOrdering(preferences: number[]) {
+		await trpc.team.updateGroupPreference.mutate(preferences);
+		await invalidate('data:owned-team');
 	}
 
 	async function joinTeam(teamCodes: string) {
@@ -86,14 +87,6 @@
 			และจะแสดงอันดับที่คนเชิญน้องเลือกไว้แทน
 		</p>
 
-		<GroupSelector />
-	</section>
-
-	<section class="mt-12">
-		<p class="">
-			หลังจากกดบันทึก น้องสามารกกลับมาแก้ไขเพื่อเชิญเพื่อนและแก้อันดับที่เลือกได้ จนกว่าจะ 24:00 น.
-			ของวันที่ 21 กรกฎาคม เมื่อพ้นไปแล้วจะบันทึกตามข้อมูลปัจจุบันอัตโนมัติ
-		</p>
-		<Button size="lg" class="text-md mt-4 h-12 w-full ">บันทึกลำดับ</Button>
+		<GroupSelector preferences={data.ownedTeam.groupPreferenceOrder} save={updateOrdering} />
 	</section>
 {/if}

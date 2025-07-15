@@ -5,55 +5,107 @@
 	import ArrowDown from '@lucide/svelte/icons/arrow-down';
 	import { dndzone, type DndEvent } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
+	import type { Group } from '$lib/type';
+	import { cn } from '$lib/utils';
+	import { LoaderIcon } from 'lucide-svelte';
 
-	let items = $state([
-		{ id: 1, name: 'item1' },
-		{ id: 2, name: 'item2' },
-		{ id: 3, name: 'item3' },
-		{ id: 4, name: 'item4' }
-	]);
+	interface Props {
+		preferences: number[];
+		save: (preferences: number[]) => Promise<unknown>;
+	}
 
-	type Item = (typeof items)[number];
+	let { preferences, save }: Props = $props();
+	const groupData: Group[] = [
+		{
+			number: 1,
+			name: '1'
+		},
+		{
+			number: 3,
+			name: '333'
+		},
+		{
+			number: 4,
+			name: '4444'
+		},
+		{
+			number: 5,
+			name: '55555'
+		},
+		{
+			number: 6,
+			name: '666666'
+		},
+		{
+			number: 7,
+			name: '7777777'
+		}
+	];
+
+	let groups = $state(
+		preferences
+			.map((prefNumber) => groupData.find((g) => g.number === prefNumber)!)
+			.filter((it) => !!it)
+			.map((it) => ({ ...it, id: it.number }))
+	);
+
+	type GroupWithId = (typeof groups)[number];
 
 	const flipDurationMs = 300;
-	function handleDndConsider(e: CustomEvent<DndEvent<Item>>) {
-		items = e.detail.items;
+	function handleDndConsider(e: CustomEvent<DndEvent<GroupWithId>>) {
+		groups = e.detail.items;
 	}
-	function handleDndFinalize(e: CustomEvent<DndEvent<Item>>) {
-		items = e.detail.items;
+	function handleDndFinalize(e: CustomEvent<DndEvent<GroupWithId>>) {
+		groups = e.detail.items;
 	}
 
 	function moveUp(id: number) {
-		const index = items.findIndex((item) => item.id === id);
+		const index = groups.findIndex((item) => item.id === id);
 		if (index > 0) {
-			const [item] = items.splice(index, 1);
-			items.splice(index - 1, 0, item);
+			const [item] = groups.splice(index, 1);
+			groups.splice(index - 1, 0, item);
 		}
 	}
 
 	function moveDown(id: number) {
-		const index = items.findIndex((item) => item.id === id);
-		if (index < items.length - 1) {
-			const [item] = items.splice(index, 1);
-			items.splice(index + 1, 0, item);
+		const index = groups.findIndex((item) => item.id === id);
+		if (index < groups.length - 1) {
+			const [item] = groups.splice(index, 1);
+			groups.splice(index + 1, 0, item);
 		}
+	}
+
+	let saving = $state(false);
+	async function onSaveClicked() {
+		if (saving) {
+			return;
+		}
+		saving = true;
+		const preferences = groups.map((it) => it.number);
+		await save(preferences);
+		saving = false;
 	}
 </script>
 
-<section class="mt-4">
+<section class="mt-6">
 	<div
-		class="flex flex-col gap-1.5"
-		use:dndzone={{ items, flipDurationMs, dropTargetStyle: {} }}
+		class="flex flex-col gap-1.5 {cn(saving && 'cursor-not-allowed opacity-60')}"
+		use:dndzone={{ items: groups, dragDisabled: saving, flipDurationMs, dropTargetStyle: {} }}
 		onconsider={handleDndConsider}
 		onfinalize={handleDndFinalize}
 	>
-		{#each items as item, index (item.id)}
+		{#each groups as item, index (item.id)}
 			<div
 				animate:flip={{ duration: flipDurationMs }}
 				class="flex w-full items-center justify-between rounded-md bg-white p-4 shadow-md"
 			>
-				<div class="flex">
-					{item.name} (แม่มดจาก)ดาวพุธ
+				<div class="ml-1 flex items-center gap-4">
+					<span>
+						กรุ๊ป {item.id}
+					</span>
+					<span class="text-lg">
+						{item.name}
+					</span>
 				</div>
 				<div class="flex items-center gap-2">
 					<Button
@@ -67,7 +119,7 @@
 					<Button
 						size="icon"
 						variant="secondary"
-						disabled={index === items.length - 1}
+						disabled={index === groups.length - 1}
 						onclick={() => moveDown(item.id)}
 					>
 						<ArrowDown />
@@ -77,4 +129,15 @@
 			</div>
 		{/each}
 	</div>
+
+	<p class="mx-4 mt-6 text-center">
+		หลังจากกดบันทึก น้องสามารกกลับมาแก้ไขเพื่อเชิญเพื่อนและแก้อันดับที่เลือกได้ จนกว่าจะ 24:00 น.
+		ของวันที่ 21 กรกฎาคม เมื่อพ้นไปแล้วจะบันทึกตามข้อมูลปัจจุบันอัตโนมัติ
+	</p>
+	<Button disabled={saving} onclick={onSaveClicked} size="lg" class="text-md mt-6 h-12 w-full "
+		>บันทึกลำดับ
+		{#if saving}
+			<LoaderIcon class="animate-spin" />
+		{/if}
+	</Button>
 </section>
