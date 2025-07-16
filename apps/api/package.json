@@ -20,6 +20,7 @@
 		"@freshmen68/db": "workspace:*",
 		"@freshmen68/trpc": "workspace:*",
 		"@trpc/server": "^11.4.3",
-		"hono": "^4.8.4"
+		"hono": "^4.8.4",
+		"@freshmen68/flags": "workspace:*"
 	}
 }

@@ -17,6 +17,7 @@
       "dependencies": {
         "@freshmen68/auth": "workspace:*",
         "@freshmen68/db": "workspace:*",
+        "@freshmen68/flags": "workspace:*",
         "@freshmen68/trpc": "workspace:*",
         "@trpc/server": "^11.4.3",
         "hono": "^4.8.4",
@@ -136,6 +137,7 @@
       "dependencies": {
         "@freshmen68/db": "workspace:*",
         "@freshmen68/dto": "workspace:*",
+        "@freshmen68/flags": "workspace:*",
         "@trpc/server": "^11.4.3",
         "drizzle-orm": "^0.40.0",
         "zod": "^4.0.5",

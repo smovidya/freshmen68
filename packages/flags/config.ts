@@ -1,4 +1,4 @@
-export const features= {
+export const features = {
   "login": true,
   "registering": true,
   "team-joining": true,
@@ -12,13 +12,13 @@ export const features= {
  * Represents a date-time string in ISO 8601 format with Thailand timezone (+07:00).
  * Example: "2025-07-19T12:00:00+07:00"
  */
-type FestivalDateTime = `${string}-${string}-${string}T${string}:${string}:${string}+07:00`;
+export type FestivalDateTime = `${string}-${string}-${string}T${string}:${string}:${string}+07:00`;
 
 /**
  * Represents an event/activity that runs during a specific time window.
  * Both registration periods and activity sessions use this pattern.
  */
-type EventTimeWindow = {
+export type EventTimeWindow = {
   /**
    * When the event/activity opens or becomes available.
    * Example: "2025-07-19T12:00:00+07:00"
@@ -35,7 +35,7 @@ type EventTimeWindow = {
  * Represents an event/activity that is scheduled for the future.
  * Used for announcements, planned activities, or upcoming features.
  */
-type ScheduledEvent = {
+export type ScheduledEvent = {
   /**
    * The scheduled date and time when the event will occur.
    * Example: "2025-07-22T12:00:00+07:00"
@@ -47,7 +47,7 @@ type ScheduledEvent = {
  * Represents an event/activity with a deadline.
  * Used for submissions, registrations, or time-sensitive actions.
  */
-type EventWithDeadline = {
+export type EventWithDeadline = {
   /**
    * The deadline until which the event/activity remains available.
    * Example: "2025-07-21T23:59:59+07:00"
@@ -59,16 +59,16 @@ type EventWithDeadline = {
  * Represents an event/activity that is always available or permanently disabled.
  * Used for features that don't depend on time constraints.
  */
-type AlwaysAvailable = boolean;
+export type AlwaysAvailable = boolean;
 
 /**
  * Custom switch type for event availability.
  */
-type CustomSwitch = {
+export type CustomSwitch = {
   isEnabled: () => boolean;
 }
 
 /**
  * Union type representing all possible states of a festival event or activity.
  */
-type EventAvailability = EventTimeWindow | ScheduledEvent | AlwaysAvailable | EventWithDeadline | CustomSwitch;
+export type EventAvailability = EventTimeWindow | ScheduledEvent | AlwaysAvailable | EventWithDeadline | CustomSwitch;

@@ -1,11 +1,13 @@
 import type { auth } from '@freshmen68/auth';
 import type { Db } from '@freshmen68/db';
+import type { FeatureFlags } from '@freshmen68/flags';
 import { initTRPC, TRPCError } from '@trpc/server';
 
 export type Context = {
   user: typeof auth.$Infer.Session.user | null;
   session: typeof auth.$Infer.Session.session | null;
   db: Db;
+  flags: FeatureFlags;
 };
 
 export type AuthenticatedContext = Context & {

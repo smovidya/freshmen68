@@ -15,7 +15,7 @@ export async function joinTeam(email: string, teamCode: string, db: Db | Tx) {
       .limit(1);
 
     if (!student) {
-      return "user-not-founded";
+      return "user-not-found";
     }
 
     if (student.teamId) {
