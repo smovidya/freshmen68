@@ -18,6 +18,12 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
+  ],
+  "routes": [
+    {
+      "pattern": "freshmen68.vidyachula.org",
+      "custom_domain": true
+    }
   ]
   /**
 	 * Smart Placement
