@@ -1,33 +1,11 @@
 export const features= {
   "login": true,
-  "registering": {
-    start: "2025-07-19T12:00:00+07:00",
-    end: "2025-07-21T23:59:59+07:00",
-  },
-  "team-joining": {
-    start: "2025-07-19T12:00:00+07:00",
-    end: "2025-07-21T23:59:59+07:00",
-  },
-  "group-choosing": {
-    start: "2025-07-19T12:00:00+07:00",
-    end: "2025-07-21T23:59:59+07:00",
-  },
-  "group-announcement": {
-    scheduled: "2025-07-22T12:00:00+07:00",
-  },
-  "game-start": {
-    scheduled: "2025-07-26T12:00:00+07:00",
-  },
-  "game-playing": {
-    isEnabled() {
-      // allow between 12:00 to 17:00 on 2026-07-26 to 2025-07-29
-      const now = new Date();
-      const hours = now.getHours();
-      const start = new Date("2025-07-26T12:00:00+07:00");
-      const end = new Date("2025-07-29T17:00:00+07:00");
-      return now >= start && now <= end && hours >= 12 && hours <= 17
-    },
-  }
+  "registering": true,
+  "team-joining": true,
+  "group-choosing": true,
+  "group-announcement": true,
+  "game-start": true,
+  "game-playing": true
 } satisfies Record<string, EventAvailability>;
 
 /**
