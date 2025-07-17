@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getDisplayName } from '$lib/idk.svelte';
-	import type { JoinedTeam } from '$lib/type';
+	import type { Group, JoinedTeam } from '$lib/type';
 	import { LoaderIcon } from 'lucide-svelte';
 	import Bubbles from './bubbles.svelte';
 	import MemberList from './member-list.svelte';
@@ -13,16 +13,39 @@
 
 	let { team, leaveTeam }: Props = $props();
 
-	let groups = [
+	const groupData: Group[] = [
 		{
-			name: 'miorine',
-			number: 1
+			number: 1,
+			name: '1'
 		},
 		{
-			name: 'suletta',
-			number: 2
+			number: 3,
+			name: '333'
+		},
+		{
+			number: 4,
+			name: '4444'
+		},
+		{
+			number: 5,
+			name: '55555'
+		},
+		{
+			number: 6,
+			name: '666666'
+		},
+		{
+			number: 7,
+			name: '7777777'
 		}
 	];
+
+	let groups = $state(
+		team.groupPreferenceOrder
+			.map((prefNumber) => groupData.find((g) => g.number === prefNumber)!)
+			.filter((it) => !!it)
+			.map((it) => ({ ...it, id: it.number }))
+	);
 
 	let loading = $state(false);
 	async function onLeaveTeamClick() {
@@ -49,7 +72,12 @@
 		<div class="min-h-8 flex-1"></div>
 		<div class="mt-4 flex flex-col gap-2">
 			<p>ทะเลาะกันหรือเปล่า?</p>
-			<Button disabled={loading} variant="secondary" class="max-w-42 md:max-w-full" onclick={onLeaveTeamClick}>
+			<Button
+				disabled={loading}
+				variant="secondary"
+				class="max-w-42 md:max-w-full"
+				onclick={onLeaveTeamClick}
+			>
 				ออกจากทีมนี้
 				{#if loading}
 					<LoaderIcon class="animate-spin" />
@@ -66,7 +94,14 @@
 	<div class="mt-2 flex flex-col gap-1.5">
 		{#each groups as group (group.number)}
 			<div class="flex w-full items-center justify-between rounded-md bg-white p-4 shadow-md">
-				{group.name} ดาวพุธ
+				<div class="ml-1 flex items-center gap-4">
+					<span>
+						กรุ๊ป {group.id}
+					</span>
+					<span class="text-lg">
+						{group.name}
+					</span>
+				</div>
 			</div>
 		{/each}
 	</div>
