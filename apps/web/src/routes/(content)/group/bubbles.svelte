@@ -19,7 +19,7 @@
 	</div>
 	<div
 		class={cn(
-			'mt-2 ml-10  size-22 rounded-full',
+			'mt-2 ml-10  size-22 overflow-clip rounded-full',
 			member[1] ? 'bg-muted' : 'border-muted-foreground/60 border-2 border-dashed'
 		)}
 	>
@@ -29,7 +29,7 @@
 	</div>
 	<div
 		class={cn(
-			'absolute top-0 left-0 mt-16 ml-32 size-25 rounded-full',
+			'absolute top-0 left-0 mt-16 ml-32 size-25 overflow-clip rounded-full',
 			member[2] ? 'bg-muted' : 'border-muted-foreground/60 border-2 border-dashed'
 		)}
 	>
