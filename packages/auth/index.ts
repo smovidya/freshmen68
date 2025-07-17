@@ -103,11 +103,11 @@ export const createAuth = ({
 			// 	enabled: true,
 			// 	domain: "vidyachula.org"
 			// },
-			defaultCookieAttributes: {
-				sameSite: "none",
-				secure: true,
-				partitioned: true // New browser standards will mandate this for foreign cookies
-			}
+			// defaultCookieAttributes: {
+			// 	sameSite: "none",
+			// 	secure: true,
+			// 	// partitioned: true // New browser standards will mandate this for foreign cookies
+			// }
 		}
 	});
 };
