@@ -61,12 +61,13 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/noto-sans-thai": "^5.2.6",
+		"@freshmen68/flags": "workspace:*",
 		"@freshmen68/trpc": "workspace:*",
 		"@trpc/client": "^11.4.3",
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
 		"svelte-dnd-action": "^0.9.63",
-		"zod": "^4.0.5",
-		"@freshmen68/flags": "workspace:*"
+		"trpc-token-refresh-link": "^0.5.3",
+		"zod": "^4.0.5"
 	}
 }

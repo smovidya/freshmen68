@@ -1,10 +1,10 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { genericOAuth } from 'better-auth/plugins';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { schema } from '@freshmen68/db';
 import { env } from 'cloudflare:workers';
+import { jwt } from 'better-auth/plugins/jwt';
 
 export const createAuth = ({
 	env,
@@ -79,17 +79,7 @@ export const createAuth = ({
 			}
 		},
 		plugins: [
-			// genericOAuth({
-			// 	config: [
-			// 		{
-			// 			providerId: 'smovidya',
-			// 			clientId: 'vidya-ci-0000',
-			// 			clientSecret: 'vidya-cs-0000',
-			// 			discoveryUrl:
-			// 				'https://auth.smovidya-chula.workers.dev/api/auth/.well-known/openid-configuration'
-			// 		}
-			// 	]
-			// })
+			jwt()
 		],
 		trustedOrigins(request) {
 			return [

@@ -10,6 +10,17 @@
     "db:migrate": "DATABASE_URL=postgres://root:mysecretpassword@localhost:5541/local drizzle-kit migrate",
     "db:studio": "DATABASE_URL=postgres://root:mysecretpassword@localhost:5541/local drizzle-kit studio"
   },
+  "exports": {
+    ".": {
+      "import": "./index.ts",
+      "require": "./index.js"
+    },
+    "./schemas": {
+      "import": "./schemas/schema.ts",
+      "require": "./schemas/schema.js"
+    }
+  },
+  "types": "index.d.ts",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250712.0",
     "@types/bun": "latest"

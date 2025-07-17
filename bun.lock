@@ -40,6 +40,7 @@
         "better-auth": "^1.2.12",
         "drizzle-orm": "^0.40.1",
         "svelte-dnd-action": "^0.9.63",
+        "trpc-token-refresh-link": "^0.5.3",
         "zod": "^4.0.5",
       },
       "devDependencies": {
@@ -1144,6 +1145,8 @@
     "toposort": ["toposort@2.0.2", "", {}, "sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg=="],
 
     "totalist": ["totalist@3.0.1", "", {}, "sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ=="],
+
+    "trpc-token-refresh-link": ["trpc-token-refresh-link@0.5.3", "", { "dependencies": { "@trpc/client": "^10.0.0 || ^11.0.0-next-beta.294", "@trpc/server": "^10.0.0 || ^11.0.0-next-beta.294" } }, "sha512-k5XBRw3GSY2arSXpPfLz+DLFWc6vyFPfNH/l59PQy3NYtmSoZFdnplgUep9bX9ADHhA3bnvazUNZQwRHnqQ6gg=="],
 
     "ts-algebra": ["ts-algebra@2.0.0", "", {}, "sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw=="],
 
