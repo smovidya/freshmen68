@@ -3,7 +3,7 @@ import { trpcClient } from "$lib/trpc";
 import { isTRPCClientError } from '@trpc/client';
 
 export const ssr = false;
-export const prerender = true;
+// export const prerender = true;
 
 export const load: LayoutLoad = async ({ fetch }) => {
   try {
