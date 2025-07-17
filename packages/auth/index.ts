@@ -98,6 +98,11 @@ export const createAuth = ({
 				'*.smovidya-chula.workers.dev'
 			];
 		},
+		advanced: {
+			crossSubDomainCookies: {
+				enabled: true,
+			}
+		}
 	});
 }
 
