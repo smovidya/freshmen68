@@ -79,30 +79,30 @@ export const createAuth = ({
 			}
 		},
 		plugins: [
-			genericOAuth({
-				config: [
-					{
-						providerId: 'smovidya',
-						clientId: 'vidya-ci-0000',
-						clientSecret: 'vidya-cs-0000',
-						discoveryUrl:
-							'https://auth.smovidya-chula.workers.dev/api/auth/.well-known/openid-configuration'
-					}
-				]
-			})
+			// genericOAuth({
+			// 	config: [
+			// 		{
+			// 			providerId: 'smovidya',
+			// 			clientId: 'vidya-ci-0000',
+			// 			clientSecret: 'vidya-cs-0000',
+			// 			discoveryUrl:
+			// 				'https://auth.smovidya-chula.workers.dev/api/auth/.well-known/openid-configuration'
+			// 		}
+			// 	]
+			// })
 		],
 		trustedOrigins(request) {
 			return [
 				env.FRONTEND_URL || 'http://localhost:5173',
 				env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
-				'*.smovidya-chula.workers.dev'
 			];
 		},
 		advanced: {
-			// crossSubDomainCookies: {
-			// 	enabled: true,
-			// 	domain: "vidyachula.org"
-			// },
+			crossSubDomainCookies: {
+				enabled: true,
+				domain: "freshmen68.vidyachula.org"
+			},
+			cookiePrefix: "freshmen68",
 			// defaultCookieAttributes: {
 			// 	sameSite: "none",
 			// 	secure: true,

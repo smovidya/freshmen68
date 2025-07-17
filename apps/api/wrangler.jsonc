@@ -18,7 +18,7 @@
 	},
 	"routes": [
 		{
-			"pattern": "freshmen68-api.vidyachula.org",
+			"pattern": "api.freshmen68.vidyachula.org",
 			"custom_domain": true
 		}
 	]
