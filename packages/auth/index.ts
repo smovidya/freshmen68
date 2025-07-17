@@ -35,18 +35,18 @@ export const createAuth = ({
 							const ouid = user.email.split('@')[0];
 							// Science students only
 							if (!ouid?.endsWith('23')) {
-								return
+								return;
 							}
 							return {
 								data: {
 									...user,
 									ouid: ouid,
 								}
-							}
+							};
 						}
 
 						// disallow non-student emails
-						return
+						return;
 					}
 				}
 			}
@@ -99,13 +99,19 @@ export const createAuth = ({
 			];
 		},
 		advanced: {
-			crossSubDomainCookies: {
-				enabled: true,
+			// crossSubDomainCookies: {
+			// 	enabled: true,
+			// 	domain: "vidyachula.org"
+			// },
+			defaultCookieAttributes: {
+				sameSite: "none",
+				secure: true,
+				partitioned: true // New browser standards will mandate this for foreign cookies
 			}
 		}
 	});
-}
+};
 
 export const auth = createAuth({
 	env
-})
+});
