@@ -89,7 +89,7 @@ export const createAuth = ({
 		},
 		advanced: {
 			crossSubDomainCookies: {
-				enabled: true,
+				enabled: env.WORKER_ENV === 'production',
 				domain: "freshmen68.vidyachula.org"
 			},
 			cookiePrefix: "freshmen68",
