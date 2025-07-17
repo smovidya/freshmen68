@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import BackButton from '$lib/components/back-button.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import { trpcClient } from '$lib/trpc';
 	import { toast } from 'svelte-sonner';
 	import type { PageProps } from './$types';

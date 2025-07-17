@@ -10,6 +10,9 @@ const flashMessageHandlers = {
   },
   "please-login": () => {
     toast.info("กรุณาเข้าสู่ระบบก่อน");
+  },
+  "unknown-error": () => {
+    toast.info("เกิดข้อผิดพลาดขึ้น");
   }
 };
 

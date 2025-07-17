@@ -17,7 +17,7 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
   ]).catch((e) => {
     console.warn(e);
     // actually wtf
-    redirect(307, `/menu?${flashParams("please-register")}`);
+    redirect(307, `/menu?${flashParams("unknown-error")}`);
   });
 
   const groupDetail = [{}];
