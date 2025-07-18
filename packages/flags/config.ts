@@ -1,11 +1,24 @@
 export const features = {
   "login": true,
-  "registering": true,
-  "team-joining": true,
-  "group-choosing": true,
-  "group-announcement": true,
-  "game-start": true,
-  "game-playing": true
+  "registering": {
+    start: "2025-07-19T18:00:00+07:00",
+    end: "2025-07-21T23:59:59+07:00",
+  },
+  "team-joining": {
+    start: "2025-07-19T18:00:00+07:00",
+    end: "2025-07-21T23:59:59+07:00",
+  },
+  "group-choosing": {
+    start: "2025-07-19T18:00:00+07:00",
+    end: "2025-07-21T23:59:59+07:00",
+  },
+  "group-announcement": {
+    scheduled: "2025-07-22T18:00:00+07:00",
+  },
+  "game-playing": {
+    start: "2025-07-26T11:00:00+07:00",
+    end: "2025-07-29T23:59:59+07:00",
+  },
 } satisfies Record<string, EventAvailability>;
 
 /**
