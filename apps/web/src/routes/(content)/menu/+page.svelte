@@ -45,7 +45,7 @@
 				href="/group"
 				title="ประกาศผลกรุ๊ป"
 				description="ประกาศผลกรุ๊ปที่น้อง ๆ จะได้เป็นสมาชิกตลอดกิจกรรม"
-				status="ยังไม่ประกาศ"
+				status={flags.isEnabled('group-announcement') ? "ประกาศภายในวันที่ 22 กรกฎาคม" : "ประกาศผลแล้ว"}
 				icon={Megaphone}
 			/>
 		</TaskSection>
