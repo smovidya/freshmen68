@@ -5,7 +5,6 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import FloatingElements from './floating-elements.svelte';
-	import { invalidate } from '$app/navigation';
 	const session = authClient.useSession();
 
 	let studentId = '';
