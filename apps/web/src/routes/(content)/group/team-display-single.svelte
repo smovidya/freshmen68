@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as InputOTP from '$lib/components/ui/input-otp';
-	import { ShufflingText } from '$lib/idk.svelte';
+	import { ShufflingText } from '$lib/text-shuffle.svelte';
 	import type { OwnedTeam } from '$lib/type';
 	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
 	import { LoaderIcon, SparkleIcon } from 'lucide-svelte';

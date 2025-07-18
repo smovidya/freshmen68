@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getDisplayName } from '$lib/idk.svelte';
+	import { getDisplayName } from '$lib/text-shuffle.svelte';
 	import type { JoinedTeam, OwnedTeam } from '$lib/type';
 
 	interface Props {

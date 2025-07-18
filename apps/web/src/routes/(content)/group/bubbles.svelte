@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getAvatarUrl } from '$lib/avartar';
-	import { getDisplayName } from '$lib/idk.svelte';
+	import { getDisplayName } from '$lib/text-shuffle.svelte';
 	import type { TeamMember } from '$lib/type';
 	import { cn } from '$lib/utils';
 

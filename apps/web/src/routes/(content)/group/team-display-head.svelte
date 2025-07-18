@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getDisplayName } from '$lib/idk.svelte';
+	import { getDisplayName } from '$lib/text-shuffle.svelte';
 	import type { OwnedTeam, TeamMember } from '$lib/type';
 	import { LoaderIcon } from 'lucide-svelte';
 	import Bubbles from './bubbles.svelte';
