@@ -26,15 +26,15 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { Snapshot } from './$types';
-	import { InfoIcon } from 'lucide-svelte';
 
 	let { data } = $props();
+	const { isRegistered } = $derived(data);
 
 	let session = fromStore(authClient.useSession());
 	let email = $derived(session.current.data?.user.email!);
 	let studentId = $derived(email?.split('@')[0]);
 
-	const form = superForm(defaults(zod4(registrationSchema)), {
+	const form = superForm(data.form, {
 		SPA: true,
 		resetForm: false,
 		validators: zod4(registrationSchema),
@@ -44,10 +44,17 @@
 			}
 			// console.log('Form submitted:', form.data);
 			try {
-				await trpcClient().user.register.mutate({
-					...form.data
-				});
-				toast.success('ลงทะเบียนสำเร็จ 🎉');
+				if (isRegistered) {
+					await trpcClient().user.updateStudentInfo.mutate({
+						...form.data
+					});
+					toast.success('บันทึกข้อมูลสำเร็จ 🎉');
+				} else {
+					await trpcClient().user.register.mutate({
+						...form.data
+					});
+					toast.success('ลงทะเบียนสำเร็จ 🎉');
+				}
 			} catch {
 				toast.error('เกิดข้อผิดพลาดขึ้น');
 				return;
@@ -81,7 +88,7 @@
 		{ value: 'Food tech?', label: 'สาขาวิชาเทคโนโลยีทางอาหาร' },
 		{ value: 'Geo???', label: 'สาขาวิชาธรณีวิทยา' },
 		{ value: 'Bio chem', label: 'สาขาวิชาชีวเคมี' },
-		{ value: 'Imprint', label: 'สาขาวิชาเทคโนโลยีทางภาพและการพิมพ์' }
+		{ value: 'Imprint', label: 'สาขาวิชาเทคโนโลยีทางภาพและการพิมพ์' },
 	];
 
 	export const snapshot: Snapshot = {
@@ -100,13 +107,6 @@
 		<h1 class="text-center text-3xl font-medium">ฟอร์มลงทะเบียน</h1>
 		<div class="w-10"></div>
 	</nav>
-
-	{#if data.isRegistered}
-		<div class="mt-12 flex gap-3 rounded-2xl border border-zinc-300 bg-zinc-100 p-4">
-			<InfoIcon />
-			<span> คุณกรอกแบบฟอร์มนี้แล้ว </span>
-		</div>
-	{/if}
 
 	<form method="POST" use:enhance class="mt-12">
 		<!-- Personal Information -->
@@ -335,7 +335,13 @@
 
 		<!-- Submit Button -->
 		<div class="flex justify-end pt-6">
-			<Button type="submit" size="lg" class="text-md mt-4 h-12 w-full ">ลงทะเบียน</Button>
+			<Button type="submit" size="lg" class="text-md mt-4 h-12 w-full ">
+				{#if isRegistered}
+					บันทึก
+				{:else}
+					ลงทะเบียน
+				{/if}
+			</Button>
 		</div>
 	</form>
 </section>

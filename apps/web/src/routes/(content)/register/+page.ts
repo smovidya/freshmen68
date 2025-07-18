@@ -1,8 +1,38 @@
 import { flashParams } from "$lib/flash.svelte";
 import { trpcClient } from "$lib/trpc";
+import { registrationSchema } from "@freshmen68/dto";
 import { redirect } from "@sveltejs/kit";
+import { superValidate } from "sveltekit-superforms";
+import { zod4 } from "sveltekit-superforms/adapters";
 import type { PageLoad } from "./$types";
-import { dev } from "$app/environment";
+
+type MapNullToUndefined<T> = T extends null
+  ? undefined
+  : T extends object
+  ? { [K in keyof T]: MapNullToUndefined<T[K]> }
+  : T;
+
+function mapToUndefined<T>(obj: T): MapNullToUndefined<T> {
+  if (obj === null || obj === undefined) {
+    return undefined as MapNullToUndefined<T>;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(mapToUndefined) as MapNullToUndefined<T>;
+  }
+
+  if (typeof obj === 'object') {
+    const result = {} as MapNullToUndefined<T>;
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        (result as any)[key] = mapToUndefined(obj[key]);
+      }
+    }
+    return result;
+  }
+
+  return obj as MapNullToUndefined<T>;
+}
 
 export const load: PageLoad = async ({ fetch, parent }) => {
   const { whoami } = await parent();
@@ -10,17 +40,12 @@ export const load: PageLoad = async ({ fetch, parent }) => {
     redirect(307, `/?${flashParams("please-login")}`);
   }
 
-  const isRegistered = await trpcClient({ fetch }).user.isRegistered.query();
+  const student = await trpcClient({ fetch }).user.getStudentInfo.query();
 
-  // console.log({
-  //   isRegistered
-  // });
-
-  if (isRegistered && !dev) {
-    redirect(307, `/menu?${flashParams('already-registered')}`);
-  }
+  const form = await superValidate(student ? mapToUndefined(student) : {}, zod4(registrationSchema));
 
   return {
-    isRegistered
+    form,
+    isRegistered: !!student
   };
 };
