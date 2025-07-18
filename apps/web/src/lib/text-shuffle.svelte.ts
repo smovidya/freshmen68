@@ -3,7 +3,7 @@ import type { TeamMember } from "./type";
 import { departmentAcronymLookup, type DepartmentId } from "./departments";
 
 export function getDisplayName(member: TeamMember) {
-  return `${member.nickname ?? member.firstname} ${departmentAcronymLookup[member.department as DepartmentId]}`;
+  return `${member.nickname ?? member.firstname} ${departmentAcronymLookup[member.department as DepartmentId] ?? member.department}`;
 }
 
 export class ShufflingText {
