@@ -66,22 +66,22 @@
 
 	// TODO: get correct name for this
 	const departmentOptions = [
-		{ value: 'Mathcom', label: 'ภาควิชาคณิตศาสตร์และวิทยาการคอมพิวเตอร์' },
-		{ value: 'Chem', label: 'ภาควิชาเคมี' },
-		{ value: 'physics', label: 'ภาควิชาฟิสิกส์' },
-		{ value: 'Bio', label: 'ภาควิชาชีววิทยา' },
-		{ value: 'botany', label: 'ภาควิชาพฤกษศาสตร์' },
-		{ value: 'Chem tech', label: 'ภาควิชาเคมีเทคนิค' },
-		{ value: 'environmental-science', label: 'ภาควิชาวิทยาศาสตร์สิ่งแวดล้อม' },
-		{ value: 'materials-science', label: 'ภาควิชาวัสดุศาสตร์' },
-		{ value: 'Bio tech', label: 'ภาควิชาเทคโนโลยีชีวภาพ (นานาชาติ)' },
-		{ value: 'microbiology', label: 'ภาควิชาจุลชีววิทยา' },
-		{ value: 'marine-science', label: 'ภาควิชาวิทยาศาสตร์ทางทะเล' },
-		{ value: 'applied-chemistry', label: 'ภาควิชาเคมีประยุกต์' },
-		{ value: 'Food tech?', label: 'ภาควิชาเทคโนโลยีทางอาหาร' },
-		{ value: 'Geo???', label: 'ภาควิชาธรณีวิทยา' },
-		{ value: 'Bio chem', label: 'ภาควิชาชีวเคมี' },
-		{ value: 'Imprint', label: 'ภาควิชาเทคโนโลยีทางภาพและการพิมพ์' }
+		{ value: 'Mathcom', label: 'สาขาวิชาคณิตศาสตร์และวิทยาการคอมพิวเตอร์' },
+		{ value: 'Chem', label: 'สาขาวิชาเคมี' },
+		{ value: 'physics', label: 'สาขาวิชาฟิสิกส์' },
+		{ value: 'Bio', label: 'สาขาวิชาชีววิทยา' },
+		{ value: 'botany', label: 'สาขาวิชาพฤกษศาสตร์' },
+		{ value: 'Chem tech', label: 'สาขาวิชาเคมีเทคนิค' },
+		{ value: 'environmental-science', label: 'สาขาวิชาวิทยาศาสตร์สิ่งแวดล้อม' },
+		{ value: 'materials-science', label: 'สาขาวิชาวัสดุศาสตร์' },
+		{ value: 'Bio tech', label: 'สาขาวิชาเทคโนโลยีชีวภาพ (นานาชาติ)' },
+		{ value: 'microbiology', label: 'สาขาวิชาจุลชีววิทยา' },
+		{ value: 'marine-science', label: 'สาขาวิชาวิทยาศาสตร์ทางทะเล' },
+		{ value: 'applied-chemistry', label: 'สาขาวิชาเคมีประยุกต์' },
+		{ value: 'Food tech?', label: 'สาขาวิชาเทคโนโลยีทางอาหาร' },
+		{ value: 'Geo???', label: 'สาขาวิชาธรณีวิทยา' },
+		{ value: 'Bio chem', label: 'สาขาวิชาชีวเคมี' },
+		{ value: 'Imprint', label: 'สาขาวิชาเทคโนโลยีทางภาพและการพิมพ์' }
 	];
 
 	export const snapshot: Snapshot = {
@@ -174,11 +174,11 @@
 			<FormField {form} name="department">
 				<FormControl>
 					{#snippet children({ props })}
-						<FormLabel>ภาควิชา</FormLabel>
+						<FormLabel>สาขาวิชา</FormLabel>
 						<Select bind:value={$formData.department} type="single">
 							<SelectTrigger {...props} class="w-full">
 								{departmentOptions.find((option) => option.value === $formData.department)?.label ??
-									'เลือกภาควิชา'}
+									'เลือกสาขาวิชา'}
 							</SelectTrigger>
 							<SelectContent>
 								{#each departmentOptions as option}
