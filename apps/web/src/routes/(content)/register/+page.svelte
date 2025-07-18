@@ -321,10 +321,10 @@
 			</FormField>
 		</div>
 
+		<!-- Privacy Policy -->
 		<div class="mt-8 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<PrivacyPolicy />
 		</div>
-
 		<div class="mt-8 text-center text-sm text-gray-500">
 			ในการลงทะเบียนเข้าร่วมกิจกรรมของโครงการฯ ท่านยินยอมให้มีการเก็บรวบรวม ใช้
 			และเปิดเผยข้อมูลส่วนบุคคลตามนโยบายนี้
