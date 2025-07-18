@@ -5,13 +5,13 @@ import { isTRPCClientError } from '@trpc/client';
 // export const ssr = false;
 // export const prerender = true;
 
-export const load: LayoutLoad = async ({ fetch }) => {
+export const load: LayoutLoad = async ({ fetch, depends }) => {
   try {
-    const [whoami] = await Promise.allSettled([
+    const [whoami] = await Promise.all([
       trpcClient({ fetch }).user.whoami.query(),
     ]);
     return {
-      whoami
+      whoami,
     };
   } catch (error) {
     if (isTRPCClientError(error)) {

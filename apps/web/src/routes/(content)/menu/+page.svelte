@@ -1,7 +1,15 @@
 <script>
 	import { TaskCard, TaskSection, FestivalHeader } from '$lib/components/festival';
 	import { flags } from '$lib/flags';
+	import { getDisplayName } from '$lib/idk.svelte.js';
 	import { FileUser, Lock, Megaphone, Swords } from 'lucide-svelte';
+
+	let { data } = $props();
+	const friends = $derived(
+		[...data.team.members, data.team.owner]
+			.filter((it) => it.email !== data.whoami.email)
+			.map((it) => getDisplayName(it))
+	);
 </script>
 
 <main class="container mx-auto flex h-full w-full flex-col px-5 py-14">
@@ -13,6 +21,7 @@
 				href="/register"
 				title="ลงทะเบียนก่อนเข้าร่วมกิจกรรม"
 				description="บอกเราหน่อยว่าคุณเป็นใคร"
+				status={data.isRegistered ? "ดำเนินการแล้ว" : "ยังไม่ดำเนินการ"}
 				icon={FileUser}
 			/>
 			<TaskCard
@@ -20,6 +29,9 @@
 				href="/group"
 				title="เรียงลำดับกรุ๊ปที่ชื่นชอบ"
 				description="เรียงลำดับกรุ๊ปรับน้องตามที่น้อง ๆ สนใจ พร้อมจับมือเพื่อนไปด้วยอีก 2 คน"
+				status="{friends.length !== 0 ? 'อยู่กับ' : ''}{friends.join(
+					', '
+				)} ที่เรียงไว้คือ {data.team.groupPreferenceOrder.join(' ')}"
 				icon={Lock}
 			/>
 		</TaskSection>
@@ -29,6 +41,7 @@
 				href="/group"
 				title="ประกาศผลกรุ๊ป"
 				description="ประกาศผลกรุ๊ปที่น้อง ๆ จะได้เป็นสมาชิกตลอดกิจกรรม"
+				status="ยังไม่ประกาศ"
 				icon={Megaphone}
 			/>
 		</TaskSection>
@@ -38,6 +51,7 @@
 				href="/group"
 				title="เกมสุดพิเศษล่าความภูมิใจและศักดิ์ศรี"
 				description="เล่นได้ในวันที่ 26 กรกฎาคม"
+				status="ยังไม่เปิด"
 				icon={Swords}
 			/>
 		</TaskSection>
