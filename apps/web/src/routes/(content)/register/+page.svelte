@@ -59,6 +59,7 @@
 				}
 			} catch {
 				toast.error('เกิดข้อผิดพลาดขึ้น');
+				console.error('Error during registration:', error);
 				return;
 			}
 			await goto('/menu');
