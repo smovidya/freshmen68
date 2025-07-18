@@ -1,7 +1,7 @@
 <script>
 	import { TaskCard, TaskSection, FestivalHeader } from '$lib/components/festival';
 	import { flags } from '$lib/flags';
-	import { getDisplayName } from '$lib/idk.svelte.js';
+	import { getDisplayName } from '$lib/text-shuffle.svelte';
 	import { FileUser, Lock, Megaphone, Swords } from 'lucide-svelte';
 
 	let { data } = $props();
