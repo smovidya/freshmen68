@@ -89,6 +89,7 @@
 		{ value: 'Geo???', label: 'สาขาวิชาธรณีวิทยา' },
 		{ value: 'Bio chem', label: 'สาขาวิชาชีวเคมี' },
 		{ value: 'Imprint', label: 'สาขาวิชาเทคโนโลยีทางภาพและการพิมพ์' },
+		{ value: 'BISTech', label: 'สาขาวิชาวิทยาศาสตร์และเทคโนโลยีอุตสาหการ'}
 	];
 
 	export const snapshot: Snapshot = {
