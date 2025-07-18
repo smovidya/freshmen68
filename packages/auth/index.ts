@@ -16,6 +16,8 @@ export const createAuth = ({
 		schema: schema
 	});
 
+	const isDev = env.WORKER_ENV !== 'production';
+
 	return betterAuth({
 		database: drizzleAdapter(db, {
 			provider: 'pg'
@@ -52,7 +54,7 @@ export const createAuth = ({
 			}
 		},
 		emailAndPassword: {
-			enabled: true,
+			enabled: isDev,
 			signUp: {
 				enabled: true,
 				fields: ['email', 'password']
