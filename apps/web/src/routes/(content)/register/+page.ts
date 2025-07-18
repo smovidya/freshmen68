@@ -42,7 +42,9 @@ export const load: PageLoad = async ({ fetch, parent }) => {
 
   const student = await trpcClient({ fetch }).user.getStudentInfo.query();
 
-  const form = await superValidate(student ? mapToUndefined(student) : {}, zod4(registrationSchema));
+  const form = await superValidate(student ? mapToUndefined(student) : {}, zod4(registrationSchema), {
+    errors: false
+  });
 
   return {
     form,
