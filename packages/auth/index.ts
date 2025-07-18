@@ -1,4 +1,5 @@
 import { betterAuth } from 'better-auth';
+import { APIError } from 'better-auth/api';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -32,13 +33,25 @@ export const createAuth = ({
 			user: {
 				create: {
 					async before(user, context) {
-						// TODO: remove .mock suffix in production
-						if (user.email.endsWith('@student.chula.ac.th.mock')) {
+						if (user.email.endsWith('@student.chula.ac.th')) {
 							const ouid = user.email.split('@')[0];
-							// Science students only
+
+							// Limited to science freshmen only
 							if (!ouid?.endsWith('23')) {
-								return;
+								throw new APIError("FORBIDDEN", {
+									code: 'science-students-only',
+									message: 'การลงทะเบียนนี้สำหรับนิสิตคณะวิทยาศาสตร์เท่านั้น',
+								})
 							}
+
+							// Limited to freshmen only
+							if (!ouid?.startsWith('68')) {
+								throw new APIError("FORBIDDEN", {
+									code: 'freshmen-only',
+									message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
+								});
+							}
+
 							return {
 								data: {
 									...user,
@@ -47,8 +60,10 @@ export const createAuth = ({
 							};
 						}
 
-						// disallow non-student emails
-						return;
+						throw new APIError("FORBIDDEN", {
+							code: 'invalid-email',
+							message: 'ระบบนี้สามารถเข้าสู่ระบบได้เฉพาะนิสิตเท่านั้น (@student.chula.ac.th)',
+						})
 					}
 				}
 			}
