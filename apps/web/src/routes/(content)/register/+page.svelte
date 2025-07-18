@@ -19,6 +19,7 @@
 		SelectTrigger
 	} from '$lib/components/ui/select/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { departmentLabels, departmentIds } from '$lib/departments';
 	import { trpcClient } from '$lib/trpc';
 	import { registrationSchema } from '@freshmen68/dto';
 	import { toast } from 'svelte-sonner';
@@ -71,26 +72,10 @@
 		{ value: 'นาง', label: 'นาง' }
 	];
 
-	// TODO: get correct name for this
-	const departmentOptions = [
-		{ value: 'Mathcom', label: 'สาขาวิชาคณิตศาสตร์และวิทยาการคอมพิวเตอร์' },
-		{ value: 'Chem', label: 'สาขาวิชาเคมี' },
-		{ value: 'physics', label: 'สาขาวิชาฟิสิกส์' },
-		{ value: 'Bio', label: 'สาขาวิชาชีววิทยา' },
-		{ value: 'botany', label: 'สาขาวิชาพฤกษศาสตร์' },
-		{ value: 'Chem tech', label: 'สาขาวิชาเคมีเทคนิค' },
-		{ value: 'environmental-science', label: 'สาขาวิชาวิทยาศาสตร์สิ่งแวดล้อม' },
-		{ value: 'materials-science', label: 'สาขาวิชาวัสดุศาสตร์' },
-		{ value: 'Bio tech', label: 'สาขาวิชาเทคโนโลยีชีวภาพ (นานาชาติ)' },
-		{ value: 'microbiology', label: 'สาขาวิชาจุลชีววิทยา' },
-		{ value: 'marine-science', label: 'สาขาวิชาวิทยาศาสตร์ทางทะเล' },
-		{ value: 'applied-chemistry', label: 'สาขาวิชาเคมีประยุกต์' },
-		{ value: 'Food tech?', label: 'สาขาวิชาเทคโนโลยีทางอาหาร' },
-		{ value: 'Geo???', label: 'สาขาวิชาธรณีวิทยา' },
-		{ value: 'Bio chem', label: 'สาขาวิชาชีวเคมี' },
-		{ value: 'Imprint', label: 'สาขาวิชาเทคโนโลยีทางภาพและการพิมพ์' },
-		{ value: 'BISTech', label: 'สาขาวิชาวิทยาศาสตร์และเทคโนโลยีอุตสาหการ'}
-	];
+	const departmentOptions = departmentIds.map(id => ({
+		value: id,
+		label: departmentLabels[id]
+	}));
 
 	export const snapshot: Snapshot = {
 		capture() {
