@@ -13,6 +13,9 @@ const flashMessageHandlers = {
   },
   "unknown-error": () => {
     toast.info("เกิดข้อผิดพลาดขึ้น");
+  },
+  "dont-rush": () => {
+    toast.info("เกมไม่เปิดทีครับ");
   }
 };
 
