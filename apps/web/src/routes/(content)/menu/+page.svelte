@@ -33,7 +33,7 @@
 				description="เรียงลำดับกรุ๊ปรับน้องตามที่น้อง ๆ สนใจ พร้อมจับมือเพื่อนไปด้วยอีก 2 คน"
 				status={!friends
 					? 'ทำตามขั้นตอนข้างบนก่อน'
-					: `${friends.length !== 0 ? 'จับกลุ่มกับ' : ''}${friends.join(
+					: `${friends.length !== 0 ? 'จับกลุ่มกับ ' : ''}${friends.join(
 							' และ '
 						)} ที่เรียงไว้คือ ${data.team!.groupPreferenceOrder.join(' ')}`}
 				icon={Lock}

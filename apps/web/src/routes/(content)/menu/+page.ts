@@ -19,6 +19,6 @@ export const load: PageLoad = async ({ parent, fetch, depends }) => {
   return {
     whoami,
     isRegistered,
-    team: joinedTeam ?? ownedTeam!
+    team: joinedTeam ?? ownedTeam
   };
 };

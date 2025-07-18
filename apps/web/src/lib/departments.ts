@@ -18,7 +18,7 @@ export const departmentLabels = {
   'industrial-science-technology': 'สาขาวิชาวิทยาศาสตร์และเทคโนโลยีอุตสาหการ'
 } as const;
 
-type DepartmentId = keyof typeof departmentLabels;
+export type DepartmentId = keyof typeof departmentLabels;
 export const departmentIds = Object.keys(departmentLabels) as Array<keyof typeof departmentLabels>;
 
 // Lookup from new ID keys to old acronym keys
