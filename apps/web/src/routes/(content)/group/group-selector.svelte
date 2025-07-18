@@ -12,35 +12,10 @@
 	interface Props {
 		preferences: number[];
 		save: (preferences: number[]) => Promise<unknown>;
+		groupData: Group[];
 	}
 
-	let { preferences, save }: Props = $props();
-	const groupData: Group[] = [
-		{
-			number: 1,
-			name: '1'
-		},
-		{
-			number: 3,
-			name: '333'
-		},
-		{
-			number: 4,
-			name: '4444'
-		},
-		{
-			number: 5,
-			name: '55555'
-		},
-		{
-			number: 6,
-			name: '666666'
-		},
-		{
-			number: 7,
-			name: '7777777'
-		}
-	];
+	let { preferences, save, groupData }: Props = $props();
 
 	let groups = $state(
 		preferences
@@ -110,7 +85,7 @@
 				<div class="flex items-center gap-2">
 					<Button
 						size="icon"
-						class="text-white bg-chart-1 hover:bg-chart-1/85"
+						class="bg-chart-1 hover:bg-chart-1/85 text-white"
 						variant="secondary"
 						disabled={index === groups.length - 1}
 						onclick={() => moveDown(item.id)}
@@ -119,7 +94,7 @@
 					</Button>
 					<Button
 						size="icon"
-						class="text-white bg-chart-2 hover:bg-chart-2/85"
+						class="bg-chart-2 hover:bg-chart-2/85 text-white"
 						variant="secondary"
 						disabled={index === 0}
 						onclick={() => moveUp(item.id)}

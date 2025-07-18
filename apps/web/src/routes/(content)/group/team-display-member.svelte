@@ -9,36 +9,10 @@
 	interface Props {
 		team: JoinedTeam;
 		leaveTeam: () => Promise<unknown>;
+		groupData: Group[];
 	}
 
-	let { team, leaveTeam }: Props = $props();
-
-	const groupData: Group[] = [
-		{
-			number: 1,
-			name: '1'
-		},
-		{
-			number: 3,
-			name: '333'
-		},
-		{
-			number: 4,
-			name: '4444'
-		},
-		{
-			number: 5,
-			name: '55555'
-		},
-		{
-			number: 6,
-			name: '666666'
-		},
-		{
-			number: 7,
-			name: '7777777'
-		}
-	];
+	let { team, leaveTeam, groupData }: Props = $props();
 
 	let groups = $state(
 		team.groupPreferenceOrder

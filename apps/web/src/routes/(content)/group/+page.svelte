@@ -70,7 +70,7 @@
 	<!-- <TeamDisplayMember {leaveTeam} team={data.ownedTeam} /> -->
 	<!-- <TeamDisplayHead {regenerateTeamCodes} {kickMember} team={data.ownedTeam} /> -->
 	{#if data.joinedTeam}
-		<TeamDisplayMember {leaveTeam} team={data.joinedTeam} />
+		<TeamDisplayMember {leaveTeam} team={data.joinedTeam} groupData={data.groupData} />
 	{:else if data.ownedTeam.members.length > 0}
 		<TeamDisplayHead {regenerateTeamCodes} {kickMember} team={data.ownedTeam} />
 	{:else}
@@ -86,6 +86,6 @@
 			และจะแสดงอันดับที่คนเชิญน้องเลือกไว้แทน
 		</p>
 
-		<GroupSelector preferences={data.ownedTeam.groupPreferenceOrder} save={updateOrdering} />
+		<GroupSelector preferences={data.ownedTeam.groupPreferenceOrder} save={updateOrdering} groupData={data.groupData} />
 	</section>
 {/if}
