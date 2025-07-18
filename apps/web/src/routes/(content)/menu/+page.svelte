@@ -45,11 +45,13 @@
 				href="/group"
 				title="ประกาศผลกรุ๊ป"
 				description="ประกาศผลกรุ๊ปที่น้อง ๆ จะได้เป็นสมาชิกตลอดกิจกรรม"
-				status={flags.isEnabled('group-announcement') ? "ประกาศภายในวันที่ 22 กรกฎาคม" : "ประกาศผลแล้ว"}
+				status={flags.isEnabled('group-announcement')
+					? 'ประกาศภายในวันที่ 22 กรกฎาคม'
+					: 'ประกาศผลแล้ว'}
 				icon={Megaphone}
 			/>
 		</TaskSection>
-		<TaskSection subtitle="26 &ndash; 19 กรกฎาคม">
+		<TaskSection subtitle="26 &ndash; 29 กรกฎาคม">
 			<TaskCard
 				disabled={!flags.isEnabled('game-start')}
 				href="/game"

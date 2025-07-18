@@ -8,7 +8,7 @@
 	{/if}
 
 	<div
-		class="flex w-full flex-col gap-5 rounded-2xl bg-yellow-50/70 p-4 shadow-md backdrop-blur-lg"
+		class="flex w-full flex-col gap-1 rounded-2xl p-1 shadow-md backdrop-blur-lg sm:bg-yellow-50/70"
 	>
 		{@render children?.()}
 	</div>

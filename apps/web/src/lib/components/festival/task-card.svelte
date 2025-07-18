@@ -21,11 +21,11 @@
 <a
 	href={disabled ? undefined : href}
 	data-sveltekit-preload-data="tap"
-	class="-m-2 flex flex-row items-center gap-4 rounded-lg p-2 transition-all hover:bg-white/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+	class="flex flex-row items-center rounded-lg bg-white/40 sm:bg-white/10 p-4 transition-all hover:bg-white/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:gap-4"
 	aria-disabled={disabled}
 >
 	<div
-		class="mr-2 flex size-20 shrink-0 flex-row items-center justify-center rounded-full bg-white/60 align-middle shadow-sm"
+		class="mr-2 hidden size-20 shrink-0 flex-row items-center justify-center rounded-full bg-white/60 align-middle shadow-sm sm:flex"
 	>
 		<Icon class="size-12 stroke-1 text-red-600" />
 	</div>
