@@ -27,6 +27,7 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { Snapshot } from './$types';
+	import PrivacyPolicy from './privacy-policy.svelte';
 
 	let { data } = $props();
 	const { isRegistered } = $derived(data);
@@ -72,7 +73,7 @@
 		{ value: 'นาง', label: 'นาง' }
 	];
 
-	const departmentOptions = departmentIds.map(id => ({
+	const departmentOptions = departmentIds.map((id) => ({
 		value: id,
 		label: departmentLabels[id]
 	}));
@@ -317,6 +318,15 @@
 				</FormControl>
 				<FormFieldErrors />
 			</FormField>
+		</div>
+
+		<div class="mt-8 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
+			<PrivacyPolicy />
+		</div>
+
+		<div class="mt-8 text-center text-sm text-gray-500">
+			ในการลงทะเบียนเข้าร่วมกิจกรรมของโครงการฯ ท่านยินยอมให้มีการเก็บรวบรวม ใช้
+			และเปิดเผยข้อมูลส่วนบุคคลตามนโยบายนี้
 		</div>
 
 		<!-- Submit Button -->
