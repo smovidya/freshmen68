@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { TaskCard, TaskSection, FestivalHeader } from '$lib/components/festival';
 	import { flags } from '$lib/flags';
 	import { getDisplayName } from '$lib/text-shuffle.svelte';
@@ -6,9 +6,11 @@
 
 	let { data } = $props();
 	const friends = $derived(
-		[...data.team.members, data.team.owner]
-			.filter((it) => it.email !== data.whoami.email)
-			.map((it) => getDisplayName(it))
+		data.team
+			? [...data.team.members, data.team.owner]
+					.filter((it) => it.email !== data.whoami.email)
+					.map((it) => getDisplayName(it))
+			: null
 	);
 </script>
 
@@ -21,7 +23,7 @@
 				href="/register"
 				title="ลงทะเบียนก่อนเข้าร่วมกิจกรรม"
 				description="บอกเราหน่อยว่าคุณเป็นใคร"
-				status={data.isRegistered ? "ดำเนินการแล้ว" : "ยังไม่ดำเนินการ"}
+				status={data.isRegistered ? 'ดำเนินการแล้ว' : 'ยังไม่ดำเนินการ'}
 				icon={FileUser}
 			/>
 			<TaskCard
@@ -29,9 +31,11 @@
 				href="/group"
 				title="เรียงลำดับกรุ๊ปที่ชื่นชอบ"
 				description="เรียงลำดับกรุ๊ปรับน้องตามที่น้อง ๆ สนใจ พร้อมจับมือเพื่อนไปด้วยอีก 2 คน"
-				status="{friends.length !== 0 ? 'อยู่กับ' : ''}{friends.join(
-					', '
-				)} ที่เรียงไว้คือ {data.team.groupPreferenceOrder.join(' ')}"
+				status={!friends
+					? 'ทำตามขั้นตอนข้างบนก่อน'
+					: `${friends.length !== 0 ? 'จับกลุ่มกับ' : ''}${friends.join(
+							' และ '
+						)} ที่เรียงไว้คือ ${data.team!.groupPreferenceOrder.join(' ')}`}
 				icon={Lock}
 			/>
 		</TaskSection>
