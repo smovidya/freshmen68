@@ -33,23 +33,26 @@ export const createAuth = ({
 			user: {
 				create: {
 					async before(user, context) {
+						const errorUrl = `${env.FRONTEND_URL}/auth/error`;
 						if (user.email.endsWith('@student.chula.ac.th')) {
 							const ouid = user.email.split('@')[0];
 
 							// Limited to science freshmen only
 							if (!ouid?.endsWith('23')) {
-								throw new APIError("FORBIDDEN", {
-									code: 'science-students-only',
-									message: 'การลงทะเบียนนี้สำหรับนิสิตคณะวิทยาศาสตร์เท่านั้น',
-								})
+								throw context?.redirect(`${errorUrl}?code=science-students-only`);
+								// throw new APIError("FORBIDDEN", {
+								// 	code: 'science-students-only',
+								// 	message: 'การลงทะเบียนนี้สำหรับนิสิตคณะวิทยาศาสตร์เท่านั้น',
+								// });
 							}
 
 							// Limited to freshmen only
 							if (!ouid?.startsWith('68')) {
-								throw new APIError("FORBIDDEN", {
-									code: 'freshmen-only',
-									message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
-								});
+								throw context?.redirect(`${errorUrl}?code=freshmen-only`);
+								// throw new APIError("FORBIDDEN", {
+								// 	code: 'freshmen-only',
+								// 	message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
+								// });
 							}
 
 							return {
@@ -60,10 +63,11 @@ export const createAuth = ({
 							};
 						}
 
-						throw new APIError("FORBIDDEN", {
-							code: 'invalid-email',
-							message: 'ระบบนี้สามารถเข้าสู่ระบบได้เฉพาะนิสิตเท่านั้น (@student.chula.ac.th)',
-						})
+						throw context?.redirect(`${errorUrl}?code=invalid-email`);
+						// throw new APIError("FORBIDDEN", {
+						// 	code: 'invalid-email',
+						// 	message: 'ระบบนี้สามารถเข้าสู่ระบบได้เฉพาะนิสิตเท่านั้น (@student.chula.ac.th)',
+						// });
 					}
 				}
 			}
@@ -98,10 +102,6 @@ export const createAuth = ({
 		plugins: [
 			jwt()
 		],
-		onAPIError: {
-			errorURL: `/aaaauth/error`, // wtf why dont this work 
-			// errorURL: `${env.FRONTEND_URL}/auth/error`, // wtf why dont this work 
-		},
 		trustedOrigins(request) {
 			return [
 				env.FRONTEND_URL || 'http://localhost:5173',

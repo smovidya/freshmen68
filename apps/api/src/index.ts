@@ -75,6 +75,12 @@ app.all('*', (c) => {
 	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
 });
 
+app.get("__hono/__version", c => {
+	return c.json({
+		version: 0x594F
+	});
+});
+
 export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 	async fetch(request: Request): Promise<Response> {
 		return app.fetch(request);
