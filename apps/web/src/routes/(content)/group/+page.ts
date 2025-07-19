@@ -28,23 +28,23 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
     },
     {
       number: 3,
-      name: '333'
+      name: '3'
     },
     {
       number: 4,
-      name: '4444'
+      name: '4'
     },
     {
       number: 5,
-      name: '55555'
+      name: '5'
     },
     {
       number: 6,
-      name: '666666'
+      name: '6'
     },
     {
       number: 7,
-      name: '7777777'
+      name: '7'
     }
   ];
 
