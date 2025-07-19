@@ -1,11 +1,11 @@
 import { registrationSchema } from '@freshmen68/dto';
-import { router, signedInProcedure } from '../core';
+import { publicProcedure, router, signedInProcedure } from '../core';
 import { createStudentWithTeam, getStudentByEmail, isRegistered, updateStudentInfo } from '../services/students.service';
 import { TRPCError } from '@trpc/server';
 
 export const userRouter = router({
-  whoami: signedInProcedure.query(({ ctx }) => {
-    return ctx.user;
+  whoami: publicProcedure.query(({ ctx }) => {
+    return ctx.user ?? null;
   }),
   getStudentInfo: signedInProcedure
     .query(async ({ ctx }) => {
