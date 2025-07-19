@@ -37,19 +37,19 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
     },
     {
       number: 4,
-      name: 'PINK HUA'
+      name: 'PINK HU4'
     },
     {
       number: 5,
-      name: 'Wulong: Mafia in the Dragon Dimension'
+      name: 'Wulong 5'
     },
     {
       number: 6,
-      name: 'HOK LOK SIW'
+      name: 'หก ลก ซิ่ว'
     },
     {
       number: 7,
-      name: 'โต่วอินมาเยือน สะเทือนสวรรค์'
+      name: 'เจ็ดโต่วอิน'
     }
   ];
 
