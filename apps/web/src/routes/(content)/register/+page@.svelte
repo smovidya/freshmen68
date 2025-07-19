@@ -28,6 +28,7 @@
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { Snapshot } from './$types';
 	import PrivacyPolicy from './privacy-policy.svelte';
+	import { LoaderIcon } from 'lucide-svelte';
 
 	let { data } = $props();
 	const { isRegistered } = $derived(data);
@@ -35,17 +36,19 @@
 	let session = fromStore(authClient.useSession());
 	let email = $derived(session.current.data?.user.email!);
 	let studentId = $derived(email?.split('@')[0]);
+	let submitting = $state(false);
 
 	const form = superForm(data.form, {
 		SPA: true,
 		resetForm: false,
 		validators: zod4(registrationSchema),
 		onUpdate: async ({ form }) => {
-			if (!form.valid) {
+			if (!form.valid || submitting) {
 				return;
 			}
 			// console.log('Form submitted:', form.data);
 			try {
+				submitting = true;
 				if (isRegistered) {
 					await trpcClient().user.updateStudentInfo.mutate({
 						...form.data
@@ -61,6 +64,8 @@
 				toast.error('เกิดข้อผิดพลาดขึ้น');
 				console.error('Error during registration:', error);
 				return;
+			} finally {
+				submitting = false;
 			}
 			await goto('/menu');
 		}
@@ -348,6 +353,9 @@
 					บันทึก
 				{:else}
 					ลงทะเบียน
+				{/if}
+				{#if submitting}
+					<LoaderIcon class="animate-spin" />
 				{/if}
 			</Button>
 		</div>
