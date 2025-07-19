@@ -4,6 +4,10 @@
 	import { getDisplayName } from '$lib/text-shuffle.svelte';
 	import { FileUser, Lock, Megaphone, Swords } from 'lucide-svelte';
 
+	import MobileBGImage from '$lib/assets/640x1137px/640_1137 w_bg.png';
+	import TablateBGImage from '$lib/assets/768x1024px/768_1024 w_bg.png';
+	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152 w_bg.png';
+
 	let { data } = $props();
 	const friends = $derived(
 		data.team
@@ -14,6 +18,16 @@
 	);
 </script>
 
+<div
+	class="justify-top absolute inset-0 -z-10 container mx-auto h-full w-full items-start overflow-hidden bg-[#F0CE7D]"
+>
+	<img
+		srcset="{MobileBGImage} 640w, {TablateBGImage} 768w, {DesktopBGImage} 1440w"
+		src={DesktopBGImage}
+		alt=""
+		class="h-full w-full object-cover object-top"
+	/>
+</div>
 <main class="container mx-auto flex h-full w-full flex-col px-5 py-14">
 	<FestivalHeader />
 	<div class="flex flex-col gap-7 p-3">

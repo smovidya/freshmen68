@@ -15,6 +15,6 @@
 </svelte:head>
 
 <Toaster />
-<div class="min-h-screen bg-radial from-[#F7CF76] to-[#F7CF76]/30">
+<div class="flex min-h-screen">
 	{@render children()}
 </div>

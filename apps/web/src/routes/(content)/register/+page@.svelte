@@ -28,6 +28,8 @@
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { Snapshot } from './$types';
 	import PrivacyPolicy from './privacy-policy.svelte';
+	import Mountain5Image from '$lib/assets/elements/5.png';
+	import Switch from '$lib/components/ui/switch/switch.svelte';
 
 	let { data } = $props();
 	const { isRegistered } = $derived(data);
@@ -99,7 +101,7 @@
 	<form method="POST" use:enhance class="mt-12">
 		<!-- Personal Information -->
 		<h2 class="mt-8 text-2xl font-semibold">ข้อมูลส่วนตัว</h2>
-		<div class="mt-3 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
+		<div class="relative mt-3 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 				<FormField {form} name="title">
 					<FormControl>
@@ -269,16 +271,19 @@
 							placeholder="โรคหืด, โรคความดันโลหิตสูง"
 							rows={3}
 						/>
+						<FormDescription>
+							โรคประจำตัวที่อาจส่งผลต่อการเข้าร่วมกิจกรรม การดูแลเบื้องต้น
+							และเงื่อนไขทางการแพทย์ที่อาจเป็นประโยชน์
+						</FormDescription>
 					{/snippet}
 				</FormControl>
-				<FormDescription>กรุณาระบุโรคประจำตัวที่เราควรทราบ</FormDescription>
 				<FormFieldErrors />
 			</FormField>
 
 			<FormField {form} name="drugAllergies">
 				<FormControl>
 					{#snippet children({ props })}
-						<FormLabel>แพ้ยา</FormLabel>
+						<FormLabel>ข้อมูลการแพ้ยา</FormLabel>
 						<Textarea
 							{...props}
 							bind:value={$formData.drugAllergies}
@@ -318,6 +323,9 @@
 					{/snippet}
 				</FormControl>
 				<FormFieldErrors />
+				<FormDescription>
+					เหตุผล: เพื่อให้ฝ่ายสวัสดิการสามารถจัดเตรียมอาหารที่เหมาะสมสำหรับท่านได้
+				</FormDescription>
 			</FormField>
 		</div>
 
@@ -325,7 +333,7 @@
 		<div class="mt-8 space-y-3 rounded-2xl bg-white p-5 pt-7 shadow-md">
 			<PrivacyPolicy />
 		</div>
-		<div class="mt-8 text-center text-sm text-gray-500">
+		<div class="bg-muted text-muted-foreground mt-8 rounded-lg p-4 text-center text-sm">
 			ในการลงทะเบียนเข้าร่วมกิจกรรมของโครงการฯ ท่านยินยอมให้มีการเก็บรวบรวม ใช้
 			และเปิดเผยข้อมูลส่วนบุคคลตามนโยบายนี้
 		</div>

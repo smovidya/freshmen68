@@ -7,9 +7,8 @@
 	const session = authClient.useSession();
 </script>
 
-<div
-	class="mt-20 flex flex-col items-center rounded-2xl border-2 border-red-700 p-5 text-center text-lg"
->
+<div class="flex flex-col items-center rounded-2xl border-2 border-red-700 p-5 text-center text-lg">
+	dev mode debug box
 	<div class="flex max-w-72 flex-row items-center justify-center gap-2">
 		{#if $session.data?.user}
 			<!-- already logged in -->
