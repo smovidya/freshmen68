@@ -44,11 +44,11 @@ export const createAuth = ({
 							}
 
 							// Limited to freshmen only
-							if (!ouid?.startsWith('68')) {
-								throw context?.error("FORBIDDEN", {
-									code: 'freshmen-only',
-									message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
-								});
+							// if (!ouid?.startsWith('68')) {
+							//	throw context?.error("FORBIDDEN", {
+							//		code: 'freshmen-only',
+							//		message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
+							//	});
 							}
 
 							return {
