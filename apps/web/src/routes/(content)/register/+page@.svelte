@@ -59,7 +59,7 @@
 					});
 					toast.success('ลงทะเบียนสำเร็จ 🎉');
 				}
-			} catch {
+			} catch (error) {
 				toast.error('เกิดข้อผิดพลาดขึ้น');
 				console.error('Error during registration:', error);
 				return;

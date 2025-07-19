@@ -67,7 +67,7 @@
 		</TaskSection>
 		<TaskSection subtitle="26 &ndash; 29 กรกฎาคม">
 			<TaskCard
-				disabled={!flags.isEnabled('game-start')}
+				disabled={!flags.isEnabled('game-playing')}
 				href="/game"
 				title="เกมสุดพิเศษล่าความภูมิใจและศักดิ์ศรี"
 				description="เล่นได้ในวันที่ 26 กรกฎาคม"
