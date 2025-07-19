@@ -1,6 +1,7 @@
 import { flashParams } from "$lib/flash.svelte";
 import { trpcClient } from "$lib/trpc";
 import { redirect } from "@sveltejs/kit";
+import { flags } from '$lib/flags';
 import type { PageLoad } from "./$types";
 import type { Group } from "$lib/type";
 
@@ -8,6 +9,10 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
   const { whoami } = await parent();
   if (!whoami) {
     redirect(307, `/?${flashParams("please-login")}`);
+  }
+  
+  if (!flags.isEnabled('group-choosing')) {    
+    redirect(307, `/menu?${flashParams("not-yet-start")}`);
   }
 
   depends("data:owned-team", "data:joined-team");

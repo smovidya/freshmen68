@@ -16,7 +16,8 @@ const flashMessageHandlers = {
   },
   "dont-rush": () => {
     toast.info("เกมไม่เปิดทีครับ");
-  }
+  },
+  "not-yet-start": () => toast.info("ไม่เปิดทีครับ")
 };
 
 export type FlashMessageType = keyof typeof flashMessageHandlers;

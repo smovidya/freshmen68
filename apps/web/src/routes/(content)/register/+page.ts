@@ -5,6 +5,7 @@ import { redirect } from "@sveltejs/kit";
 import { superValidate } from "sveltekit-superforms";
 import { zod4 } from "sveltekit-superforms/adapters";
 import type { PageLoad } from "./$types";
+import { flags } from "$lib/flags";
 
 type MapNullToUndefined<T> = T extends null
   ? undefined
@@ -39,6 +40,11 @@ export const load: PageLoad = async ({ fetch, parent }) => {
   if (!whoami) {
     redirect(307, `/?${flashParams("please-login")}`);
   }
+
+  if (!flags.isEnabled('registering')) {
+    redirect(307, `/menu?${flashParams("not-yet-start")}`);
+  }
+
 
   const student = await trpcClient({ fetch }).user.getStudentInfo.query();
 
