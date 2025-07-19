@@ -99,7 +99,8 @@ export const createAuth = ({
 			jwt()
 		],
 		onAPIError: {
-			errorURL: `${env.FRONTEND_URL}/auth/error`
+			errorURL: `aaaauth/error`, // wtf why dont this work 
+			// errorURL: `${env.FRONTEND_URL}/auth/error`, // wtf why dont this work 
 		},
 		trustedOrigins(request) {
 			return [
