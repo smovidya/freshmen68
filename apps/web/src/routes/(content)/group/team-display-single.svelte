@@ -101,6 +101,7 @@
 				bind:value={codeInput.current}
 				type="text"
 				pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+				inputmode="text"
 				onkeydown={(e) => {
 					if (e.key === 'Enter') {
 						onJoinTeamClick();
@@ -110,7 +111,7 @@
 				{#snippet children({ cells })}
 					<InputOTP.Group>
 						{#each cells as cell}
-							<InputOTP.Slot {cell} />
+							<InputOTP.Slot inputmode="text" {cell} />
 						{/each}
 					</InputOTP.Group>
 				{/snippet}
