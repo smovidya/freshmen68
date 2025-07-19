@@ -24,27 +24,27 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
   const groupData: Group[] = [
     {
       number: 1,
-      name: '1'
+      name: ''
     },
     {
       number: 3,
-      name: '3'
+      name: ''
     },
     {
       number: 4,
-      name: '4'
+      name: ''
     },
     {
       number: 5,
-      name: '5'
+      name: ''
     },
     {
       number: 6,
-      name: '6'
+      name: ''
     },
     {
       number: 7,
-      name: '7'
+      name: ''
     }
   ];
 
