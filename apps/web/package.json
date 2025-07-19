@@ -66,6 +66,8 @@
 		"@trpc/client": "^11.4.3",
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
+		"posthog-js": "^1.257.0",
+		"posthog-node": "^5.5.1",
 		"svelte-dnd-action": "^0.9.63",
 		"trpc-token-refresh-link": "^0.5.3",
 		"zod": "^4.0.5"
