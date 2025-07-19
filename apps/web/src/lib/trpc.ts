@@ -3,6 +3,7 @@ import type { AppRouter } from '@freshmen68/trpc';
 import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client';
 import { tokenRefreshLink } from "trpc-token-refresh-link"
 import { authClient } from './auth/client';
+import { dev } from '$app/environment';
 
 interface Options {
   fetch?: typeof fetch;
@@ -29,7 +30,7 @@ export const trpcClient = ({ fetch = globalThis.fetch }: Options = {}) => create
         })
       }
     }),
-    loggerLink(),
+    dev ? loggerLink() : null,
     httpBatchLink({
       fetch: (url, options) => fetch(url, {
         ...options,
@@ -37,5 +38,7 @@ export const trpcClient = ({ fetch = globalThis.fetch }: Options = {}) => create
       }),
       url: env.PUBLIC_TRPC_URL || 'http://localhost:8787/trpc',
     })
-  ],
+  ].filter((op) => {
+    return op !== null && op !== undefined;
+  }),
 });
