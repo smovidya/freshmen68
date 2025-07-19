@@ -29,27 +29,27 @@ export const load: PageLoad = async ({ depends, parent, fetch }) => {
   const groupData: Group[] = [
     {
       number: 1,
-      name: ''
+      name: 'โมโนหวงเจิ้น'
     },
     {
       number: 3,
-      name: ''
+      name: 'SANXiARA'
     },
     {
       number: 4,
-      name: ''
+      name: 'PINK HUA'
     },
     {
       number: 5,
-      name: ''
+      name: 'Wulong: Mafia in the Dragon Dimension'
     },
     {
       number: 6,
-      name: ''
+      name: 'HOK LOK SIW'
     },
     {
       number: 7,
-      name: ''
+      name: 'โต่วอินมาเยือน สะเทือนสวรรค์'
     }
   ];
 
