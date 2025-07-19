@@ -12,7 +12,7 @@
 
 <main class="relative container mx-auto flex min-h-screen flex-col items-center justify-center">
 	<div
-		class="justify-top absolute inset-0 -z-10 container mx-auto h-full w-full items-start overflow-hidden bg-[#F0CE7D]"
+		class="justify-top fixed inset-0 -z-10 container mx-auto h-full w-full items-start overflow-hidden bg-[#F0CE7D]"
 	>
 		<img
 			srcset="{MobileBGImage} 640w, {TablateBGImage} 768w, {DesktopBGImage} 1440w"
