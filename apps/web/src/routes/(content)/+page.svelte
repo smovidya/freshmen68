@@ -8,6 +8,10 @@
 	import MobileBGImage from '$lib/assets/640x1137px/640_1137w_bg.png';
 	import TablateBGImage from '$lib/assets/768x1024px/768_1024w_bg.png';
 	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152w_bg.png';
+	import { authClient } from '$lib/auth/client';
+	import Button from '$lib/components/ui/button/button.svelte';
+
+	const session = authClient.useSession();
 </script>
 
 <main class="relative container mx-auto flex min-h-screen flex-col items-center justify-center">
@@ -43,10 +47,14 @@
 				<p class="mt-2 w-full text-left">
 					ลงทะเบียนเข้าร่วมกิจกรรมด้านล่างได้เลย! <br />
 				</p>
-				{#if dev}
-					<DevLoginBox />
+				{#if $session.data?.user}
+					<Button href="/menu" class="w-full cursor-pointer mt-4">ไปยังเมนู</Button>
+				{:else}
+					{#if dev}
+						<DevLoginBox />
+					{/if}
+					<LoginWithGoogle class="mt-4 w-full" />
 				{/if}
-				<LoginWithGoogle class="mt-4 w-full" />
 				<span
 					class="mt-2 rounded bg-amber-50/20 px-2 py-1 text-xs text-gray-700 dark:text-gray-400"
 				>
