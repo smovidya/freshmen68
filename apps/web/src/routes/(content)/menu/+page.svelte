@@ -28,9 +28,9 @@
 		class="h-full w-full object-cover object-top"
 	/>
 </div>
-<main class="container mx-auto flex h-full w-full flex-col px-5 py-14">
+<main class="container mx-auto flex h-full w-full flex-col">
 	<FestivalHeader />
-	<div class="flex flex-col gap-7 p-3">
+	<div class="flex flex-col gap-7 sm:p-3">
 		<TaskSection subtitle="19 &ndash; 21 กรกฎาคม">
 			<TaskCard
 				disabled={!flags.isEnabled('registering')}
