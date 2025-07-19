@@ -70,15 +70,16 @@ app.on(['POST', 'GET'], '/trpc/*', (c) => {
 	});
 });
 
-// redirect all other requests to the frontend URL
-app.all('*', (c) => {
-	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
-});
 
 app.get("__hono/__version", c => {
 	return c.json({
 		version: 0x594F
 	});
+});
+
+// redirect all other requests to the frontend URL
+app.all('*', (c) => {
+	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
 });
 
 export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
