@@ -75,7 +75,7 @@
 				class="flex w-full items-center justify-between rounded-md bg-white p-4 shadow-md"
 			>
 				<div class="ml-1 flex items-center gap-4">
-					<span>
+					<span class="text-nowrap">
 						กรุ๊ป {item.number}
 					</span>
 					<span class="text-lg">
