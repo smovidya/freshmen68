@@ -4,7 +4,10 @@
 
 <section class="flex w-full flex-col items-center">
 	{#if subtitle}
-		<span class="mb-2 text-sm text-gray-600">{subtitle}</span>
+		<span
+			class="text-shadow-[0_0_15px_var(--tw-text-shadow-color)] text-shadow-black mb-2 text-sm text-white"
+			>{subtitle}</span
+		>
 	{/if}
 
 	<div

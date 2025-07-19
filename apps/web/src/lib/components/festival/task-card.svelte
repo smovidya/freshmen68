@@ -21,7 +21,7 @@
 <a
 	href={disabled ? undefined : href}
 	data-sveltekit-preload-data="tap"
-	class="flex flex-row items-center rounded-lg bg-white/40 sm:bg-white/10 p-4 transition-all hover:bg-white/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:gap-4"
+	class="flex flex-row items-center rounded-lg bg-white/50 sm:bg-white/10 p-4 transition-all hover:bg-white/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:gap-4"
 	aria-disabled={disabled}
 >
 	<div
