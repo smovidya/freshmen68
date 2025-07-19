@@ -2,7 +2,7 @@
 	import { TaskCard, TaskSection, FestivalHeader } from '$lib/components/festival';
 	import { flags } from '$lib/flags';
 	import { getDisplayName } from '$lib/text-shuffle.svelte';
-	import { FileUser, Lock, Megaphone, Swords } from 'lucide-svelte';
+	import { FileUser, ListOrdered, Megaphone, Swords } from 'lucide-svelte';
 
 	import MobileBGImage from '$lib/assets/640x1137px/640_1137w_bg.png';
 	import TablateBGImage from '$lib/assets/768x1024px/768_1024w_bg.png';
@@ -30,7 +30,7 @@
 </div>
 <main class="container mx-auto flex h-full w-full flex-col">
 	<FestivalHeader />
-	<div class="flex flex-col gap-7 mt-6 sm:p-3">
+	<div class="mt-6 flex flex-col gap-7 sm:p-3">
 		<TaskSection subtitle="19 &ndash; 21 กรกฎาคม">
 			<TaskCard
 				disabled={!flags.isEnabled('registering')}
@@ -50,7 +50,7 @@
 					: `${friends.length !== 0 ? 'จับกลุ่มกับ ' : ''}${friends.join(
 							' และ '
 						)} ที่เรียงไว้คือ ${data.team!.groupPreferenceOrder.join(' ')}`}
-				icon={Lock}
+				icon={ListOrdered}
 			/>
 		</TaskSection>
 		<TaskSection subtitle="22 กรกฎาคม">
