@@ -28,7 +28,7 @@
 	<div class="z-10 mx-auto flex min-h-screen flex-col items-center justify-center p-5">
 		<div
 			class="bg-background/50 mt-5 flex flex-col items-center rounded-2xl border border-white/70 p-7 backdrop-blur-xl md:flex-row"
-			transition:fly={{
+			in:fly={{
 				delay: 100,
 				duration: 500,
 				x: -100,
