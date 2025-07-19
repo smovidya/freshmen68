@@ -98,6 +98,9 @@ export const createAuth = ({
 		plugins: [
 			jwt()
 		],
+		onAPIError: {
+			errorURL: `${env.FRONTEND_URL}/auth/error`
+		},
 		trustedOrigins(request) {
 			return [
 				env.FRONTEND_URL || 'http://localhost:5173',
