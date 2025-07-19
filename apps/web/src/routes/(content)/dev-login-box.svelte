@@ -25,7 +25,7 @@
 				onclick={async () => {
 					await authClient.signOut();
 					if (
-						!studentId.startsWith('67') ||
+						!studentId.startsWith('68') ||
 						studentId.length !== 10 ||
 						isNaN(Number(studentId)) ||
 						!studentId.endsWith('23')
@@ -64,7 +64,7 @@
 				type="submit"
 				onclick={async () => {
 					if (
-						!studentId.startsWith('67') ||
+						!studentId.startsWith('68') ||
 						studentId.length !== 10 ||
 						isNaN(Number(studentId)) ||
 						!studentId.endsWith('23')
