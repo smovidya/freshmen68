@@ -30,7 +30,7 @@
 </div>
 <main class="container mx-auto flex h-full w-full flex-col">
 	<FestivalHeader />
-	<div class="flex flex-col gap-7 sm:p-3">
+	<div class="flex flex-col gap-7 mt-6 sm:p-3">
 		<TaskSection subtitle="19 &ndash; 21 กรกฎาคม">
 			<TaskCard
 				disabled={!flags.isEnabled('registering')}
