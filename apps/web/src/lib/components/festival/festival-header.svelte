@@ -3,8 +3,7 @@
 	import { LogOutIcon } from 'lucide-svelte';
 	import Button from '../ui/button/button.svelte';
 	import { goto } from '$app/navigation';
-	const { title = 'เทศกาลต้อนรับนิสิตใหม่ คณะวิทยาศาสตร์', subtitle = 'จุฬาลงกรณ์มหาวิทยาลัย' } =
-		$props();
+	import posthog from 'posthog-js';
 
 	const session = authClient.useSession();
 </script>
@@ -20,6 +19,7 @@
 				variant="ghost"
 				onclick={async () => {
 					await authClient.signOut();
+					posthog.reset()
 					await goto('/');
 				}}
 			>
