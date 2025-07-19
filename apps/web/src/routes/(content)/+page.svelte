@@ -5,9 +5,9 @@
 	import ProjectLogo from '$lib/assets/logo.webp';
 	import { fly } from 'svelte/transition';
 
-	import MobileBGImage from '$lib/assets/640x1137px/640_1137 w_bg.png';
-	import TablateBGImage from '$lib/assets/768x1024px/768_1024 w_bg.png';
-	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152 w_bg.png';
+	import MobileBGImage from '$lib/assets/640x1137px/640_1137w_bg.png';
+	import TablateBGImage from '$lib/assets/768x1024px/768_1024w_bg.png';
+	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152w_bg.png';
 </script>
 
 <main class="relative container mx-auto flex min-h-screen flex-col items-center justify-center">

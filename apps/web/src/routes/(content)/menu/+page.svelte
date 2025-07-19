@@ -4,9 +4,9 @@
 	import { getDisplayName } from '$lib/text-shuffle.svelte';
 	import { FileUser, Lock, Megaphone, Swords } from 'lucide-svelte';
 
-	import MobileBGImage from '$lib/assets/640x1137px/640_1137 w_bg.png';
-	import TablateBGImage from '$lib/assets/768x1024px/768_1024 w_bg.png';
-	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152 w_bg.png';
+	import MobileBGImage from '$lib/assets/640x1137px/640_1137w_bg.png';
+	import TablateBGImage from '$lib/assets/768x1024px/768_1024w_bg.png';
+	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152w_bg.png';
 
 	let { data } = $props();
 	const friends = $derived(
