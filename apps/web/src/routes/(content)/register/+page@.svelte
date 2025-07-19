@@ -19,17 +19,15 @@
 		SelectTrigger
 	} from '$lib/components/ui/select/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { departmentLabels, departmentIds } from '$lib/departments';
+	import { departmentIds, departmentLabels } from '$lib/departments';
 	import { trpcClient } from '$lib/trpc';
 	import { registrationSchema } from '@freshmen68/dto';
 	import { toast } from 'svelte-sonner';
 	import { fromStore } from 'svelte/store';
-	import { defaults, superForm } from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { Snapshot } from './$types';
 	import PrivacyPolicy from './privacy-policy.svelte';
-	import Mountain5Image from '$lib/assets/elements/5.png';
-	import Switch from '$lib/components/ui/switch/switch.svelte';
 
 	let { data } = $props();
 	const { isRegistered } = $derived(data);
@@ -90,6 +88,11 @@
 		}
 	};
 </script>
+
+<!-- why escape layout tho -->
+<svelte:head>
+	<title>เทศกาลต้อนรับนิสิตใหม่ คณะวิทย์จุฬา</title>
+</svelte:head>
 
 <section class="mx-auto max-w-[60rem] px-5 py-14">
 	<nav class="flex items-center justify-between gap-4">
