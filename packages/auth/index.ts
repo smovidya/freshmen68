@@ -1,11 +1,10 @@
-import { betterAuth } from 'better-auth';
-import { APIError } from 'better-auth/api';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import postgres from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
 import { schema } from '@freshmen68/db';
-import { env } from 'cloudflare:workers';
+import { betterAuth } from 'better-auth';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { jwt } from 'better-auth/plugins/jwt';
+import { env } from 'cloudflare:workers';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
 export const createAuth = ({
 	env,
