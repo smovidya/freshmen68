@@ -49,7 +49,6 @@ export function createRandomGroupNumberPreferenceOrder() {
     [numbers[i], numbers[j]] = [numbers[j]!, numbers[i]!];
   }
 
-  // TODO: may be change the format
   return numbers;
 }
 

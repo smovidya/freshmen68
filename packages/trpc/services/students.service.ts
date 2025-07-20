@@ -89,7 +89,6 @@ export async function createStudentWithTeam(input: z.infer<typeof registrationSc
     }).returning();
 
     if (!student) {
-      // TODO: better error type and error filter
       throw new Error("Cannot create student");
     }
 
