@@ -27,7 +27,13 @@ export async function exportDataToGoogleSheetScheduled() {
 	// update the document data
 	await doc.loadInfo(); // loads document properties and worksheets
 	const studentDataSheet = doc.sheetsByTitle['[1.1]'] // get the first sheet
-	await studentDataSheet.clear(); // clear existing content
+	if (!studentDataSheet) {
+		throw new Error('Student data sheet not found');
+	}
+	await studentDataSheet.clearRows({
+		start: 1, // clear all rows except the header
+		end: studentDataSheet.rowCount,
+	})
 	await studentDataSheet.setHeaderRow([
 		'id', 'title', 'first_name', 'last_name', 'nickname', 'student_id', 'department',
 		'email', 'phone', 'emergency_contact_name', 'emergency_contact_phone',
@@ -36,51 +42,52 @@ export async function exportDataToGoogleSheetScheduled() {
 		'created_at', 'updated_at'
 	]); // set header row
 
-	for (const student of studentsData) {
-		const team = teamsData.find(team => team.id === student.teamId);
-		await studentDataSheet.addRow({
-			id: student.id,
-			title: student.title,
-			first_name: student.firstName,
-			last_name: student.lastName,
-			nickname: student.nickname ?? "",
-			student_id: student.studentId,
-			department: student.department,
-			email: student.email,
-			phone: student.phone,
-			emergency_contact_name: student.emergencyContactName,
-			emergency_contact_phone: student.emergencyContactPhone,
-			emergency_contact_relationship: student.emergencyContactRelationship,
-			medical_conditions: student.medicalConditions ?? "",
-			allergies: student.dragAllergies ?? "",
-			food_allergies: student.foodAllergies ?? "",
-			food_limitations: student.foodLimitations ?? "",
-			team_owned_id: team?.creatorId ?? "",
-			team_id: team?.id ?? "",
-			created_at: student.createdAt.toISOString(),
-			updated_at: student.updatedAt.toISOString(),
-		});
-	}
+	await studentDataSheet.addRows(studentsData.map(student => ({
+		id: student.id,
+		title: student.title,
+		first_name: student.firstName,
+		last_name: student.lastName,
+		nickname: student.nickname ?? "",
+		student_id: student.studentId,
+		department: student.department,
+		email: student.email,
+		phone: student.phone,
+		emergency_contact_name: student.emergencyContactName,
+		emergency_contact_phone: student.emergencyContactPhone,
+		emergency_contact_relationship: student.emergencyContactRelationship,
+		medical_conditions: student.medicalConditions ?? "",
+		allergies: student.dragAllergies ?? "",
+		food_allergies: student.foodAllergies ?? "",
+		food_limitations: student.foodLimitations ?? "",
+		team_owned_id: student.teamOwnedId ?? "",
+		team_id: student.teamId ?? "",
+		created_at: student.createdAt.toISOString(),
+		updated_at: student.updatedAt.toISOString(),
+	})));
 
 	const teamDataSheet = doc.sheetsByTitle['[1.2]']
-	await teamDataSheet.clear(); // clear existing content
+	if (!teamDataSheet) {
+		throw new Error('Team data sheet not found');
+	}
+	await teamDataSheet.clearRows({
+		start: 1, // clear all rows except the header
+		end: teamDataSheet.rowCount,
+	})
 	await teamDataSheet.setHeaderRow([
 		'id', 'creator_id', 'group_number_preference_order', 'is_submitted',
 		'result_group_number', 'team_codes', 'created_at', 'updated_at'
 	]); // set header row
 
-	for (const team of teamsData) {
-		await teamDataSheet.addRow({
-			id: team.id,
-			creator_id: team.creatorId,
-			group_number_preference_order: team.groupNumberPreferenceOrder ?? "",
-			is_submitted: team.isSubmitted,
-			result_group_number: team.resultGroupNumber ?? "",
-			team_codes: team.teamCodes,
-			created_at: team.createdAt.toISOString(),
-			updated_at: team.updatedAt.toISOString(),
-		});
-	}
+	await teamDataSheet.addRows(teamsData.map(team => ({
+		id: team.id,
+		creator_id: team.creatorId,
+		group_number_preference_order: team.groupNumberPreferenceOrder ?? "",
+		is_submitted: team.isSubmitted,
+		result_group_number: team.resultGroupNumber ?? "",
+		team_codes: team.teamCodes,
+		created_at: team.createdAt.toISOString(),
+		updated_at: team.updatedAt.toISOString(),
+	})));
 
 	await studentDataSheet.saveUpdatedCells();
 	await teamDataSheet.saveUpdatedCells();
