@@ -11,12 +11,13 @@ export const load: PageLoad = async ({ url }) => {
   };
   const code = url.searchParams.get("code") ?? "";
   if (code in messages) {
+    const message = messages[code as keyof typeof messages];
     error(422, {
       message
     });
   } else {
-    error(500, {
-      messages: "เกิดข้อผิดพลาดไม่ทราบสาเหตุ"
+    error(422, {
+      message: `เกิดข้อผิดพลาด โปรดตรวจสอบอีเมลที่ใช้เข้าสู่ระบบ: ${code}`
     });
   }
   // return {
