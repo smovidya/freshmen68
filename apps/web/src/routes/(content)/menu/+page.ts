@@ -3,6 +3,7 @@ import type { PageLoad } from "./$types";
 import { flashParams } from "$lib/flash.svelte";
 import { trpcClient } from "$lib/trpc";
 import posthog from 'posthog-js';
+import { dev } from '$app/environment';
 
 export const load: PageLoad = async ({ parent, fetch, depends }) => {
   const { whoami } = await parent();
@@ -10,11 +11,12 @@ export const load: PageLoad = async ({ parent, fetch, depends }) => {
     redirect(307, `/?${flashParams("please-login")}`);
   }
 
-  posthog.identify(
-    whoami.id,  // Replace 'distinct_id' with your user's unique identifier
-    { email: whoami.email, name: whoami.name } // optional: set additional person properties
-  );
-
+  if (!dev) {
+    posthog.identify(
+      whoami.id,  // Replace 'distinct_id' with your user's unique identifier
+      { email: whoami.email, name: whoami.name } // optional: set additional person properties
+    );
+  }
 
   depends("data:owned-team", "data:joined-team");
   const [isRegistered, ownedTeam, joinedTeam] = await Promise.all([
