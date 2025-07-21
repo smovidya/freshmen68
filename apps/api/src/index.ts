@@ -6,7 +6,6 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { createDatabaseConnection } from '@freshmen68/db';
 import { FeatureFlags } from '@freshmen68/flags';
-import { exportDataToGoogleSheetScheduled } from './cron';
 
 const app = new Hono<{
 	Variables: {
@@ -88,9 +87,12 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 		return app.fetch(request);
 	}
 
-	async scheduled(controller: ScheduledController): Promise<void> {
-		if (controller.cron === "0 0 * * *") {
-			return exportDataToGoogleSheetScheduled();
+	async scheduled(event: ScheduledEvent): Promise<void> {
+		if (event.cron === "*/15 * * * *") {
+			await env.SyncGoogleSheetWithDatabase.create()
 		}
 	}
 }
+
+// export all workflows
+export * from './workflows'

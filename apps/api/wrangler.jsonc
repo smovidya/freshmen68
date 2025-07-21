@@ -22,9 +22,16 @@
 			"custom_domain": true
 		}
 	],
+	"workflows": [
+		{
+			"name": "sync-google-sheet-with-database",
+			"binding": "SyncGoogleSheetWithDatabase",
+			"class_name": "syncGoogleSheetWithDatabase"
+		}
+	],
 	"triggers": {
 		"crons": [
-			"0 0 * * *"
+			"*/15 * * * *"
 		]
 	}
 	/**
