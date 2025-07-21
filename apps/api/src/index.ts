@@ -88,9 +88,7 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 	}
 
 	async scheduled(event: ScheduledEvent): Promise<void> {
-		if (event.cron === "*/15 * * * *") {
-			await env.SyncGoogleSheetWithDatabase.create()
-		}
+		await env.SyncGoogleSheetWithDatabase.create()
 	}
 }
 
