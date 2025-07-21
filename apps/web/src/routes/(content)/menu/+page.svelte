@@ -37,7 +37,7 @@
 					class="flex flex-row items-center rounded-lg bg-white/60 p-4 transition-all hover:bg-white/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:gap-4 sm:bg-white/10"
 				>
 					<div class="w-full">
-						<h2 class="mb-1 text-xl font-bold">ปืดลงทะเบียนแล้ว</h2>
+						<h2 class="mb-1 text-xl font-bold">ปิดลงทะเบียนแล้ว</h2>
 						<p class="w-full text-gray-700">
 							เราจะนำข้อมูลที่ลงทะเบียนไปสุ่มและเตรียมกิจกรรมต้อนรับ รอฟังประกาศผลกรุ๊ปในวันที่ 22
 							กรกฎาคม เวลา 18:00 น. ที่นี่พร้อมลิงก์เข้าโอเพนแชตจ้า
