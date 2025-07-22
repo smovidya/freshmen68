@@ -64,6 +64,7 @@
 		"@freshmen68/flags": "workspace:*",
 		"@freshmen68/trpc": "workspace:*",
 		"@trpc/client": "^11.4.3",
+		"@vanillaes/csv": "^3.0.4",
 		"better-auth": "^1.2.12",
 		"drizzle-orm": "^0.40.1",
 		"posthog-js": "^1.257.0",

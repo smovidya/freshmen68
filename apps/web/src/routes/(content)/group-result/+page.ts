@@ -1,5 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
+import { parse } from '@vanillaes/csv';
+import rawData from "$lib/data/results_team_processed_with_groups.csv?raw";
 import { flashParams } from "$lib/flash.svelte";
 import { flags } from "$lib/flags";
 import { trpcClient } from "$lib/trpc";
@@ -28,7 +30,20 @@ export const load: PageLoad = async ({ parent }) => {
     redirect(307, `/menu?${flashParams("please-register")}`);
   }
 
-  const groupResult = 6; // TODO: query this from the db
+  const id = joinedTeam?.id ?? ownedTeam.id;
+  console.log(id);
+  const parsed = parse(rawData);
+  const row = parsed.find(it => it[0] === id);
+  if (!row) {
+    return {
+      ownedTeam,
+      joinedTeam,
+      groupData,
+      groupResult: null
+    };
+  }
+
+  const groupResult = parseInt(row[row.length - 1]);
 
   return {
     ownedTeam,
