@@ -16,7 +16,7 @@
 
 <main class="container mx-auto flex h-full max-w-[60rem] flex-col px-5 py-14">
 	<div
-		class="justify-top fixed inset-0 -z-10 container mx-auto h-full w-full items-start overflow-hidden bg-[#F0CE7D]"
+		class="justify-top fixed inset-0 -z-10 mx-auto h-full w-full items-start overflow-hidden bg-[#F0CE7D]"
 	>
 		<img
 			srcset="{MobileBGImage} 640w, {TablateBGImage} 768w, {DesktopBGImage} 1440w"
@@ -25,7 +25,6 @@
 			class="h-full w-full object-cover object-top"
 		/>
 	</div>
-
 	<nav class="mt-64 flex items-center justify-between gap-4">
 		<BackButton href="/menu" />
 		<div class="text-center">
@@ -34,30 +33,30 @@
 		<div class="w-10"></div>
 	</nav>
 
-	{#if !data.groupResult}
-		<section class="mt-12">
-			<h2 class="text-xl font-semibold">กรุ๊ปที่ได้</h2>
-			<p>โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
+	{#if data.groupResult}
+		<section class="mt-12 flex flex-col items-center justify-center gap-2">
+			<h2 class="rounded-md bg-white/60 px-2 py-1 text-xl font-semibold">กรุ๊ปที่ได้</h2>
+			<p class="rounded-md bg-white/60 px-2 py-1">โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
 
 			<div
-				class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl bg-white p-5 shadow-md"
+				class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl border border-white/30 bg-white/70 px-5 py-10 shadow-md backdrop-blur-3xl"
 			>
-				<div>
-					<h2 class="text-3xl">ไม่มีผล</h2>
+				<div class="flex flex-col items-center justify-center gap-3">
+					<h2 class="text-3xl">ไม่มีอะไรให้ดู ;-;</h2>
 					<p>น้องอาจจะไม่ได้เลือกกรุ๊ปไว้</p>
 				</div>
-				<p class="mt-2 text-gray-600">
+				<p class="mt-2 text-center text-gray-600">
 					หากคิดว่านี่เป็นข้อผิดพลาดกรุณาติดต่อ Instagram @smovidya_official
 				</p>
 			</div>
 		</section>
 	{:else}
-		<section class="mt-12">
-			<h2 class="text-xl font-semibold">กรุ๊ปที่ได้</h2>
-			<p>โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
+		<section class="mt-12 flex flex-col items-center justify-center gap-2">
+			<h2 class="rounded-md bg-white/60 px-2 py-1 text-xl font-semibold">กรุ๊ปที่ได้</h2>
+			<p class="rounded-md bg-white/60 px-2 py-1">โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
 
 			<div
-				class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl bg-white p-5 shadow-md"
+				class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl border border-white/30 bg-white/70 p-5 shadow-md backdrop-blur-3xl"
 			>
 				<div>
 					<h2 class="text-3xl">{group?.name}</h2>
@@ -68,8 +67,9 @@
 				</p>
 				<Button
 					href={group?.link}
+					size="lg"
 					variant="secondary"
-					class="bg-green-500 text-white hover:bg-green-500/90"
+					class="h cursor-pointer bg-green-500 text-white shadow-md hover:bg-green-500/90"
 				>
 					<OpenChatIcon />
 					เข้าร่วมโอเพนแชท
