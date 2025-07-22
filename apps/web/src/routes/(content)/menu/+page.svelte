@@ -73,7 +73,7 @@
 		<TaskSection subtitle="22 กรกฎาคม">
 			<TaskCard
 				disabled={!flags.isEnabled('group-announcement')}
-				href="/group"
+				href="/group-result"
 				title="ประกาศผลกรุ๊ป"
 				description="ประกาศผลกรุ๊ปที่น้อง ๆ จะได้เป็นสมาชิกตลอดกิจกรรม"
 				status={!flags.isEnabled('group-announcement')

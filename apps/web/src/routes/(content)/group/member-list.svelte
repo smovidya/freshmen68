@@ -6,9 +6,10 @@
 	interface Props {
 		team: OwnedTeam | JoinedTeam;
 		openKickDialog?: (email: string) => void;
+		done?: boolean
 	}
 
-	let { team, openKickDialog }: Props = $props();
+	let { team, openKickDialog, done = false }: Props = $props();
 </script>
 
 <div class="self-stretch md:self-end">
@@ -31,7 +32,7 @@
 			</li>
 		{/each}
 	</ul>
-	{#if team.members.length < 2}
+	{#if !done && team.members.length < 2}
 		<p>(ว่าง {2 - team.members.length})</p>
 	{/if}
 </div>
