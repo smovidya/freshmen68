@@ -90,6 +90,7 @@ export const teams = pgTable('teams', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .$onUpdateFn(() => /* @__PURE__ */ new Date())
     .notNull(),
+  result: text('result').notNull().default(''),
 });
 
 
