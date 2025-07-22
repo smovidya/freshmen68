@@ -42,7 +42,7 @@
 		</div>
 	</section>
 
-	{#if true}
+	{#if team.members.length > 0}
 		<section class="mt-12">
 			<h2 class="text-xl font-semibold">เพื่อนที่เข้ากลุ่มด้วยกัน</h2>
 			<p>กลุ่มเพื่อน 2-3 คนที่เชิญไว้ก่อนหน้านี้</p>
