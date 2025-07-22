@@ -5,7 +5,6 @@
 	import MemberList from '../group/member-list.svelte';
 	import OpenChatIcon from './open-chat-icon.svelte';
 
-	
 	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152w_bg.png';
 	import MobileBGImage from '$lib/assets/640x1137px/640_1137w_bg.png';
 	import TablateBGImage from '$lib/assets/768x1024px/768_1024w_bg.png';
