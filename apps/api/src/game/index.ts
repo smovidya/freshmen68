@@ -1,19 +1,15 @@
+import { env } from "cloudflare:workers";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { WorkerCacheStorage } from "../type";
 import { getPopByGroups, getRegionHandler } from "./coordinator";
 import type { LeaderboardEntry } from "./sqlite-leaderboard";
-import { env } from "cloudflare:workers";
 
 const router = new Hono();
 const LEADERBOARD_CACHE_DURATION = 15; // sec
 const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
 
 const cfCaches = caches as unknown as WorkerCacheStorage;
-
-router.use("*", async (c, next) => {
-	next();
-});
 
 // TODO: authenticate user
 

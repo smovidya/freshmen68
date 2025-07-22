@@ -6,6 +6,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { createDatabaseConnection } from '@freshmen68/db';
 import { FeatureFlags } from '@freshmen68/flags';
+import { gameRouter } from './game';
 import * as jose from 'jose'
 
 const app = new Hono<{
@@ -99,6 +100,8 @@ app.get("__hono/__version", c => {
 	});
 });
 
+app.route("/game", gameRouter);
+
 // redirect all other requests to the frontend URL
 app.all('*', (c) => {
 	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
@@ -116,5 +119,5 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 }
 
 // export all workflows
-export * from './workflows'
-export { GameRegionHandler } from "./game/region-handler"
+export * from './workflows';
+export { GameRegionHandler } from "./game/region-handler";
