@@ -48,7 +48,7 @@
 					<p>น้องอาจจะไม่ได้เลือกกรุ๊ปไว้</p>
 				</div>
 				<p class="mt-2 text-gray-600">
-					หากคิดว่านี่เป็นข้อผิดพลากรุณาติดต่อ Instagram @smovidya_official
+					หากคิดว่านี่เป็นข้อผิดพลาดกรุณาติดต่อ Instagram @smovidya_official
 				</p>
 			</div>
 		</section>
@@ -78,7 +78,7 @@
 			</div>
 		</section>
 
-		{#if team.members.length > 0}
+		{#if team && team.members.length > 0}
 			<section class="mt-12">
 				<h2 class="text-xl font-semibold">เพื่อนที่เข้ากลุ่มด้วยกัน</h2>
 				<p>กลุ่มเพื่อน 2-3 คนที่เชิญไว้ก่อนหน้านี้</p>
