@@ -12,9 +12,7 @@ export const features = {
     start: "2025-07-19T12:00:00+07:00",
     end: "2025-07-21T23:59:59+07:00",
   },
-  "group-announcement": {
-    scheduled: "2025-07-22T18:00:00+07:00",
-  },
+  "group-announcement": false,
   "game-playing": {
     start: "2025-07-26T11:00:00+07:00",
     end: "2025-07-29T23:59:59+07:00",
