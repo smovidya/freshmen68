@@ -29,6 +29,22 @@
 			"class_name": "syncGoogleSheetWithDatabase"
 		}
 	],
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"GameRegionHandler"
+			]
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "GAME_REGION_HANDLER",
+				"class_name": "GameRegionHandler",
+			}
+		],
+	},
 	// "triggers": {
 	// 	"crons": [
 	// 		"*/15 * * * *"
@@ -38,7 +54,9 @@
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
 	 */
-	// "placement": { "mode": "smart" },
+	"placement": {
+		"mode": "smart"
+	},
 	/**
 	 * Bindings
 	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including

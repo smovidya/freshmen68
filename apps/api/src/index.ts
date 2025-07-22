@@ -107,6 +107,7 @@ app.all('*', (c) => {
 export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 	async fetch(request: Request): Promise<Response> {
 		return app.fetch(request);
+
 	}
 
 	// async scheduled(event: ScheduledEvent): Promise<void> {
@@ -116,3 +117,4 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 
 // export all workflows
 export * from './workflows'
+export { GameRegionHandler } from "./game/region-handler"
