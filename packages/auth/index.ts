@@ -94,6 +94,12 @@ export const createAuth = ({
 					label: 'OUID',
 					unique: true,
 					input: false,
+				},
+				group: {
+					type: 'string',
+					label: 'Group',
+					unique: false,
+					input: false,
 				}
 			}
 		},
