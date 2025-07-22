@@ -5,11 +5,30 @@ import type { WorkerCacheStorage } from "../type";
 import { getPopByGroups, getRegionHandler } from "./coordinator";
 import type { LeaderboardEntry } from "./sqlite-leaderboard";
 
-const router = new Hono();
+/*
+	POPCAT: 800pop/30sec
+		our rate limiter is 4 req/60s (can change) -> So 400 pop/req
+		assuming we update every 15 sec
+		we technically can ALLOW ?pop=1600 if they send the request once per minute but im lazy
+
+	800pop/30sec = ~26.66 click/s = ~ 400 bpm (at 1/4)
+
+	i can do 195 bpm (1/4) max with 2 keys
+	so 195 * 4 / 60 = ~13 cps
+
+	BUT popcat allow ANY KEY and dont require pressing only 1 key at a time
+	so 26cps seem low, well RIP mobile user
+*/
+const MAX_POP_PER_REQUEST = 300;
+
+// TODO: better error message
+const INVITE_MESSAGE = "สวัสดีแหกเกอ สนใจทำงาน IT สโมมั้ย -> https://discord.gg/JNYm5dUP9D";
 const LEADERBOARD_CACHE_DURATION = 15; // sec
 const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
 
 const cfCaches = caches as unknown as WorkerCacheStorage;
+
+const router = new Hono();
 
 // TODO: authenticate user
 
@@ -72,8 +91,7 @@ router.get("/stats/self", async (c) => {
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `stats:self:${ouid}` });
 	if (!success) {
 		throw new HTTPException(429, {
-			// TODO: better error message
-			message: "สวัสดีแหกเกอ สนใจทำงาน IT สโมมั้ย -> https://discord.gg/JNYm5dUP9D",
+			message: INVITE_MESSAGE,
 		});
 	}
 
@@ -93,13 +111,18 @@ router.post("/pop", async (c) => {
 	const query = c.req.query();
 	const ouid = query.ouid; // TODO: GET THIS
 	const group = parseInt(query.group);
-	const pop = parseInt(query.pop);
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `pop:${ouid}` });
 	if (!success) {
 		throw new HTTPException(429, {
-			// TODO: better error message
-			message: "สวัสดีแหกเกอ สนใจทำงาน IT สโมมั้ย -> https://discord.gg/JNYm5dUP9D",
+			message: INVITE_MESSAGE,
+		});
+	}
+
+	const pop = parseInt(query.pop);
+	if (pop || pop > MAX_POP_PER_REQUEST) {
+		throw new HTTPException(400, {
+			message: "nah",
 		});
 	}
 

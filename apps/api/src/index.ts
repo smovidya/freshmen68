@@ -96,7 +96,7 @@ app.on(['POST', 'GET'], '/trpc/*', (c) => {
 
 app.get("__hono/__version", c => {
 	return c.json({
-		version: 0x594F
+		version: 0x9065
 	});
 });
 
