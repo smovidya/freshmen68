@@ -33,11 +33,10 @@
 		<div class="w-10"></div>
 	</nav>
 
-	{#if data.groupResult}
-		<section class="mt-12 flex flex-col items-center justify-center gap-2">
-			<h2 class="rounded-md bg-white/60 px-2 py-1 text-xl font-semibold">กรุ๊ปที่ได้</h2>
-			<p class="rounded-md bg-white/60 px-2 py-1">โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
-
+	<section class="mt-12 flex flex-col items-center justify-center gap-2">
+		<h2 class="rounded-md bg-white/60 px-2 py-1 text-xl font-semibold">กรุ๊ปที่ได้</h2>
+		<p class="rounded-md bg-white/60 px-2 py-1">โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
+		{#if !data.groupResult}
 			<div
 				class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl border border-white/30 bg-white/70 px-5 py-10 shadow-md backdrop-blur-3xl"
 			>
@@ -49,12 +48,7 @@
 					หากคิดว่านี่เป็นข้อผิดพลาดกรุณาติดต่อ Instagram @smovidya_official
 				</p>
 			</div>
-		</section>
-	{:else}
-		<section class="mt-12 flex flex-col items-center justify-center gap-2">
-			<h2 class="rounded-md bg-white/60 px-2 py-1 text-xl font-semibold">กรุ๊ปที่ได้</h2>
-			<p class="rounded-md bg-white/60 px-2 py-1">โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
-
+		{:else}
 			<div
 				class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl border border-white/30 bg-white/70 p-5 shadow-md backdrop-blur-3xl"
 			>
@@ -75,21 +69,21 @@
 					เข้าร่วมโอเพนแชท
 				</Button>
 			</div>
-		</section>
 
-		{#if team && team.members.length > 0}
-			<section class="mt-12">
-				<h2 class="text-xl font-semibold">เพื่อนที่เข้ากลุ่มด้วยกัน</h2>
-				<p>กลุ่มเพื่อน 2-3 คนที่เชิญไว้ก่อนหน้านี้</p>
-			</section>
-			<div
-				class="mt-3 flex w-full flex-col items-center justify-around gap-12 rounded-2xl bg-white p-5 pb-6 shadow-md md:flex-row md:gap-3"
-			>
-				<Bubbles member={[team.owner, ...team.members]} />
-				<div class="self-stretch">
-					<MemberList {team} done={true} />
+			{#if team && team.members.length > 0}
+				<section class="mt-12">
+					<h2 class="text-xl font-semibold">เพื่อนที่เข้ากลุ่มด้วยกัน</h2>
+					<p>กลุ่มเพื่อน 2-3 คนที่เชิญไว้ก่อนหน้านี้</p>
+				</section>
+				<div
+					class="mt-3 flex w-full flex-col items-center justify-around gap-12 rounded-2xl bg-white p-5 pb-6 shadow-md md:flex-row md:gap-3"
+				>
+					<Bubbles member={[team.owner, ...team.members]} />
+					<div class="self-stretch">
+						<MemberList {team} done={true} />
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
-	{/if}
+	</section>
 </main>
