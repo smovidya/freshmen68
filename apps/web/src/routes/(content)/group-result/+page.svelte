@@ -21,6 +21,7 @@
 
 	<section class="mt-12">
 		<h2 class="text-xl font-semibold">กรุ๊ปที่ได้</h2>
+    <p>โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
 
 		<div class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl bg-white p-5 shadow-md">
 			<div>
