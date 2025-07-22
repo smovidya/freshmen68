@@ -21,15 +21,22 @@
 
 	<section class="mt-12">
 		<h2 class="text-xl font-semibold">กรุ๊ปที่ได้</h2>
-    <p>โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
+		<p>โชคชะตากำหนดให้คุณได้อยู่กรุ๊ป...</p>
 
 		<div class="mt-3 flex w-full flex-col justify-between gap-6 rounded-2xl bg-white p-5 shadow-md">
 			<div>
 				<h2 class="text-3xl">{group?.name}</h2>
 				<p>กรุ๊ป {group?.number}</p>
 			</div>
-			<Button href={group?.link} variant="secondary" class="bg-green-500 hover:bg-green-500/90 text-white">
-        <OpenChatIcon />
+			<p class="mt-3 text-gray-600">
+				<strong>ขั้นต่อไป:</strong> อย่าลืมเข้าโอเพนแชทเพื่อพบปะเพื่อนใหม่ในกรุ๊ปนะ!
+			</p>
+			<Button
+				href={group?.link}
+				variant="secondary"
+				class="bg-green-500 text-white hover:bg-green-500/90"
+			>
+				<OpenChatIcon />
 				เข้าร่วมโอเพนแชท
 			</Button>
 		</div>
