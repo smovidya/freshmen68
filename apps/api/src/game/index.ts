@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import type { WorkerCacheStorage } from "../type";
 import { getPopByGroups, getRegionHandler } from "./coordinator";
 import type { LeaderboardEntry } from "./sqlite-leaderboard";
+import { env } from "cloudflare:workers";
 
 const router = new Hono();
 const LEADERBOARD_CACHE_DURATION = 15; // sec
@@ -24,6 +25,8 @@ router.get("/stats/global", async (c) => {
 		return cached;
 	}
 
+	// we dont rate limit this because cf cache
+
 	const pops = await getPopByGroups();
 	const response = Response.json(pops, {
 		headers: {
@@ -44,6 +47,8 @@ router.get("/stats/groups/:groupNumber", async (c) => {
 		return cached;
 	}
 
+	// we dont rate limit this because cf cache
+
 	const group = parseInt(c.req.param().groupNumber);
 	if (!group) { // we dont have group 0 anyway
 		throw new HTTPException(404);
@@ -59,6 +64,7 @@ router.get("/stats/groups/:groupNumber", async (c) => {
 	return response;
 });
 
+
 // its pain to cache this unless we change the url to `/stats/self/:ouid`
 // so dont call this too much
 router.get("/stats/self", async (c) => {
@@ -66,6 +72,14 @@ router.get("/stats/self", async (c) => {
 	const query = c.req.query();
 	const ouid = query.ouid;
 	const group = parseInt(query.group);
+
+	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `stats:self:${ouid}` });
+	if (!success) {
+		throw new HTTPException(429, {
+			// TODO: better error message
+			message: "สวัสดีแหกเกอ สนใจทำงาน IT สโมมั้ย -> https://discord.gg/JNYm5dUP9D",
+		});
+	}
 
 	if (!ouid || !group) {
 		throw new HTTPException(400, { message: 'Invalid parameters' });
@@ -81,9 +95,17 @@ router.get("/stats/self", async (c) => {
  */
 router.post("/pop", async (c) => {
 	const query = c.req.query();
-	const ouid = query.ouid;
+	const ouid = query.ouid; // TODO: GET THIS
 	const group = parseInt(query.group);
 	const pop = parseInt(query.pop);
+
+	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `pop:${ouid}` });
+	if (!success) {
+		throw new HTTPException(429, {
+			// TODO: better error message
+			message: "สวัสดีแหกเกอ สนใจทำงาน IT สโมมั้ย -> https://discord.gg/JNYm5dUP9D",
+		});
+	}
 
 	const gameRegion = getRegionHandler(group);
 	c.executionCtx.waitUntil(gameRegion.addPop(pop, ouid, group));
