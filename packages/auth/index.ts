@@ -79,20 +79,15 @@ export const createAuth = ({
 				create: {
 					async before(session, context) {
 						const user = await db.select().from(tables.user).where(eq(tables.user.id, session.userId))
-						if (!user[0]?.group) {
+						if (!user[0]?.group && user[0]?.ouid?.startsWith('68')) {
 							// user didn't have group assigned, get from team
 							const student = await db.select().from(tables.students).where(eq(tables.students.email, user[0]?.email || ""));
-							if (!student[0]?.teamId && !student[0]?.teamOwnedId) {
-								console.error(`[auth] Error: no-team ${JSON.stringify(user)}`)
-								throw context?.error("FORBIDDEN", {
-									code: 'no-team',
-									message: 'คุณยังไม่ได้เข้าร่วมทีม กรุณาเข้าร่วมทีมก่อน',
-								})
+							if (student[0]?.teamId || student[0]?.teamOwnedId) {
+								const currentStudentGroup = await db.select().from(tables.teams).where(eq(tables.teams.id, student[0]?.teamId || student[0]?.teamOwnedId))
+								await db.update(tables.user).set({
+									group: currentStudentGroup[0]?.result
+								}).where(eq(tables.user.id, session.userId));
 							}
-							const currentStudentGroup = await db.select().from(tables.teams).where(eq(tables.teams.id, student[0]?.teamId || student[0]?.teamOwnedId))
-							await db.update(tables.user).set({
-								group: currentStudentGroup[0]?.result
-							}).where(eq(tables.user.id, session.userId));
 						}
 
 						return {
