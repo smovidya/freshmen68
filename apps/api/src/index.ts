@@ -92,7 +92,7 @@ app.on(['POST', 'GET'], '/trpc/*', (c) => {
 			session: c.get('session'),
 			db: createDatabaseConnection(env.DATABASE_URL),
 			flags: new FeatureFlags({
-				enabledAll: env.WORKER_ENV === 'development' || env.WORKER_ENV === 'dev',
+				enabledAll: env.WORKER_ENV !== 'production'
 			}),
 		}),
 	});

@@ -9,7 +9,7 @@ export type GameRegion = {
 export const groupNumbers = ["1", "3", "4", "5", "6", "7"];
 
 export function getRegionHandler(groupNumber: string) {
-	if (!groupNumbers.includes(groupNumber) && env.WORKER_ENV !== 'dev') {
+	if (!groupNumbers.includes(groupNumber) && env.WORKER_ENV === 'production') {
 		throw new Error(`${groupNumber} dont exist`);
 	}
 
