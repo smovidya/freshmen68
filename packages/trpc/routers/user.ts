@@ -1,7 +1,9 @@
-import { registrationSchema } from '@freshmen68/dto';
+import { registrationSchema, updateUserGroupSchema } from '@freshmen68/dto';
 import { publicProcedure, router, signedInProcedure } from '../core';
 import { createStudentWithTeam, getStudentByEmail, isRegistered, updateStudentInfo } from '../services/students.service';
 import { TRPCError } from '@trpc/server';
+import z4 from 'zod/v4';
+import { updateUserGroup } from '../services/game.service';
 
 export const userRouter = router({
   whoami: publicProcedure.query(({ ctx }) => {
@@ -38,5 +40,11 @@ export const userRouter = router({
       }
       const email = ctx.user.email;
       await updateStudentInfo(input, email, ctx.db);
+    }),
+  updateUserGroup: signedInProcedure
+    .input(updateUserGroupSchema)
+    .mutation(async ({ ctx, input }) => {
+      const email = ctx.user.email;
+      await updateUserGroup(email, input.groupCode, ctx.db);
     })
 });
