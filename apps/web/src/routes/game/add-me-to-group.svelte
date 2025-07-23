@@ -1,0 +1,41 @@
+<script lang="ts">
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
+	import { trpcClient } from '$lib/trpc';
+	import { toast } from 'svelte-sonner';
+
+	const client = trpcClient();
+
+	let joinPassword = $state('');
+
+	async function joinGroup() {
+		if (!joinPassword) {
+			toast.error('กรุณากรอกรหัสผ่าน');
+		}
+
+		try {
+			await client.user.updateUserGroup.mutate({
+				groupCode: joinPassword
+			});
+		} catch (error) {
+			toast.error(
+				'ไม่สามารถเข้าร่วมกรุ๊ปได้' + (error instanceof Error ? `: ${error.message}` : '')
+			);
+			return;
+		}
+
+		toast.success('เข้าร่วมกรุ๊ปสำเร็จ');
+		window.location.reload();
+	}
+</script>
+
+<div class="flex flex-col items-center justify-center gap-5">
+	<div class="text-center">
+		<h2 class="text-2xl font-bold">คุณยังไม่ได้ระบุกรุ๊ป</h2>
+		<p>ใส่รหัสผ่านจากสตาฟเพื่อเริ่มเล่นเกม</p>
+	</div>
+	<div class="flex flex-col items-center justify-center space-y-2">
+		<Input type="text" placeholder="รหัสผ่าน" bind:value={joinPassword} />
+		<Button variant="secondary" onclick={joinGroup}>เข้าร่วมกรุ๊ป</Button>
+	</div>
+</div>

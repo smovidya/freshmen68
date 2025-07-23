@@ -9,16 +9,24 @@
 
 	const client = new GameAPIClient(false);
 
-	let state = $state({});
+	let gameData = $state<{
+		leaderboard: Awaited<ReturnType<GameAPIClient['getGlobalLeaderboard']>>;
+		inGroup: Awaited<ReturnType<GameAPIClient['getInGroupLeaderboard']>>;
+		self: Awaited<ReturnType<GameAPIClient['getSelfPopCount']>>;
+	}>({
+		leaderboard: {},
+		inGroup: [],
+		self: 0
+	});
 
 	const a = async () => {
-		state.leaderboard = await client.getGlobalLeaderboard();
+		gameData.leaderboard = await client.getGlobalLeaderboard();
 	};
 	const b = async () => {
-		state.inGroup = await client.getInGroupLeaderboard(group);
+		gameData.inGroup = await client.getInGroupLeaderboard(group);
 	};
 	const c = async () => {
-		state.self = await client.getSelfPopCount();
+		gameData.self = await client.getSelfPopCount();
 	};
 	const d = () => client.submitPop();
 	let name = $state('');
@@ -44,4 +52,4 @@
 </div>
 
 <p>note: global leaderboard work by setting fixed group key</p>
-<pre>{JSON.stringify(state, null, 2)}</pre>
+<pre>{JSON.stringify(gameData, null, 2)}</pre>

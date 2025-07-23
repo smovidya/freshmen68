@@ -32,7 +32,7 @@ const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
 const cfCaches = caches as unknown as WorkerCacheStorage;
 
 const elavatedOuids = env.ELEVATED_OUID_LIST?.split(",") ?? [];
-const dev = env.WORKER_ENV === 'dev';
+const dev = env.WORKER_ENV !== 'production';
 export const flags = new FeatureFlags({
 	enabledAll: dev,
 });

@@ -14,17 +14,13 @@ export const load: PageLoad = async ({ parent }) => {
   if (!flags.isEnabled("game-playing") && whoami.ouid.startsWith("68")) {
     return redirect(307, `/menu?${flashParams("dont-rush")}`);
   }
-  console.log({
-    whoami,
-    flags: {
-      "game-playing": flags.isEnabled("game-playing"),
-      "game-allow-non-freshmen": flags.isEnabled("game-allow-non-freshmen"),
-    },
-  })
   if (flags.isEnabled("game-allow-non-freshmen") && whoami.ouid.startsWith("68")) {
     return redirect(307, `/menu?${flashParams("not-allowed")}`);
   }
   if (flags.isEnabled("game-playing") && !whoami.ouid.startsWith("68")) {
     return redirect(307, `/menu?${flashParams("not-allowed")}`);
+  }
+  return {
+     whoami
   }
 };
