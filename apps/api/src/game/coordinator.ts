@@ -2,16 +2,17 @@ import { env } from "cloudflare:workers";
 import type { GameRegionHandler } from "./region-handler";
 
 export type GameRegion = {
-	groupNumber: number;
+	groupNumber: string;
 	handler: DurableObjectStub<GameRegionHandler>;
 };
 
-export const groupNumbers = [1, 3, 4, 5, 6, 7];
+export const groupNumbers = ["1", "3", "4", "5", "6", "7"];
 
-export function getRegionHandler(groupNumber: number) {
-	if (!groupNumbers.includes(groupNumber)) {
+export function getRegionHandler(groupNumber: string) {
+	if (!groupNumbers.includes(groupNumber) && env.WORKER_ENV !== 'dev') {
 		throw new Error(`${groupNumber} dont exist`);
 	}
+
 	return env.GAME_REGION_HANDLER.get(env.GAME_REGION_HANDLER.idFromName(`group:${groupNumber}`));
 }
 

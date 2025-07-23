@@ -1,11 +1,11 @@
-import { auth } from '@freshmen68/auth';
+import { FeatureFlags } from '@freshmen68/flags';
 import { env } from 'cloudflare:workers';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
+import type { JWTPayload } from 'jose';
 import type { WorkerCacheStorage } from '../type';
 import { getPopByGroups, getRegionHandler } from './coordinator';
 import type { LeaderboardEntry } from './sqlite-leaderboard';
-import type { JWTPayload } from 'jose';
 
 /*
 	POPCAT: 800pop/30sec
@@ -31,22 +31,35 @@ const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
 
 const cfCaches = caches as unknown as WorkerCacheStorage;
 
+const dev = env.WORKER_ENV === 'dev';
+export const flags = new FeatureFlags({
+	enabledAll: dev,
+});
+
 const router = new Hono<{
 	Variables: {
 		gameJWTPayload: JWTPayload;
 		ouid: string,
-		groupId: string;
+		group: string;
 	};
 }>();
 
-router.use('*', async (c) => {
-	const { groupId, ouid } = c.get("gameJWTPayload");
-	if (!groupId || !ouid) {
-		throw new HTTPException(500, {
-			message: "what"
-		});
+router.use('*', async (c, next) => {
+	if (!flags.isEnabled("game-playing")) {
+		return c.json({ error: 'Not available' }, 418);
 	}
-	c.set("groupId", groupId);
+
+	const { group, ouid } = c.get("gameJWTPayload");
+	if (!group || !ouid) {
+		return c.json({
+			message: "what"
+		}, 500);
+	}
+	if (dev) {
+		c.set("group", (group as string)[2]);
+	}
+	c.set("ouid", ouid as string);
+	await next();
 });
 
 router.get('/stats/global', async (c) => {
@@ -65,6 +78,7 @@ router.get('/stats/global', async (c) => {
 			'Cache-Control': `max-age=${GLOBAL_LEADERBOARD_CACHE_DURATION}`,
 		},
 	});
+	console.log(c.executionCtx);
 	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
 	return response;
 });
@@ -73,7 +87,7 @@ router.get('/stats/global', async (c) => {
  * @example `GET /stats/groups/8`
  * @returns Top 10 user in current group as @type {LeaderboardEntry[]}
  */
-router.get('/stats/groups/:groupNumber', async (c) => {
+router.get('/stats/groups/:group', async (c) => {
 	const cached = await cfCaches.default.match(c.req.raw);
 	if (cached) {
 		return cached;
@@ -81,13 +95,7 @@ router.get('/stats/groups/:groupNumber', async (c) => {
 
 	// we dont rate limit this because cf cache
 
-	const group = parseInt(c.req.param().groupNumber);
-	if (!group) {
-		// we dont have group 0 anyway
-		throw new HTTPException(404);
-	}
-
-	const gameRegion = getRegionHandler(group);
+	const gameRegion = getRegionHandler(c.get("group"));
 	const response = Response.json(await gameRegion.getTopTen(), {
 		headers: {
 			'Cache-Control': `max-age=${LEADERBOARD_CACHE_DURATION}`,
@@ -102,8 +110,8 @@ router.get('/stats/groups/:groupNumber', async (c) => {
 router.get('/stats/self', async (c) => {
 	// TODO: auth
 	const query = c.req.query();
-	const ouid = query.ouid;
-	const group = parseInt(query.group);
+	const ouid = c.get("ouid");
+	const group = c.get("group");
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `stats:self:${ouid}` });
 	if (!success) {
@@ -126,18 +134,18 @@ router.get('/stats/self', async (c) => {
  */
 router.post('/pop', async (c) => {
 	const query = c.req.query();
-	const ouid = query.ouid; // TODO: GET THIS
-	const group = parseInt(query.group);
+	const ouid = c.get("ouid");
+	const group = c.get("group");
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `pop:${ouid}` });
-	if (!success) {
+	if (!success && !dev) {
 		throw new HTTPException(429, {
 			message: INVITE_MESSAGE,
 		});
 	}
 
 	const pop = parseInt(query.pop);
-	if (pop || pop > MAX_POP_PER_REQUEST) {
+	if (!pop || pop > MAX_POP_PER_REQUEST) {
 		throw new HTTPException(400, {
 			message: 'nah',
 		});
