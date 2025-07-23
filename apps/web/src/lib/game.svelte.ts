@@ -82,5 +82,4 @@ export class GameAPIClient {
     });
     return (await res.json()) as number;
   }
-
 }

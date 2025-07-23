@@ -55,6 +55,7 @@ export const availableGroups = pgTable('available_groups', {
   description: text('description'),
   groupMetadata: text('group_metadata'),
   maxMembers: integer('max_members').notNull(),
+  joinGroupPassword: text('join_group_password'),
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
