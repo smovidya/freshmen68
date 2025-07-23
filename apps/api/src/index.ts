@@ -6,6 +6,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { createDatabaseConnection } from '@freshmen68/db';
 import { FeatureFlags } from '@freshmen68/flags';
+import * as jose from 'jose'
 
 const app = new Hono<{
 	Variables: {
@@ -13,6 +14,9 @@ const app = new Hono<{
 		session: typeof auth.$Infer.Session.session | null;
 	};
 }>();
+
+const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`
+const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl))
 
 app.use(
 	'*', // or replace with "*" to enable cors for all routes
@@ -25,6 +29,24 @@ app.use(
 		credentials: true,
 	}),
 );
+
+app.on(['POST', 'GET'], '/game/*', async (c) => {
+	const token = c.req.header('Authorization')?.replace('Bearer ', '');
+	if (!token) {
+		return c.json({ error: 'Unauthorized' }, 401);
+	}
+	const { payload } = await jose.jwtVerify(token, JWKS, {
+		issuer: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
+		audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
+	});
+
+	// Game handler here
+
+	return c.json({
+		ok: true,
+		payload
+	})
+});
 
 app.on(['POST', 'GET'], '/api/auth/*', (c) => {
 	const auth = createAuth({

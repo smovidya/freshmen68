@@ -17,6 +17,7 @@ export const features = {
     start: "2025-07-26T11:00:00+07:00",
     end: "2025-07-29T23:59:59+07:00",
   },
+  "game-allow-non-freshmen": true
 } satisfies Record<string, EventAvailability>;
 
 /**

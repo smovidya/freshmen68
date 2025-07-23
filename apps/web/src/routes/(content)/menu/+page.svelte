@@ -43,7 +43,8 @@
 							กรกฎาคม เวลา 18:00 น. ที่นี่พร้อมลิงก์เข้าโอเพนแชตจ้า
 						</p>
 						<p>
-							<b>มีเพื่อนที่ยังไม่ได้ลงทะเบียนใช่ไหม?</b> ไม่เป็นไรเลย ทุกคนสามารถ walk-in ได้ในวันงาน แต่กรุ๊ปที่ได้จะเป็นการสุ่มแทนน้า
+							<b>มีเพื่อนที่ยังไม่ได้ลงทะเบียนใช่ไหม?</b> ไม่เป็นไรเลย ทุกคนสามารถ walk-in ได้ในวันงาน
+							แต่กรุ๊ปที่ได้จะเป็นการสุ่มแทนน้า
 						</p>
 					</div>
 				</div>
@@ -84,7 +85,7 @@
 		</TaskSection>
 		<TaskSection subtitle="26 &ndash; 29 กรกฎาคม">
 			<TaskCard
-				disabled={!flags.isEnabled('game-playing')}
+				disabled={!flags.isEnabled('game-playing') && (!flags.isEnabled('game-allow-non-freshmen') || data.whoami.ouid.startsWith('68'))}
 				href="/game"
 				title="เกมสุดพิเศษล่าความภูมิใจและศักดิ์ศรี"
 				description="เล่นได้ในวันที่ 26 กรกฎาคม"

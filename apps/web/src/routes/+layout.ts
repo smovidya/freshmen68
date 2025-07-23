@@ -1,5 +1,5 @@
 import posthog from 'posthog-js';
-import { browser } from '$app/environment';
+import { browser, dev } from '$app/environment';
 
 import type { LayoutLoad } from "./$types";
 import { trpcClient } from "$lib/trpc";
@@ -9,7 +9,7 @@ import { isTRPCClientError } from '@trpc/client';
 // export const prerender = true;
 
 export const load: LayoutLoad = async ({ fetch, depends }) => {
-  if (browser) {
+  if (browser && !dev) {
     posthog.init(
       "phc_bqj7hpCaSlG95HYriP1UoqIMBPMu3LqOoFvPD1My4xn",
       {

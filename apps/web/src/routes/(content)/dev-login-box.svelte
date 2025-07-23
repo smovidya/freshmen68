@@ -25,12 +25,11 @@
 				onclick={async () => {
 					await authClient.signOut();
 					if (
-						!studentId.startsWith('68') ||
 						studentId.length !== 10 ||
 						isNaN(Number(studentId)) ||
 						!studentId.endsWith('23')
 					) {
-						alert('กรุณากรอกรหัสนิสิตที่ถูกต้อง (เริ่มต้นด้วย 68, 10 หลัก, ลงท้ายด้วย 23)');
+						alert('กรุณากรอกรหัสนิสิตที่ถูกต้อง (10 หลัก, ลงท้ายด้วย 23)');
 						return;
 					}
 					const { data, error } = await authClient.signUp.email({
@@ -64,12 +63,11 @@
 				type="submit"
 				onclick={async () => {
 					if (
-						!studentId.startsWith('68') ||
 						studentId.length !== 10 ||
 						isNaN(Number(studentId)) ||
 						!studentId.endsWith('23')
 					) {
-						alert('กรุณากรอกรหัสนิสิตที่ถูกต้อง (เริ่มต้นด้วย 68, 10 หลัก, ลงท้ายด้วย 23)');
+						alert('กรุณากรอกรหัสนิสิตที่ถูกต้อง (10 หลัก, ลงท้ายด้วย 23)');
 						return;
 					}
 					const { data, error } = await authClient.signUp.email({
