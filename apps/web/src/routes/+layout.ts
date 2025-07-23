@@ -5,7 +5,7 @@ import type { LayoutLoad } from "./$types";
 import { trpcClient } from "$lib/trpc";
 import { isTRPCClientError } from '@trpc/client';
 
-export const ssr = false;
+// export const ssr = false;
 // export const prerender = true;
 
 export const load: LayoutLoad = async ({ fetch, depends }) => {
