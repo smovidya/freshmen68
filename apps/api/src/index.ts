@@ -38,13 +38,18 @@ app.use('/game/*', async (c, next) => {
 	if (!token) {
 		return c.json({ error: 'Unauthorized' }, 401);
 	}
-	const { payload } = await jose.jwtVerify(token, JWKS, {
-		issuer: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
-		audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
-	});
 
-	c.set("gameJWTPayload", payload);
-	await next()
+	try {
+		const { payload } = await jose.jwtVerify(token, JWKS, {
+			issuer: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
+			audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
+		});
+
+		c.set("gameJWTPayload", payload);
+		await next()
+	} catch {
+		return c.json({ error: 'Unauthorized' }, 401);
+	}
 });
 
 app.route("/game", gameRouter);

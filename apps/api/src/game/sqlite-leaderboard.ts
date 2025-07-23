@@ -1,44 +1,33 @@
 export type LeaderboardEntry = {
 	playerId: string;
 	score: number;
+	player_name?: string;
 };
 
 export class SqliteLeaderboard {
-	#db: SqlStorage;
+	#db: DurableObjectStorage;
 	#totalScore = 0;
 
-	constructor(db: SqlStorage) {
+	constructor(db: DurableObjectStorage) {
 		this.#db = db;
-		this.initialize();
 	}
 
-	initialize() {
-		this.#db.exec(`
-                CREATE TABLE IF NOT EXISTS leaderboard (
-                    playerId TEXT PRIMARY KEY,
-                    score INTEGER NOT NULL
-                );
-            `);
-
-		this.#db.exec(`
-                CREATE INDEX IF NOT EXISTS idx_score ON leaderboard (score DESC);
-            `);
-
-		this.#db.exec(`
-                CREATE INDEX IF NOT EXISTS idx_playerId ON leaderboard (playerId DESC);
-            `);
-
-		const result = this.#db.exec<{ total_score: number; }>(`SELECT SUM(score) as total_score FROM leaderboard`).one();
-		this.#totalScore = result?.total_score || 0;
+	async initialize(fresh = true) {
+		if (fresh) {
+			const result = this.#db.sql.exec<{ total_score: number; }>(`SELECT SUM(score) as total_score FROM leaderboard`).one();
+			this.#totalScore = result?.total_score || 0;
+		} else {
+			this.#totalScore = await this.#db.get("total_score") as number || 0;
+		}
 	}
 
 	addScore(playerId: string, score: number) {
 		this.#totalScore += score;
-		this.#db.exec(
+		this.#db.sql.exec(
 			`INSERT INTO leaderboard (playerId, score)
-             VALUES (?, ?)
-             ON CONFLICT(playerId) DO UPDATE SET
-                score = leaderboard.score + EXCLUDED.score`,
+	             VALUES (?, ?)
+	             ON CONFLICT(playerId) DO UPDATE SET
+	                score = leaderboard.score + EXCLUDED.score`,
 			playerId,
 			score
 		);
@@ -46,7 +35,7 @@ export class SqliteLeaderboard {
 
 	getPlayerScore(playerId: string): number {
 		// TODO: create an index for this
-		const score = this.#db.exec(
+		const score = this.#db.sql.exec(
 			`SELECT score FROM leaderboard WHERE playerId = ?`,
 			playerId
 		).toArray();
@@ -56,9 +45,21 @@ export class SqliteLeaderboard {
 		return 0;
 	}
 
+	updatePlayerName(playerId: string, playerName: string) {
+		this.#db.sql.exec(
+			`INSERT INTO leaderboard (playerId, player_name, score)
+							VALUES (?, ?, 0)
+							ON CONFLICT(playerId) DO UPDATE SET
+								player_name = EXCLUDED.player_name
+			`,
+			playerId,
+			playerName
+		);
+	}
+
 	getTopScores(limit: number = 10): LeaderboardEntry[] {
-		const rows = this.#db.exec<LeaderboardEntry>(
-			`SELECT playerId, score
+		const rows = this.#db.sql.exec<LeaderboardEntry>(
+			`SELECT playerId, score, player_name
              FROM leaderboard
              ORDER BY score DESC
              LIMIT ?`,
@@ -68,7 +69,7 @@ export class SqliteLeaderboard {
 	}
 
 	getTotalPlayers() {
-		const result = this.#db.exec<{ count: number; }>(`SELECT COUNT(*) as count FROM leaderboard`).one();
+		const result = this.#db.sql.exec<{ count: number; }>(`SELECT COUNT(*) as count FROM leaderboard`).one();
 		return result.count;
 	}
 

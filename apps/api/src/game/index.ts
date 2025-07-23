@@ -156,4 +156,44 @@ router.post('/pop', async (c) => {
 	return c.text('queued');
 });
 
+/**
+ * @example `POST /username` plaese submit the name in request body as a string
+ */
+router.post('/username', async (c) => {
+	const group = c.get("group");
+	const ouid = c.get("ouid");
+
+	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `rename:${ouid}` });
+	if (!success && !dev) {
+		throw new HTTPException(429, {
+			message: "เปลี่ยนชื่อได้ไม่เกินนาทีละ 4 ครั้ง",
+		});
+	}
+
+	try {
+		let name = await c.req.text();
+		// TODO: profanity filter
+		if (name.length === 0) {
+			throw new HTTPException(429, {
+				message: "ชื่อต้องมีความยาวอย่างน้อย 1 ตัวอักษร",
+			});
+		}
+
+		if (name.length > 160) {
+			throw new HTTPException(429, {
+				message: "ชื่อต้องมีความยาวน้อยกว่า 160 ตัวอักษร",
+			});
+		}
+
+		name = name.replace(/[\n\r\t]/g, " ").normalize("NFC").trim();
+
+		const gameRegion = getRegionHandler(group);
+		c.executionCtx.waitUntil(gameRegion.setPlayerName(ouid, name));
+
+		return c.text('ok');
+	} catch {
+		return c.text('failed', 400);
+	}
+});
+
 export { router as gameRouter };

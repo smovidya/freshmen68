@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { SqliteLeaderboard } from "./sqlite-leaderboard";
+import { migrate } from "./db-migration";
 
 export type UserPops = {
 	ouid: string,
@@ -16,27 +17,21 @@ export class GameRegionHandler extends DurableObject<Env> {
 	constructor(ctx: DurableObjectState, env: Env) {
 		super(ctx, env);
 
+		this.leaderboard = new SqliteLeaderboard(ctx.storage);
 		ctx.blockConcurrencyWhile(async () => {
-			this.#applyMigration();
-			this.leaderboard = new SqliteLeaderboard(ctx.storage.sql);
+			await migrate(this.ctx.storage);
+			await this.leaderboard.initialize();
 		});
-	}
-
-	#applyMigration() {
-		this.ctx.storage.sql.exec(
-			`CREATE TABLE IF NOT EXISTS pops (
-				timestamp INTEGER NOT NULL,
-				ouid TEXT NOT NULL,
-				amount INTEGER NOT NULL,
-				group_id TEXT NOT NULL
-			);`
-		);
 	}
 
 	addPop(count: number, ouid: string, groupNumber: string) {
 		// console.log(`Add score ${count} to ${ouid} in ${groupNumber}`);
 		this.leaderboard.addScore(ouid, count);
 		this.ctx.storage.sql.exec("INSERT INTO pops (timestamp, ouid, amount, group_id) VALUES (?, ?, ?, ?)", Date.now(), ouid, count, groupNumber);
+	}
+
+	setPlayerName(ouid: string, name: string) {
+		this.leaderboard.updatePlayerName(ouid, name);
 	}
 
 	getTotalScore() {

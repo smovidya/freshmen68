@@ -6,6 +6,7 @@ export const gameApiPrefix = `${env.PUBLIC_BETTER_AUTH_URL || "http:;//localhost
 export type LeaderboardEntry = {
   playerId: string;
   score: number;
+  player_name?: string;
 };
 
 export class GameAPIClient {
@@ -31,6 +32,16 @@ export class GameAPIClient {
   }
 
   ready = $derived(!!this.#token);
+
+  async updateName(newName: string) {
+    await fetch(`${gameApiPrefix}/username`, {
+      method: "POST",
+      body: newName,
+      headers: {
+        Authorization: `Bearer ${this.#token}`
+      }
+    });
+  }
 
   async submitPop(count = 1) {
     if (!this.ready || count === 0) {
