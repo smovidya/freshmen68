@@ -12,16 +12,40 @@ export class SqliteLeaderboard {
 		this.#db = db;
 	}
 
-	async initialize(fresh = true) {
+	async initialize(fresh = false) {
 		if (fresh) {
-			const result = this.#db.sql.exec<{ total_score: number; }>(`SELECT SUM(score) as total_score FROM leaderboard`).one();
-			this.#totalScore = result?.total_score || 0;
+			this.#db.sql.exec(`DELETE FROM leaderboard`);
+			this.#totalScore = 0;
+
+			const aggregatedPops = this.#db.sql.exec<{ ouid: string; total_score: number; }>(
+				`SELECT ouid, SUM(amount) as total_score FROM pops GROUP BY ouid`
+			).toArray();
+
+			for (const pop of aggregatedPops) {
+				this.#db.sql.exec(
+					`INSERT INTO leaderboard (playerId, score) VALUES (?, ?)`,
+					pop.ouid,
+					pop.total_score
+				);
+				this.#totalScore += pop.total_score;
+			}
+
+			await this.#db.put("total_score", this.#totalScore);
 		} else {
-			this.#totalScore = await this.#db.get("total_score") as number || 0;
+			// Load cached total score, or calculate from leaderboard if not cached
+			const cachedTotal = await this.#db.get("total_score") as number;
+			if (cachedTotal !== undefined) {
+				this.#totalScore = cachedTotal;
+			} else {
+				// Calculate total from leaderboard and cache it
+				const result = this.#db.sql.exec<{ total_score: number; }>(`SELECT SUM(score) as total_score FROM leaderboard`).one();
+				this.#totalScore = result?.total_score || 0;
+				await this.#db.put("total_score", this.#totalScore);
+			}
 		}
 	}
 
-	addScore(playerId: string, score: number) {
+	async addScore(playerId: string, score: number) {
 		this.#totalScore += score;
 		this.#db.sql.exec(
 			`INSERT INTO leaderboard (playerId, score)
@@ -31,6 +55,8 @@ export class SqliteLeaderboard {
 			playerId,
 			score
 		);
+		// this is synchronous btw
+		await this.#db.put("total_score", this.#totalScore);
 	}
 
 	getPlayerScore(playerId: string): number {

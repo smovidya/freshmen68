@@ -20,7 +20,7 @@ const migration: Migration[] = [
 				ouid TEXT NOT NULL,
 				amount INTEGER NOT NULL,
 				group_id TEXT NOT NULL
-			);`,
+			);`, // actually group id is not important since each group will have their own instace of DurableObject therefor their own db instance
 			`CREATE TABLE IF NOT EXISTS leaderboard (
 				playerId TEXT PRIMARY KEY,
 				score INTEGER NOT NULL
@@ -43,6 +43,18 @@ const migration: Migration[] = [
 		],
 		down: [
 			`ALTER TABLE leaderboard DROP COLUMN player_name;`
+		]
+	},
+	{
+		version: 3,
+		name: "Add indexes to reduce db ops (use for leaderboard fresh initialization)",
+		up: [
+			`CREATE INDEX IF NOT EXISTS idx_pops_ouid ON pops (ouid);`,
+			`CREATE INDEX IF NOT EXISTS idx_pops_timestamp ON pops (timestamp);`,
+		],
+		down: [
+			`DROP INDEX IF EXISTS idx_pops_timestamp;`,
+			`DROP INDEX IF EXISTS idx_pops_ouid;`,
 		]
 	}
 ];
