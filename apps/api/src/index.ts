@@ -7,17 +7,22 @@ import { cors } from 'hono/cors';
 import { createDatabaseConnection } from '@freshmen68/db';
 import { FeatureFlags } from '@freshmen68/flags';
 import { gameRouter } from './game';
-import * as jose from 'jose'
+import * as jose from 'jose';
+
+export const flags = new FeatureFlags({
+	enabledAll: env.WORKER_ENV === 'dev',
+});
 
 const app = new Hono<{
 	Variables: {
 		user: typeof auth.$Infer.Session.user | null;
 		session: typeof auth.$Infer.Session.session | null;
+		gameJWTPayload: jose.JWTPayload | null;
 	};
 }>();
 
-const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`
-const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl))
+const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`;
+const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl));
 
 app.use(
 	'*', // or replace with "*" to enable cors for all routes
@@ -31,8 +36,13 @@ app.use(
 	}),
 );
 
-app.on(['POST', 'GET'], '/game/*', async (c) => {
+app.use('/game/*', async (c) => {
+	if (!flags.isEnabled("game-playing")) {
+		return c.json({ error: 'Not available' }, 418);
+	}
+
 	const token = c.req.header('Authorization')?.replace('Bearer ', '');
+
 	if (!token) {
 		return c.json({ error: 'Unauthorized' }, 401);
 	}
@@ -41,13 +51,11 @@ app.on(['POST', 'GET'], '/game/*', async (c) => {
 		audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
 	});
 
-	// Game handler here
+	c.set("gameJWTPayload", payload);
 
-	return c.json({
-		ok: true,
-		payload
-	})
 });
+
+app.route("/game", gameRouter);
 
 app.on(['POST', 'GET'], '/api/auth/*', (c) => {
 	const auth = createAuth({
@@ -99,8 +107,6 @@ app.get("__hono/__version", c => {
 		version: 0x9065
 	});
 });
-
-app.route("/game", gameRouter);
 
 // redirect all other requests to the frontend URL
 app.all('*', (c) => {
