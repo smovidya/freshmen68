@@ -9,10 +9,6 @@ import { FeatureFlags } from '@freshmen68/flags';
 import { gameRouter } from './game';
 import * as jose from 'jose';
 
-export const flags = new FeatureFlags({
-	enabledAll: env.WORKER_ENV === 'dev',
-});
-
 const app = new Hono<{
 	Variables: {
 		user: typeof auth.$Infer.Session.user | null;
@@ -36,11 +32,7 @@ app.use(
 	}),
 );
 
-app.use('/game/*', async (c) => {
-	if (!flags.isEnabled("game-playing")) {
-		return c.json({ error: 'Not available' }, 418);
-	}
-
+app.use('/game/*', async (c, next) => {
 	const token = c.req.header('Authorization')?.replace('Bearer ', '');
 
 	if (!token) {
@@ -52,7 +44,7 @@ app.use('/game/*', async (c) => {
 	});
 
 	c.set("gameJWTPayload", payload);
-
+	await next()
 });
 
 app.route("/game", gameRouter);
@@ -115,8 +107,7 @@ app.all('*', (c) => {
 
 export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 	async fetch(request: Request): Promise<Response> {
-		return app.fetch(request);
-
+		return app.fetch(request, {}, this.ctx);
 	}
 
 	// async scheduled(event: ScheduledEvent): Promise<void> {

@@ -28,13 +28,13 @@ export class GameRegionHandler extends DurableObject<Env> {
 				timestamp INTEGER NOT NULL,
 				ouid TEXT NOT NULL,
 				amount INTEGER NOT NULL,
-				group_id INTEGER NOT NULL
+				group_id TEXT NOT NULL
 			);`
 		);
 	}
 
-	addPop(count: number, ouid: string, groupNumber: number) {
-		console.log(`Add score ${count} to ${ouid} in ${groupNumber}`);
+	addPop(count: number, ouid: string, groupNumber: string) {
+		// console.log(`Add score ${count} to ${ouid} in ${groupNumber}`);
 		this.leaderboard.addScore(ouid, count);
 		this.ctx.storage.sql.exec("INSERT INTO pops (timestamp, ouid, amount, group_id) VALUES (?, ?, ?, ?)", Date.now(), ouid, count, groupNumber);
 	}
