@@ -1,9 +1,11 @@
-import { env } from "cloudflare:workers";
-import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
-import type { WorkerCacheStorage } from "../type";
-import { getPopByGroups, getRegionHandler } from "./coordinator";
-import type { LeaderboardEntry } from "./sqlite-leaderboard";
+import { auth } from '@freshmen68/auth';
+import { env } from 'cloudflare:workers';
+import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
+import type { WorkerCacheStorage } from '../type';
+import { getPopByGroups, getRegionHandler } from './coordinator';
+import type { LeaderboardEntry } from './sqlite-leaderboard';
+import type { JWTPayload } from 'jose';
 
 /*
 	POPCAT: 800pop/30sec
@@ -22,17 +24,32 @@ import type { LeaderboardEntry } from "./sqlite-leaderboard";
 const MAX_POP_PER_REQUEST = 300;
 
 // TODO: better error message
-const INVITE_MESSAGE = "สวัสดีแหกเกอ ได้โปรดอย่ายิงค่าเซิร์ฟเวอร์มันแพง 😭 | สนใจทำงาน IT สโมเข้ามาดิสนี้ได้นะครับ: https://discord.gg/JNYm5dUP9D";
+const INVITE_MESSAGE =
+	'สวัสดีแหกเกอ ได้โปรดอย่ายิงค่าเซิร์ฟเวอร์มันแพง 😭 | สนใจทำงาน IT สโมเข้ามาดิสนี้ได้นะครับ: https://discord.gg/JNYm5dUP9D';
 const LEADERBOARD_CACHE_DURATION = 15; // sec
 const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
 
 const cfCaches = caches as unknown as WorkerCacheStorage;
 
-const router = new Hono();
+const router = new Hono<{
+	Variables: {
+		gameJWTPayload: JWTPayload;
+		ouid: string,
+		groupId: string;
+	};
+}>();
 
-// TODO: authenticate user
+router.use('*', async (c) => {
+	const { groupId, ouid } = c.get("gameJWTPayload");
+	if (!groupId || !ouid) {
+		throw new HTTPException(500, {
+			message: "what"
+		});
+	}
+	c.set("groupId", groupId);
+});
 
-router.get("/stats/global", async (c) => {
+router.get('/stats/global', async (c) => {
 	// we do this to reduce amount of rpc call to Durable object
 	const cached = await cfCaches.default.match(c.req.raw);
 	if (cached) {
@@ -45,8 +62,8 @@ router.get("/stats/global", async (c) => {
 	const pops = await getPopByGroups();
 	const response = Response.json(pops, {
 		headers: {
-			"Cache-Control": `max-age=${GLOBAL_LEADERBOARD_CACHE_DURATION}`
-		}
+			'Cache-Control': `max-age=${GLOBAL_LEADERBOARD_CACHE_DURATION}`,
+		},
 	});
 	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
 	return response;
@@ -56,7 +73,7 @@ router.get("/stats/global", async (c) => {
  * @example `GET /stats/groups/8`
  * @returns Top 10 user in current group as @type {LeaderboardEntry[]}
  */
-router.get("/stats/groups/:groupNumber", async (c) => {
+router.get('/stats/groups/:groupNumber', async (c) => {
 	const cached = await cfCaches.default.match(c.req.raw);
 	if (cached) {
 		return cached;
@@ -65,24 +82,24 @@ router.get("/stats/groups/:groupNumber", async (c) => {
 	// we dont rate limit this because cf cache
 
 	const group = parseInt(c.req.param().groupNumber);
-	if (!group) { // we dont have group 0 anyway
+	if (!group) {
+		// we dont have group 0 anyway
 		throw new HTTPException(404);
 	}
 
 	const gameRegion = getRegionHandler(group);
 	const response = Response.json(await gameRegion.getTopTen(), {
 		headers: {
-			"Cache-Control": `max-age=${LEADERBOARD_CACHE_DURATION}`
-		}
+			'Cache-Control': `max-age=${LEADERBOARD_CACHE_DURATION}`,
+		},
 	});
 	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
 	return response;
 });
 
-
 // its pain to cache this unless we change the url to `/stats/self/:ouid`
 // so dont call this too much
-router.get("/stats/self", async (c) => {
+router.get('/stats/self', async (c) => {
 	// TODO: auth
 	const query = c.req.query();
 	const ouid = query.ouid;
@@ -107,7 +124,7 @@ router.get("/stats/self", async (c) => {
 /**
  * @example `POST /pop?pop=80` = add 80 pop for current authenticated user
  */
-router.post("/pop", async (c) => {
+router.post('/pop', async (c) => {
 	const query = c.req.query();
 	const ouid = query.ouid; // TODO: GET THIS
 	const group = parseInt(query.group);
@@ -122,13 +139,13 @@ router.post("/pop", async (c) => {
 	const pop = parseInt(query.pop);
 	if (pop || pop > MAX_POP_PER_REQUEST) {
 		throw new HTTPException(400, {
-			message: "nah",
+			message: 'nah',
 		});
 	}
 
 	const gameRegion = getRegionHandler(group);
 	c.executionCtx.waitUntil(gameRegion.addPop(pop, ouid, group));
-	return c.text("queued");
+	return c.text('queued');
 });
 
 export { router as gameRouter };
