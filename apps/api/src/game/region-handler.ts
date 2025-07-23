@@ -46,4 +46,8 @@ export class GameRegionHandler extends DurableObject<Env> {
 		const score = this.leaderboard.getPlayerScore(ouid);
 		return score;
 	}
+
+	dumpAllPop() {
+		return this.ctx.storage.sql.exec(`SELECT * from pops`).toArray();
+	}
 }

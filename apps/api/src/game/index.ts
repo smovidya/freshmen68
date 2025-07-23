@@ -4,7 +4,7 @@ import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { JWTPayload } from 'jose';
 import type { WorkerCacheStorage } from '../type';
-import { getPopByGroups, getRegionHandler } from './coordinator';
+import { getPopByGroups, getRegionHandler, getRegionHandlers, groupNumbers } from './coordinator';
 import type { LeaderboardEntry } from './sqlite-leaderboard';
 
 /*
@@ -31,6 +31,7 @@ const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
 
 const cfCaches = caches as unknown as WorkerCacheStorage;
 
+const elavatedOuids = env.ELEVATED_OUID_LIST?.split(",") ?? [];
 const dev = env.WORKER_ENV === 'dev';
 export const flags = new FeatureFlags({
 	enabledAll: dev,
@@ -56,7 +57,7 @@ router.use('*', async (c, next) => {
 		}, 500);
 	}
 	if (dev) {
-		c.set("group", (group as string)[2]);
+		c.set("group", group as string);
 	}
 	c.set("ouid", ouid as string);
 	await next();
@@ -96,6 +97,7 @@ router.get('/stats/groups/:group', async (c) => {
 	// we dont rate limit this because cf cache
 
 	const gameRegion = getRegionHandler(c.get("group"));
+	console.log(c.get("group"));
 	const response = Response.json(await gameRegion.getTopTen(), {
 		headers: {
 			'Cache-Control': `max-age=${LEADERBOARD_CACHE_DURATION}`,
@@ -108,8 +110,6 @@ router.get('/stats/groups/:group', async (c) => {
 // its pain to cache this unless we change the url to `/stats/self/:ouid`
 // so dont call this too much
 router.get('/stats/self', async (c) => {
-	// TODO: auth
-	const query = c.req.query();
 	const ouid = c.get("ouid");
 	const group = c.get("group");
 
@@ -194,6 +194,26 @@ router.post('/username', async (c) => {
 	} catch {
 		return c.text('failed', 400);
 	}
+});
+
+router.get("/dump/pop", async c => {
+	const ouid = c.get("ouid");
+	if (!elavatedOuids.includes(ouid) && !dev) {
+		throw new HTTPException(404);
+	}
+
+	const groups = c.req.queries("groups") ?? groupNumbers;
+	console.log(groups);
+
+	return c.json(
+		await Promise.all(
+			getRegionHandlers(groups)
+				.map(async it => ({
+					group: it.groupNumber,
+					pops: await it.handler.dumpAllPop(),
+				}))
+		)
+	);
 });
 
 export { router as gameRouter };

@@ -16,8 +16,8 @@ export function getRegionHandler(groupNumber: string) {
 	return env.GAME_REGION_HANDLER.get(env.GAME_REGION_HANDLER.idFromName(`group:${groupNumber}`));
 }
 
-export function getAllRegionHandlers(): GameRegion[] {
-	return groupNumbers.map(i => ({
+export function getRegionHandlers(groups = groupNumbers): GameRegion[] {
+	return groups.map(i => ({
 		groupNumber: i,
 		handler: getRegionHandler(i)
 	}));
@@ -25,7 +25,7 @@ export function getAllRegionHandlers(): GameRegion[] {
 
 export async function getPopByGroups() {
 	const scores = await Promise.all(
-		getAllRegionHandlers()
+		getRegionHandlers()
 			.map(async (it) => {
 				return [
 					it.groupNumber,
