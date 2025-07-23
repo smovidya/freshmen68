@@ -43,7 +43,7 @@
 		}
 	};
 
-	const groupImageKey = `g${Math.floor(Math.random() * 7) + 1}`;
+	const groupImageKey = ['g1', 'g3', 'g4', 'g5', 'g6', 'g7'][Math.floor(Math.random() * 6)];
 
 	let poping = $state(false);
 
@@ -86,8 +86,18 @@
 		aria-label="Toggle Pop"
 	>
 		<div>
-			<img src={popImages[groupImageKey].open} class={poping ? 'block' : 'hidden'} alt="" draggable="false" />
-			<img src={popImages[groupImageKey].close} class={poping ? 'hidden' : 'block'} alt="" draggable="false" />
+			<img
+				src={popImages[groupImageKey].open}
+				class={poping ? 'block' : 'hidden'}
+				alt=""
+				draggable="false"
+			/>
+			<img
+				src={popImages[groupImageKey].close}
+				class={poping ? 'hidden' : 'block'}
+				alt=""
+				draggable="false"
+			/>
 		</div>
 	</button>
 </main>
