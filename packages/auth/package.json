@@ -10,7 +10,8 @@
   "dependencies": {
     "@freshmen68/db": "workspace:*",
     "dotenv": "^17.2.0",
-    "postgres": "^3.4.7"
+    "postgres": "^3.4.7",
+    "@freshmen68/flags": "workspace:*"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"

@@ -1,8 +1,10 @@
-import { schema } from '@freshmen68/db';
+import { schema, tables } from '@freshmen68/db';
+import { FeatureFlags } from '@freshmen68/flags';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { jwt } from 'better-auth/plugins/jwt';
 import { env } from 'cloudflare:workers';
+import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
@@ -17,6 +19,11 @@ export const createAuth = ({
 	});
 
 	const isDev = env.WORKER_ENV !== 'production';
+	const flags = new FeatureFlags({
+		overrides: {
+			"game-allow-non-freshmen": isDev, // Allow non-f
+		}
+	})
 
 	return betterAuth({
 		database: drizzleAdapter(db, {
@@ -43,9 +50,8 @@ export const createAuth = ({
 									message: 'การลงทะเบียนนี้สำหรับนิสิตคณะวิทยาศาสตร์เท่านั้น',
 								})
 							}
-							
-							// Limited to freshmen only
-							if (!ouid?.startsWith('68')) {
+
+							if (!flags.isEnabled("game-allow-non-freshmen") && !ouid?.startsWith('68')) {
 								console.error(`[auth] Error: freshmen-only ouid:${ouid} ${JSON.stringify(user)}`)
 								throw context?.error("FORBIDDEN", {
 									code: 'freshmen-only',
@@ -67,6 +73,34 @@ export const createAuth = ({
 							message: 'ระบบนี้สามารถเข้าสู่ระบบได้เฉพาะนิสิตเท่านั้น (@student.chula.ac.th)',
 						})
 					}
+				}
+			},
+			session: {
+				create: {
+					async before(session, context) {
+						const user = await db.select().from(tables.user).where(eq(tables.user.id, session.userId))
+						if (!user[0]?.group) {
+							// user didn't have group assigned, get from team
+							const student = await db.select().from(tables.students).where(eq(tables.students.email, user[0]?.email || ""));
+							if (!student[0]?.teamId && !student[0]?.teamOwnedId) {
+								console.error(`[auth] Error: no-team ${JSON.stringify(user)}`)
+								throw context?.error("FORBIDDEN", {
+									code: 'no-team',
+									message: 'คุณยังไม่ได้เข้าร่วมทีม กรุณาเข้าร่วมทีมก่อน',
+								})
+							}
+							const currentStudentGroup = await db.select().from(tables.teams).where(eq(tables.teams.id, student[0]?.teamId || student[0]?.teamOwnedId))
+							await db.update(tables.user).set({
+								group: currentStudentGroup[0]?.result
+							}).where(eq(tables.user.id, session.userId));
+						}
+
+						return {
+							data: {
+								...session,
+							}
+						}
+					},
 				}
 			}
 		},
