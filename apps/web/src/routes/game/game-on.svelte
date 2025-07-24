@@ -111,7 +111,11 @@
 			gameData.self = cachedCount;
 			return;
 		}
-		gameData.self = await client.getSelfPopCount();
+		try {
+			gameData.self = await client.getSelfPopCount();
+		} catch (error) {
+			console.error('Failed to fetch self pop count:', error);
+		}
 		setLocalStorageWithDate('selfPopCount', gameData.self, 15);
 	}
 
@@ -156,6 +160,7 @@
 	>;
 
 	let poping = $state(false);
+	let myLoggedCount = $state(0);
 	let currentPopBatchCount = $state(0);
 	let popTimeout: NodeJS.Timeout | null = null;
 	let groupImageKey = 'g' + studentGroup;
@@ -182,6 +187,7 @@
 
 	setInterval(() => {
 		client.submitPop(currentPopBatchCount).then(() => {
+			gameData.self += currentPopBatchCount;
 			currentPopBatchCount = 0;
 		});
 	}, 1000 * 30);
