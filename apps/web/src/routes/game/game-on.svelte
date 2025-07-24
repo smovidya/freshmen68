@@ -89,7 +89,7 @@
 			return;
 		}
 		gameData.leaderboard = await client.getGlobalLeaderboard();
-		setLocalStorageWithDate('globalLeaderboard', gameData.leaderboard, 10);
+		setLocalStorageWithDate('globalLeaderboard', gameData.leaderboard, 0.5);
 	};
 
 	const getInGroupLeaderboard = async () => {
@@ -102,7 +102,7 @@
 			return;
 		}
 		gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
-		setLocalStorageWithDate('inGroupLeaderboard', gameData.inGroup, 10);
+		setLocalStorageWithDate('inGroupLeaderboard', gameData.inGroup, 0.5);
 	};
 
 	async function getSelfPopCount() {
@@ -116,7 +116,7 @@
 		} catch (error) {
 			console.error('Failed to fetch self pop count:', error);
 		}
-		setLocalStorageWithDate('selfPopCount', gameData.self, 5);
+		setLocalStorageWithDate('selfPopCount', gameData.self, 0.5);
 	}
 
 	onMount(async () => {
@@ -192,9 +192,9 @@
 		});
 	}, 1000 * 30);
 
-	setInterval(getSelfPopCount, 1000 * 60 * 1);
-	setInterval(getInGroupLeaderboard, 1000 * 60 * 1);
-	setInterval(getLeaderboardGlobal, 1000 * 60 * 1);
+	setInterval(getSelfPopCount, 1000 * 30);
+	setInterval(getInGroupLeaderboard, 1000 * 1);
+	setInterval(getLeaderboardGlobal, 1000 * 1);
 </script>
 
 <svelte:window
