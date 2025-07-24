@@ -131,6 +131,8 @@ export class GamePopper {
 
   async init() {
     this.#serverCount = await this.#client.getSelfPopCount();
+    localStorage.setItem("__pop_count", String(untrack(() => this.#serverCount)));
+
     // let abortController: AbortController | null = null;
     // const pollGroupCount = () => {
     //   abortController?.abort();
