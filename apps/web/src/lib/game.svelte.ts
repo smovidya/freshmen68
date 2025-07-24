@@ -125,7 +125,7 @@ export class GamePopper {
   constructor(client: GameAPIClient) {
     // this.groupId = groupId;
     this.#client = client;
-    console.log(localStorage.getItem("__pop_count"));
+    // console.log(localStorage.getItem("__pop_count"));
     this.#serverCount = parseInt(localStorage.getItem("__pop_count") ?? "0") || 0;
   }
 
@@ -174,7 +174,7 @@ export class GamePopper {
 
   async #flush() {
     const batched = untrack(() => this.batchedCount);
-    console.log(`Flushing ${batched} pop`);
+    // console.log(`Flushing ${batched} pop`);
     this.#serverCount = untrack(() => this.displaySelfCount);
     this.batchedCount = 0;
     try {
