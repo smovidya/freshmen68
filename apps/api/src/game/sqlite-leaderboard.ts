@@ -83,6 +83,13 @@ export class SqliteLeaderboard {
 		);
 	}
 
+	getPlayerName(playerId: string) {
+		return this.#db.sql.exec<{ player_name: string; }>(
+			`SELECT player_name FROM leaderboard WHERE playerId = ?`,
+			playerId,
+		).one().player_name;
+	}
+
 	getTopScores(limit: number = 10): LeaderboardEntry[] {
 		const rows = this.#db.sql.exec<LeaderboardEntry>(
 			`SELECT playerId, score, player_name

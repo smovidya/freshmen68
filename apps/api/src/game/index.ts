@@ -157,6 +157,26 @@ router.post('/pop', async (c) => {
 	return c.text('queued');
 });
 
+router.get('/username', async c => {
+	const group = c.get("group");
+	const ouid = c.get("ouid");
+
+	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `getname:${ouid}` });
+	if (!success && !dev) {
+		throw new HTTPException(429, {
+			message: "get name ได้ไม่เกินนาทีละ 4 ครั้ง",
+		});
+	}
+
+	try {
+
+		const gameRegion = getRegionHandler(group);
+		return c.text(await gameRegion.getPlayerName(ouid));
+	} catch {
+		return c.text('failed', 400);
+	}
+});
+
 /**
  * @example `POST /username` plaese submit the name in request body as a string
  */

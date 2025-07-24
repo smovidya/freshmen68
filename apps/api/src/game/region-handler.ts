@@ -34,6 +34,10 @@ export class GameRegionHandler extends DurableObject<Env> {
 		this.leaderboard.updatePlayerName(ouid, name);
 	}
 
+	getPlayerName(ouid: string) {
+		return this.leaderboard.getPlayerName(ouid);
+	}
+
 	getTotalScore() {
 		return this.leaderboard.totalScore;
 	}
