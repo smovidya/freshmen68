@@ -51,13 +51,13 @@ export const createAuth = ({
 								})
 							}
 
-							if (!flags.isEnabled("game-allow-non-freshmen") && !ouid?.startsWith('68')) {
-								console.error(`[auth] Error: freshmen-only ouid:${ouid} ${JSON.stringify(user)}`)
-								throw context?.error("FORBIDDEN", {
-									code: 'freshmen-only',
-									message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
-								});
-							}
+							// if (ouid.startsWith('68')) {
+							// 	console.error(`[auth] Error: freshmen-only ouid:${ouid} ${JSON.stringify(user)}`)
+							// 	throw context?.error("FORBIDDEN", {
+							// 		code: 'freshmen-only',
+							// 		message: 'การลงทะเบียนนี้สำหรับนิสิตชั้นปีที่ 1 เท่านั้น หากคุณเป็นนิสิตชั้นปีที่ 1 โปรดติดต่อ https://www.instagram.com/smovidya_official/',
+							// 	});
+							// }
 
 							return {
 								data: {
