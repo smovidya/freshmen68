@@ -43,6 +43,15 @@ export class GameAPIClient {
     });
   }
 
+  async getName() {
+    return await fetch(`${gameApiPrefix}/username`, {
+      headers: {
+        Authorization: `Bearer ${this.#token}`
+      }
+    }).then(it => it.text());
+  }
+
+
   async submitPop(count = 1) {
     if (!this.ready || count === 0) {
       return;
