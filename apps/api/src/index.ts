@@ -45,9 +45,12 @@ app.use('/game/*', async (c, next) => {
 			audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
 		});
 
+		console.log('JWT Payload:', payload);
+
 		c.set("gameJWTPayload", payload);
 		await next()
-	} catch {
+	} catch (error) {
+		console.log('JWT verification failed: ', error);
 		return c.json({ error: 'Unauthorized' }, 401);
 	}
 });
