@@ -49,6 +49,10 @@
 	});
 
 	function setLocalStorageWithDate(key: string, value: any, expirationMinutes: number = 20) {
+		if (value?.error) {
+			localStorage.removeItem(key);
+			return;
+		}
 		const data = {
 			value,
 			date: new Date().toISOString(),
@@ -61,6 +65,10 @@
 		const data = localStorage.getItem(key);
 		if (!data) return null;
 		const parsedData = JSON.parse(data);
+		if (parsedData?.value?.error) {
+			localStorage.removeItem(key);
+			return null;
+		}
 		const date = new Date(parsedData.date);
 		const now = new Date();
 		const diffInMinutes = (now.getTime() - date.getTime()) / (1000 * 60);
