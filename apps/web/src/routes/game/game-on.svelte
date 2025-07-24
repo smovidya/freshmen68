@@ -192,9 +192,9 @@
 		});
 	}, 1000 * 30);
 
-	setInterval(getSelfPopCount, 1000 * 60 * 2);
-	setInterval(getInGroupLeaderboard, 1000 * 60 * 5);
-	setInterval(getLeaderboardGlobal, 1000 * 60 * 5);
+	setInterval(getSelfPopCount, 1000 * 60 * 1);
+	setInterval(getInGroupLeaderboard, 1000 * 60 * 1);
+	setInterval(getLeaderboardGlobal, 1000 * 60 * 1);
 </script>
 
 <svelte:window
