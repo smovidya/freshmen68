@@ -17,8 +17,18 @@ const app = new Hono<{
 	};
 }>();
 
-const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`;
-const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl));
+
+function getJwks() {
+	if (env.WORKER_ENV === 'production') {
+		// It's safe to embed here btw
+		return jose.createLocalJWKSet({ "keys": [{ "kty": "OKP", "crv": "Ed25519", "x": "5s1FFUB8l54bIi7OtakDKwQmEe2Krf1PaWTMycL9yCU", "kid": "POMpwv8go7MUWBLO11LcgeygdZ8KFgyH" }] })
+	}
+
+	const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`;
+	return jose.createRemoteJWKSet(new URL(jwksUrl));
+}
+
+const JWKS = getJwks();
 
 app.use(
 	'*', // or replace with "*" to enable cors for all routes
