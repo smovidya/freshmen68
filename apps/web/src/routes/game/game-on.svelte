@@ -1,7 +1,3 @@
-<script module lang="ts">
-	export const client = new GameAPIClient(false);
-</script>
-
 <script lang="ts">
 	import G1CloseWithEff from '$lib/assets/game/g1_close_withEff.png';
 	import G1OpenWithEff from '$lib/assets/game/g1_open_withEff.png';
@@ -16,7 +12,7 @@
 	import G7CloseWithEff from '$lib/assets/game/g7_close_withEff.png';
 	import G7OpenWithEff from '$lib/assets/game/g7_open_withEff.png';
 	import PopSound from '$lib/assets/game/pop-cat-original-meme_3ObdYkj.mp3';
-	import { GameAPIClient } from '$lib/game.svelte';
+	import { GameAPIClient, GamePopper } from '$lib/game.svelte';
 	import { onMount } from 'svelte';
 
 	import {
@@ -31,53 +27,55 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { when } from '$lib/reacitivity.svelte';
 
 	let {
 		studentGroup = $bindable('1'),
-		studentOuid = $bindable('')
-	}: { studentGroup: string; studentOuid: string } = $props();
+		studentOuid = $bindable(''),
+		client
+	}: { studentGroup: string; studentOuid: string; client: GameAPIClient } = $props();
+
+	const popper = new GamePopper(client);
 
 	let popSound: HTMLAudioElement;
 	let gameData = $state<{
 		leaderboard: Awaited<ReturnType<GameAPIClient['getGlobalLeaderboard']>>;
 		inGroup: Awaited<ReturnType<GameAPIClient['getInGroupLeaderboard']>>;
-		self: Awaited<ReturnType<GameAPIClient['getSelfPopCount']>>;
 	}>({
 		leaderboard: {},
-		inGroup: [],
-		self: 0
+		inGroup: []
 	});
 
-	function setLocalStorageWithDate(key: string, value: any, expirationMinutes: number = 20) {
-		if (value?.error) {
-			localStorage.removeItem(key);
-			return;
-		}
-		const data = {
-			value,
-			date: new Date().toISOString(),
-			exp: new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString()
-		};
-		localStorage.setItem(key, JSON.stringify(data));
-	}
+	// function setLocalStorageWithDate(key: string, value: any, expirationMinutes: number = 20) {
+	// 	if (value?.error) {
+	// 		localStorage.removeItem(key);
+	// 		return;
+	// 	}
+	// 	const data = {
+	// 		value,
+	// 		date: new Date().toISOString(),
+	// 		exp: new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString()
+	// 	};
+	// 	localStorage.setItem(key, JSON.stringify(data));
+	// }
 
-	function getLocalStorageWithDate<T>(key: string): T | null {
-		const data = localStorage.getItem(key);
-		if (!data) return null;
-		const parsedData = JSON.parse(data);
-		if (parsedData?.value?.error) {
-			localStorage.removeItem(key);
-			return null;
-		}
-		const date = new Date(parsedData.date);
-		const now = new Date();
-		const diffInMinutes = (now.getTime() - date.getTime()) / (1000 * 60);
-		if (diffInMinutes > parsedData.exp) {
-			localStorage.removeItem(key);
-			return null;
-		}
-		return parsedData.value as T;
-	}
+	// function getLocalStorageWithDate<T>(key: string): T | null {
+	// 	const data = localStorage.getItem(key);
+	// 	if (!data) return null;
+	// 	const parsedData = JSON.parse(data);
+	// 	if (parsedData?.value?.error) {
+	// 		localStorage.removeItem(key);
+	// 		return null;
+	// 	}
+	// 	const date = new Date(parsedData.date);
+	// 	const now = new Date();
+	// 	const diffInMinutes = (now.getTime() - date.getTime()) / (1000 * 60);
+	// 	if (diffInMinutes > parsedData.exp) {
+	// 		localStorage.removeItem(key);
+	// 		return null;
+	// 	}
+	// 	return parsedData.value as T;
+	// }
 
 	const getLeaderboardGlobal = async () => {
 		gameData.leaderboard = await client.getGlobalLeaderboard();
@@ -87,20 +85,14 @@
 		gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
 	};
 
-	async function getSelfPopCount() {
-		try {
-			gameData.self = await client.getSelfPopCount();
-		} catch (error) {
-			console.error('Failed to fetch self pop count:', error);
+	when(
+		() => client.ready,
+		() => {
+			popper.init();
+			getLeaderboardGlobal();
+			getInGroupLeaderboard();
 		}
-	}
-
-	onMount(async () => {
-		await client.refreshToken();
-		await getSelfPopCount();
-		getLeaderboardGlobal();
-		getInGroupLeaderboard();
-	});
+	);
 
 	const popImages = {
 		g1: {
@@ -136,7 +128,6 @@
 	>;
 
 	let poping = $state(false);
-	let myLoggedCount = $state(0);
 	let currentPopBatchCount = $state(0);
 	let popTimeout: NodeJS.Timeout | null = null;
 	let groupImageKey = 'g' + studentGroup;
@@ -156,21 +147,20 @@
 	function onUnpop() {
 		if (!poping) return;
 		poping = false;
-		currentPopBatchCount++;
+		popper.pop();
 		// TODO: Sound so shit I gotta disabled it
 		// popSound.play();
 	}
 
-	setInterval(() => {
-		client.submitPop(currentPopBatchCount).then(() => {
-			gameData.self += currentPopBatchCount;
-			currentPopBatchCount = 0;
-		});
-	}, 1000 * 30);
-
-	setInterval(getSelfPopCount, 1000 * 30);
-	setInterval(getInGroupLeaderboard, 1000 * 1);
-	setInterval(getLeaderboardGlobal, 1000 * 1);
+	onMount(() => {
+		const id1 = setInterval(getInGroupLeaderboard, 1000 * 5);
+		const id2 = setInterval(getLeaderboardGlobal, 1000 * 5);
+		return () => {
+			popper.destroy();
+			clearInterval(id1);
+			clearInterval(id2);
+		};
+	});
 </script>
 
 <svelte:window
@@ -197,7 +187,7 @@
 				{myDisplayName}
 			</div>
 			<div class="mb-4 text-center text-2xl font-bold">
-				{currentPopBatchCount + gameData.self}
+				{currentPopBatchCount + popper.displaySelfCount}
 			</div>
 		</div>
 		<button

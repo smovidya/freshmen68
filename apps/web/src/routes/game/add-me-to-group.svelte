@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { GameAPIClient } from '$lib/game.svelte';
 	import { trpcClient } from '$lib/trpc';
 	import { toast } from 'svelte-sonner';
-	import { client as gameClient } from './game-on.svelte';
 
+	let { client }: { client: GameAPIClient } = $props();
 	const trpc = trpcClient();
 
 	let joinPassword = $state('');
@@ -26,7 +27,7 @@
 		}
 
 		toast.success('เข้าร่วมกรุ๊ปสำเร็จ');
-		await gameClient.refreshToken();
+		await client.refreshToken();
 		window.location.reload();
 	}
 </script>

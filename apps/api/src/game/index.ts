@@ -115,7 +115,7 @@ router.get('/stats/self', async (c) => {
 	const group = c.get("group");
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `stats:self:${ouid}` });
-	if (!success) {
+	if (!success && !dev) {
 		throw new HTTPException(429, {
 			message: INVITE_MESSAGE,
 		});
@@ -169,7 +169,6 @@ router.get('/username', async c => {
 	}
 
 	try {
-
 		const gameRegion = getRegionHandler(group);
 		return c.text(await gameRegion.getPlayerName(ouid));
 	} catch {

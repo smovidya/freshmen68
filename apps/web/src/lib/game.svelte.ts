@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/public';
 import { authClient } from './auth/client';
+import { dev } from "$app/environment";
 
 export const gameApiPrefix = `${env.PUBLIC_BETTER_AUTH_URL || "http:;//localhost:8787"}/game`;
 
@@ -90,5 +91,101 @@ export class GameAPIClient {
       }
     });
     return (await res.json()) as number;
+  }
+}
+
+import { untrack } from "svelte";
+
+const zeroGroupCounts = () => ({
+  1: 0,
+  3: 0,
+  4: 0,
+  5: 0,
+  6: 0,
+  7: 0,
+});
+
+export class GamePopper {
+  // groupPollIntervalId!: NodeJS.Timeout; // wtf, idc anymore
+  flushIntervalId!: NodeJS.Timeout;
+  selfPollIntervalId!: NodeJS.Timeout; // wtf, idc anymore
+  batchedCount: number = $state(0);
+
+
+  #serverCount = $state(0);
+  displaySelfCount = $derived(this.batchedCount + this.#serverCount);
+
+  // TODO: optimistic update, nahhhh
+  // #clickSpeedPerGroups = $state(zeroGroupCounts());
+  #client: GameAPIClient;
+  // groupId: string;
+
+  #ready = $state(false);
+
+  constructor(client: GameAPIClient) {
+    // this.groupId = groupId;
+    this.#client = client;
+    console.log(localStorage.getItem("__pop_count"));
+    this.#serverCount = parseInt(localStorage.getItem("__pop_count") ?? "0") || 0;
+  }
+
+  async init() {
+    // let abortController: AbortController | null = null;
+    // const pollGroupCount = () => {
+    //   abortController?.abort();
+    //   abortController = new AbortController();
+    //   this.#client.getInGroupLeaderboard(this.groupId).then((counts) => {
+    //     this.#realGroupCount = {
+    //       ...this.#realGroupCount,
+    //       ...counts
+    //     };
+    //   }).catch(() => { });
+    // };
+
+    // pollGroupCount();
+    // this.groupPollIntervalId = setInterval(pollGroupCount, dev ? 500 : 1000 * 30);
+
+    const pollSelfCount = () => {
+      this.#client.getSelfPopCount().then((count) => {
+        if (count > this.#serverCount) { // update from another device
+          this.#serverCount = count;
+        }
+        this.#ready = true;
+      }).catch(() => { });
+    };
+
+    pollSelfCount();
+    this.selfPollIntervalId = setInterval(pollSelfCount, dev ? 1000 : 1000 * 20);
+
+    this.flushIntervalId = setInterval(() => {
+      this.#flush();
+    }, dev ? 1000 : 1000 * 20);
+  }
+
+  private stop() {
+    clearInterval(this.selfPollIntervalId);
+    clearInterval(this.flushIntervalId);
+  }
+
+  pop() {
+    this.batchedCount += 1;
+    localStorage.setItem("__pop_count", String(untrack(() => this.displaySelfCount)));
+  }
+
+  async #flush() {
+    const batched = untrack(() => this.batchedCount);
+    console.log(`Flushing ${batched} pop`);
+    this.#serverCount = untrack(() => this.displaySelfCount);
+    this.batchedCount = 0;
+    try {
+      await this.#client.submitPop(batched);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  destroy() {
+    this.#flush();
+    this.stop();
   }
 }
