@@ -153,8 +153,8 @@
 	}
 
 	onMount(() => {
-		const id1 = setInterval(getInGroupLeaderboard, 1000 * 5);
-		const id2 = setInterval(getLeaderboardGlobal, 1000 * 5);
+		const id1 = setInterval(getInGroupLeaderboard, 1000 * 2);
+		const id2 = setInterval(getLeaderboardGlobal, 1000 * 2);
 		return () => {
 			popper.destroy();
 			clearInterval(id1);

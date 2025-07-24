@@ -26,8 +26,9 @@ const MAX_POP_PER_REQUEST = 300;
 // TODO: better error message
 const INVITE_MESSAGE =
 	'สวัสดีแหกเกอ ได้โปรดอย่ายิงค่าเซิร์ฟเวอร์มันแพง 😭 | สนใจทำงาน IT สโมเข้ามาดิสนี้ได้นะครับ: https://discord.gg/JNYm5dUP9D';
-const LEADERBOARD_CACHE_DURATION = 15; // sec
-const GLOBAL_LEADERBOARD_CACHE_DURATION = 15; // sec
+
+const LEADERBOARD_CACHE_DURATION = 5;
+const GLOBAL_LEADERBOARD_CACHE_DURATION = 5; // sec
 
 const cfCaches = caches as unknown as WorkerCacheStorage;
 
