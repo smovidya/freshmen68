@@ -80,43 +80,19 @@
 	}
 
 	const getLeaderboardGlobal = async () => {
-		const cachedLeaderboard =
-			getLocalStorageWithDate<Awaited<ReturnType<GameAPIClient['getGlobalLeaderboard']>>>(
-				'globalLeaderboard'
-			);
-		if (cachedLeaderboard !== null) {
-			gameData.leaderboard = cachedLeaderboard;
-			return;
-		}
 		gameData.leaderboard = await client.getGlobalLeaderboard();
-		setLocalStorageWithDate('globalLeaderboard', gameData.leaderboard, 0.5);
 	};
 
 	const getInGroupLeaderboard = async () => {
-		const cachedInGroup =
-			getLocalStorageWithDate<Awaited<ReturnType<GameAPIClient['getInGroupLeaderboard']>>>(
-				'inGroupLeaderboard'
-			);
-		if (cachedInGroup !== null) {
-			gameData.inGroup = cachedInGroup;
-			return;
-		}
 		gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
-		setLocalStorageWithDate('inGroupLeaderboard', gameData.inGroup, 0.5);
 	};
 
 	async function getSelfPopCount() {
-		const cachedCount = getLocalStorageWithDate<number>('selfPopCount');
-		if (cachedCount !== null) {
-			gameData.self = cachedCount;
-			return;
-		}
 		try {
 			gameData.self = await client.getSelfPopCount();
 		} catch (error) {
 			console.error('Failed to fetch self pop count:', error);
 		}
-		setLocalStorageWithDate('selfPopCount', gameData.self, 0.5);
 	}
 
 	onMount(async () => {
