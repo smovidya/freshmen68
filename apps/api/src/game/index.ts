@@ -46,8 +46,8 @@ const router = new Hono<{
 }>();
 
 router.use('*', async (c, next) => {
-	if (!flags.isEnabled("game-playing")) {
-		return c.json({ error: 'Not available' }, 418);
+	if (!flags.isEnabled("game-playing") && (flags.isEnabled("game-allow-non-freshmen")) && c.var.ouid.startsWith("68")) {
+		return c.json({ error: 'Not available' }, 401);
 	}
 
 	const { group, ouid } = c.get("gameJWTPayload");
