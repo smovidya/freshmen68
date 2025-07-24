@@ -46,7 +46,7 @@ const router = new Hono<{
 }>();
 
 router.use('*', async (c, next) => {
-	if (!flags.isEnabled("game-playing") || !flags.isEnabled("game-allow-non-freshmen")) {
+	if (!flags.isEnabled("game-playing") && !flags.isEnabled("game-allow-non-freshmen")) {
 		console.log("Game is not available");
 		return c.json({ error: 'Not available' }, 401);
 	}
