@@ -1,3 +1,7 @@
+<script module lang="ts">
+	export const client = new GameAPIClient(false);
+</script>
+
 <script lang="ts">
 	import G1CloseWithEff from '$lib/assets/game/g1_close_withEff.png';
 	import G1OpenWithEff from '$lib/assets/game/g1_open_withEff.png';
@@ -34,7 +38,6 @@
 	}: { studentGroup: string; studentOuid: string } = $props();
 
 	let popSound: HTMLAudioElement;
-	const client = new GameAPIClient(false);
 	let gameData = $state<{
 		leaderboard: Awaited<ReturnType<GameAPIClient['getGlobalLeaderboard']>>;
 		inGroup: Awaited<ReturnType<GameAPIClient['getInGroupLeaderboard']>>;
@@ -45,25 +48,70 @@
 		self: 0
 	});
 
-	const a = async () => {
+	function setLocalStorageWithDate(key: string, value: any, expirationMinutes: number = 20) {
+		const data = {
+			value,
+			date: new Date().toISOString(),
+			exp: new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString()
+		};
+		localStorage.setItem(key, JSON.stringify(data));
+	}
+
+	function getLocalStorageWithDate<T>(key: string): T | null {
+		const data = localStorage.getItem(key);
+		if (!data) return null;
+		const parsedData = JSON.parse(data);
+		const date = new Date(parsedData.date);
+		const now = new Date();
+		const diffInMinutes = (now.getTime() - date.getTime()) / (1000 * 60);
+		if (diffInMinutes > parsedData.exp) {
+			localStorage.removeItem(key);
+			return null;
+		}
+		return parsedData.value as T;
+	}
+
+	const getLeaderboardGlobal = async () => {
+		const cachedLeaderboard =
+			getLocalStorageWithDate<Awaited<ReturnType<GameAPIClient['getGlobalLeaderboard']>>>(
+				'globalLeaderboard'
+			);
+		if (cachedLeaderboard !== null) {
+			gameData.leaderboard = cachedLeaderboard;
+			return;
+		}
 		gameData.leaderboard = await client.getGlobalLeaderboard();
+		setLocalStorageWithDate('globalLeaderboard', gameData.leaderboard, 15);
 	};
-	const b = async () => {
+
+	const getInGroupLeaderboard = async () => {
+		const cachedInGroup =
+			getLocalStorageWithDate<Awaited<ReturnType<GameAPIClient['getInGroupLeaderboard']>>>(
+				'inGroupLeaderboard'
+			);
+		if (cachedInGroup !== null) {
+			gameData.inGroup = cachedInGroup;
+			return;
+		}
 		gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
+		setLocalStorageWithDate('inGroupLeaderboard', gameData.inGroup, 15);
 	};
-	const c = async () => {
+
+	async function getSelfPopCount() {
+		const cachedCount = getLocalStorageWithDate<number>('selfPopCount');
+		if (cachedCount !== null) {
+			gameData.self = cachedCount;
+			return;
+		}
 		gameData.self = await client.getSelfPopCount();
-	};
-	const d = () => client.submitPop();
-	let name = $state('');
-	const e = () => client.updateName(name);
+		setLocalStorageWithDate('selfPopCount', gameData.self, 15);
+	}
 
 	onMount(async () => {
 		await client.refreshToken();
-		a();
-		b();
-		c();
-		d();
+		await getSelfPopCount();
+		getLeaderboardGlobal();
+		getInGroupLeaderboard();
 	});
 
 	const popImages = {
@@ -91,7 +139,13 @@
 			close: G7CloseWithEff,
 			open: G7OpenWithEff
 		}
-	} as const;
+	} as Record<
+		string,
+		{
+			close: string;
+			open: string;
+		}
+	>;
 
 	let poping = $state(false);
 	let currentPopBatchCount = $state(0);
@@ -117,15 +171,15 @@
 		popSound.play();
 	}
 
-	// TODO: Is this really suitable for production?
 	setInterval(() => {
 		client.submitPop(currentPopBatchCount).then(() => {
 			currentPopBatchCount = 0;
-			a();
-			b();
-			c();
 		});
 	}, 1000 * 30);
+
+	setInterval(getSelfPopCount, 1000 * 60 * 2);
+	setInterval(getInGroupLeaderboard, 1000 * 60 * 5);
+	setInterval(getLeaderboardGlobal, 1000 * 60 * 5);
 </script>
 
 <svelte:window

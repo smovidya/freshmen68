@@ -3,8 +3,9 @@
 	import { Input } from '$lib/components/ui/input';
 	import { trpcClient } from '$lib/trpc';
 	import { toast } from 'svelte-sonner';
+	import { client as gameClient } from './game-on.svelte';
 
-	const client = trpcClient();
+	const trpc = trpcClient();
 
 	let joinPassword = $state('');
 
@@ -14,7 +15,7 @@
 		}
 
 		try {
-			await client.user.updateUserGroup.mutate({
+			await trpc.user.updateUserGroup.mutate({
 				groupCode: joinPassword
 			});
 		} catch (error) {
@@ -25,6 +26,7 @@
 		}
 
 		toast.success('เข้าร่วมกรุ๊ปสำเร็จ');
+		await gameClient.refreshToken();
 		window.location.reload();
 	}
 </script>
