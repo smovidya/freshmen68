@@ -155,11 +155,11 @@ export class GamePopper {
     };
 
     pollSelfCount();
-    this.selfPollIntervalId = setInterval(pollSelfCount, dev ? 1000 : 1000 * 20);
+    this.selfPollIntervalId = setInterval(pollSelfCount, dev ? 1000 : 1000 * 5);
 
     this.flushIntervalId = setInterval(() => {
       this.#flush();
-    }, dev ? 1000 : 1000 * 20);
+    }, dev ? 1000 : 1000 * 5);
   }
 
   private stop() {
