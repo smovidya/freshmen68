@@ -176,7 +176,8 @@
 		if (!poping) return;
 		poping = false;
 		currentPopBatchCount++;
-		popSound.play();
+		// TODO: Sound so shit I gotta disabled it
+		// popSound.play();
 	}
 
 	setInterval(() => {
