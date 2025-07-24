@@ -89,7 +89,7 @@
 			return;
 		}
 		gameData.leaderboard = await client.getGlobalLeaderboard();
-		setLocalStorageWithDate('globalLeaderboard', gameData.leaderboard, 15);
+		setLocalStorageWithDate('globalLeaderboard', gameData.leaderboard, 10);
 	};
 
 	const getInGroupLeaderboard = async () => {
@@ -102,7 +102,7 @@
 			return;
 		}
 		gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
-		setLocalStorageWithDate('inGroupLeaderboard', gameData.inGroup, 15);
+		setLocalStorageWithDate('inGroupLeaderboard', gameData.inGroup, 10);
 	};
 
 	async function getSelfPopCount() {
@@ -116,7 +116,7 @@
 		} catch (error) {
 			console.error('Failed to fetch self pop count:', error);
 		}
-		setLocalStorageWithDate('selfPopCount', gameData.self, 15);
+		setLocalStorageWithDate('selfPopCount', gameData.self, 5);
 	}
 
 	onMount(async () => {
