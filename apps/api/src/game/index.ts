@@ -47,18 +47,19 @@ const router = new Hono<{
 
 router.use('*', async (c, next) => {
 	if (!flags.isEnabled("game-playing") || !flags.isEnabled("game-allow-non-freshmen")) {
+		console.log("Game is not available");
 		return c.json({ error: 'Not available' }, 401);
 	}
 
 	const { group, ouid } = c.get("gameJWTPayload");
 	if (!group || !ouid) {
+		console.log("User is not authenticated or missing group/ID");
 		return c.json({
 			message: "what"
 		}, 500);
 	}
-	if (dev) {
-		c.set("group", group as string);
-	}
+
+	c.set("group", group as string);
 	c.set("ouid", ouid as string);
 	await next();
 });
