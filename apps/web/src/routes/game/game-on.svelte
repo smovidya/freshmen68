@@ -217,9 +217,9 @@
 				<div class="flex h-fit max-h-[80vh] min-h-[50vh] flex-col items-center justify-start gap-4">
 					<Tabs value="all" class="w-full">
 						<TabsList>
-							<TabsTrigger value="all">ทุกกรุ๊ป</TabsTrigger>
+							<TabsTrigger value="all">ทุกแคว้น</TabsTrigger>
 							<TabsTrigger value="mygroup">
-								กรุ๊ป {studentGroup}
+								แคว้น {studentGroup}
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="all">
