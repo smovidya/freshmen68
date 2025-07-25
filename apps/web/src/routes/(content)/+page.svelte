@@ -10,6 +10,7 @@
 	import DesktopBGImage from '$lib/assets/2048x1152px/2048_1152w_bg.png';
 	import { authClient } from '$lib/auth/client';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { flags } from '$lib/flags';
 
 	const session = authClient.useSession();
 </script>
@@ -48,7 +49,10 @@
 					ลงทะเบียนเข้าร่วมกิจกรรมด้านล่างได้เลย! <br />
 				</p>
 				{#if $session.data?.user}
-					<Button href="/menu" class="w-full cursor-pointer mt-4">ไปยังเมนู</Button>
+					<Button
+						href={flags.isEnabled('game-playing') ? '/game' : '/menu'}
+						class="mt-4 w-full cursor-pointer">ไปยังเมนู</Button
+					>
 				{:else}
 					{#if dev}
 						<DevLoginBox />
