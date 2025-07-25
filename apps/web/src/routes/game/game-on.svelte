@@ -119,7 +119,7 @@
 		if (!poping) return;
 		poping = false;
 		if (isCount) popper.pop();
-		if (browser) {
+		if (isCount && browser) {
 			const audio = new Audio(PopSound);
 			await audio.play().catch((error) => {
 				console.error('Error playing sound:', error);
