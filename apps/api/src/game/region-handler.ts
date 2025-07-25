@@ -54,4 +54,9 @@ export class GameRegionHandler extends DurableObject<Env> {
 	dumpAllPop() {
 		return this.ctx.storage.sql.exec(`SELECT * from pops`).toArray();
 	}
+
+	reset() {
+		this.ctx.storage.sql.exec("DELETE FROM leaderboard")
+		this.ctx.storage.sql.exec("DELETE FROM pops")
+	}
 }
