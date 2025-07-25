@@ -29,6 +29,7 @@
 	import { when } from '$lib/reacitivity.svelte';
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
 	import { Badge } from '$lib/components/ui/badge';
+	import { browser } from '$app/environment';
 
 	let {
 		studentGroup = $bindable('1'),
@@ -114,12 +115,16 @@
 		}, 200);
 	}
 
-	function onUnpop() {
+	function onUnpop(isCount = false) {
 		if (!poping) return;
 		poping = false;
-		popper.pop();
-		// TODO: Sound so shit I gotta disabled it
-		// popSound.play();
+		if (isCount) popper.pop();
+		if (browser) {
+			const audio = new Audio(PopSound);
+			audio.play().catch((error) => {
+				console.error('Error playing sound:', error);
+			});
+		}
 	}
 
 	onMount(() => {
@@ -152,8 +157,6 @@
 	}}
 />
 
-<audio src={PopSound} bind:this={popSound} class="hidden"></audio>
-
 <!-- background image repeat -->
 <div class="flex h-screen flex-col items-center justify-center">
 	<div class="mb-4 flex flex-col items-center">
@@ -168,9 +171,9 @@
 		<button
 			class="h-full min-h-64 w-full min-w-64 touch-manipulation rounded-lg bg-contain bg-center bg-no-repeat outline-none select-none focus:outline-none"
 			onmousedown={onPop}
-			onmouseup={onUnpop}
+			onmouseup={() => onUnpop(true)}
 			ontouchstart={onPop}
-			ontouchend={onUnpop}
+			ontouchend={() => onUnpop()}
 			aria-label="Toggle Pop"
 			style="background-image: url({poping
 				? popImages[groupImageKey].open
@@ -190,10 +193,10 @@
 				}}
 				class={buttonVariants({ variant: 'outline', class: 'h-auto rounded-2xl p-2' })}
 			>
-				<div class="flex flex-col items-center gap-2">
+				<div class="flex flex-col items-center gap-1">
 					<strong> อันดับ </strong>
 					<div class="text-muted-foreground w-full rounded-md text-sm">กดเพื่อดูอันดับทั้งหมด</div>
-					<div class="flex flex-row gap-3">
+					<div class="flex flex-row gap-2">
 						<!-- 3 อันดับ -->
 						{#each Object.entries(gameData.leaderboard)
 							.toSorted(([, a], [, b]) => b - a)
