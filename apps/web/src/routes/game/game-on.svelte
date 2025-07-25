@@ -170,12 +170,6 @@
 	onkeyup={(event) => {
 		onUnpop();
 	}}
-	onmousedown={(event) => {
-		onPop();
-	}}
-	onmouseup={(event) => {
-		onUnpop();
-	}}
 />
 
 <audio src={PopSound} bind:this={popSound} class="hidden"></audio>
