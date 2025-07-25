@@ -17,7 +17,6 @@ const app = new Hono<{
 	};
 }>();
 
-
 function getJwks() {
 	if (env.WORKER_ENV === 'production') {
 		// It's safe to embed here btw

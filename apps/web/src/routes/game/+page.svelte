@@ -13,8 +13,11 @@
 </script>
 
 <svelte:head>
-	<title>ป้อบแค๊ตที่เรารัก</title>
-	<meta name="description" content="ป้อบแค๊ตที่เรารัก" />
+	<title>ศึกเทพป็อปปลดล็อกแดนสวรรค์</title>
+	<meta
+		name="description"
+		content="ศึกเทพป็อปปลดล็อกแดนสวรรค์ Mini Game กระชับควาสัมพันธ์ระหว่างแคว้นรับน้องทั้ง 6 แห่ง เทศกาลต้อนรับนิสิตใหม่ประจำปี 2568 คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+	/>
 </svelte:head>
 
 <Toaster />

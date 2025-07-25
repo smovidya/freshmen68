@@ -1,6 +1,8 @@
 import { env } from '$env/dynamic/public';
 import { authClient } from './auth/client';
 import { dev } from "$app/environment";
+import { untrack } from "svelte";
+import { toast } from 'svelte-sonner';
 
 export const gameApiPrefix = `${env.PUBLIC_BETTER_AUTH_URL || "http:;//localhost:8787"}/game`;
 
@@ -12,6 +14,7 @@ export type LeaderboardEntry = {
 
 export class GameAPIClient {
   #token: string | null = $state(null);
+  playerDisplayName = $state<string | null>(null);
 
   constructor(init = true) {
     if (init) {
@@ -35,23 +38,38 @@ export class GameAPIClient {
   ready = $derived(!!this.#token);
 
   async updateName(newName: string) {
-    await fetch(`${gameApiPrefix}/username`, {
-      method: "POST",
-      body: newName,
-      headers: {
-        Authorization: `Bearer ${this.#token}`
-      }
-    });
+    try {
+      await fetch(`${gameApiPrefix}/username`, {
+        method: "POST",
+        body: newName,
+        headers: {
+          Authorization: `Bearer ${this.#token}`
+        }
+      });
+      this.playerDisplayName = newName;
+      toast.success("อัพเดตชื่อผู้ใช้เรียบร้อยแล้ว");
+      this.playerDisplayName = newName;
+    } catch (e) {
+      toast.error("ไม่สามารถอัพเดตชื่อผู้ใช้ได้");
+      console.error(e);
+    }
   }
 
   async getName() {
-    return await fetch(`${gameApiPrefix}/username`, {
-      headers: {
-        Authorization: `Bearer ${this.#token}`
-      }
-    }).then(it => it.text());
+    try {
+      return await fetch(`${gameApiPrefix}/username`, {
+        headers: {
+          Authorization: `Bearer ${this.#token}`
+        }
+      })
+        .catch(() => {
+          throw new Error("Failed to fetch username");
+        })
+        .then(it => it.text());
+    } catch {
+      toast.error("ไม่สามารถดึงชื่อผู้ใช้ได้");
+    }
   }
-
 
   async submitPop(count = 1) {
     if (!this.ready || count === 0) {
@@ -94,26 +112,14 @@ export class GameAPIClient {
   }
 }
 
-import { untrack } from "svelte";
-
-const zeroGroupCounts = () => ({
-  1: 0,
-  3: 0,
-  4: 0,
-  5: 0,
-  6: 0,
-  7: 0,
-});
-
 export class GamePopper {
   // groupPollIntervalId!: NodeJS.Timeout; // wtf, idc anymore
   flushIntervalId!: NodeJS.Timeout;
   selfPollIntervalId!: NodeJS.Timeout; // wtf, idc anymore
   batchedCount: number = $state(0);
-
-
   #serverCount = $state(0);
   displaySelfCount = $derived(this.batchedCount + this.#serverCount);
+  displayName = $state<string | undefined>(undefined);
 
   // TODO: optimistic update, nahhhh
   // #clickSpeedPerGroups = $state(zeroGroupCounts());
@@ -132,7 +138,7 @@ export class GamePopper {
   async init() {
     this.#serverCount = await this.#client.getSelfPopCount();
     localStorage.setItem("__pop_count", String(untrack(() => this.#serverCount)));
-
+    this.displayName = await this.#client.getName()
     // let abortController: AbortController | null = null;
     // const pollGroupCount = () => {
     //   abortController?.abort();
@@ -183,6 +189,7 @@ export class GamePopper {
     try {
       await this.#client.submitPop(batched);
     } catch (e) {
+      toast.error("ไม่สามารถส่งข้อมูลได้");
       console.log(e);
     }
   }

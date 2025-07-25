@@ -18,7 +18,6 @@
 	import {
 		Drawer,
 		DrawerContent,
-		DrawerFooter,
 		DrawerHeader,
 		DrawerTitle,
 		DrawerTrigger
@@ -28,6 +27,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { when } from '$lib/reacitivity.svelte';
+	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
 
 	let {
 		studentGroup = $bindable('1'),
@@ -45,37 +45,6 @@
 		leaderboard: {},
 		inGroup: []
 	});
-
-	// function setLocalStorageWithDate(key: string, value: any, expirationMinutes: number = 20) {
-	// 	if (value?.error) {
-	// 		localStorage.removeItem(key);
-	// 		return;
-	// 	}
-	// 	const data = {
-	// 		value,
-	// 		date: new Date().toISOString(),
-	// 		exp: new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString()
-	// 	};
-	// 	localStorage.setItem(key, JSON.stringify(data));
-	// }
-
-	// function getLocalStorageWithDate<T>(key: string): T | null {
-	// 	const data = localStorage.getItem(key);
-	// 	if (!data) return null;
-	// 	const parsedData = JSON.parse(data);
-	// 	if (parsedData?.value?.error) {
-	// 		localStorage.removeItem(key);
-	// 		return null;
-	// 	}
-	// 	const date = new Date(parsedData.date);
-	// 	const now = new Date();
-	// 	const diffInMinutes = (now.getTime() - date.getTime()) / (1000 * 60);
-	// 	if (diffInMinutes > parsedData.exp) {
-	// 		localStorage.removeItem(key);
-	// 		return null;
-	// 	}
-	// 	return parsedData.value as T;
-	// }
 
 	const getLeaderboardGlobal = async () => {
 		gameData.leaderboard = await client.getGlobalLeaderboard();
@@ -175,37 +144,27 @@
 <audio src={PopSound} bind:this={popSound} class="hidden"></audio>
 
 <div class="flex h-screen flex-col items-center justify-center bg-gray-100">
-	<div class="mb-4 flex flex-col items-center text-2xl font-bold">
-		<div>
+	<div class="mb-4 flex flex-col items-center">
+		<div class="flex flex-col items-center justify-center">
 			<div>
-				{myDisplayName}
+				{popper.displayName}
 			</div>
 			<div class="mb-4 text-center text-2xl font-bold">
 				{currentPopBatchCount + popper.displaySelfCount}
 			</div>
 		</div>
 		<button
-			class="size-1/3 outline-none select-none focus:outline-none"
+			class="h-full min-h-64 w-full min-w-64 touch-manipulation rounded-lg bg-contain bg-center bg-no-repeat outline-none select-none focus:outline-none"
 			onmousedown={onPop}
 			onmouseup={onUnpop}
 			ontouchstart={onPop}
 			ontouchend={onUnpop}
 			aria-label="Toggle Pop"
+			style="background-image: url({poping
+				? popImages[groupImageKey].open
+				: popImages[groupImageKey].close});"
 		>
-			<div>
-				<img
-					src={popImages[groupImageKey].open}
-					class={poping ? 'block' : 'hidden'}
-					alt=""
-					draggable="false"
-				/>
-				<img
-					src={popImages[groupImageKey].close}
-					class={poping ? 'hidden' : 'block'}
-					alt=""
-					draggable="false"
-				/>
-			</div>
+			<span class="sr-only">Toggle Pop</span>
 		</button>
 	</div>
 	<div>
@@ -214,6 +173,12 @@
 				class={buttonVariants({
 					variant: 'outline'
 				})}
+				onclick={async () => {
+					isEditingName = false;
+					myDisplayName = (await client.getName()) || '';
+					gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
+					gameData.leaderboard = await client.getGlobalLeaderboard();
+				}}
 			>
 				สถิติเกม
 			</DrawerTrigger>
@@ -258,7 +223,7 @@
 																variant="outline"
 																onclick={async () => {
 																	isEditingName = false;
-																	client.updateName(myDisplayName);
+																	await client.updateName(myDisplayName);
 																	gameData.inGroup =
 																		await client.getInGroupLeaderboard(studentGroup);
 																}}
@@ -268,14 +233,14 @@
 														</div>
 													{:else if playerId === studentOuid}
 														<div>
-															<span class="font-bold">{player_name}</span>
+															<span class="font-bold">{player_name || `(คุณ) ${studentOuid}`}</span>
 															<Button
 																variant="outline"
 																onclick={() => {
 																	isEditingName = true;
 																}}
 															>
-																แก้ไขชื่อ
+																แก้ไขชื่อคุณ
 															</Button>
 														</div>
 													{:else}
