@@ -63,6 +63,7 @@
 		"@fontsource-variable/noto-sans-thai": "^5.2.6",
 		"@freshmen68/flags": "workspace:*",
 		"@freshmen68/trpc": "workspace:*",
+		"@number-flow/svelte": "^0.3.9",
 		"@trpc/client": "^11.4.3",
 		"@vanillaes/csv": "^3.0.4",
 		"better-auth": "^1.2.12",

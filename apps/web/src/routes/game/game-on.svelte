@@ -30,6 +30,7 @@
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { browser } from '$app/environment';
+	import NumberFlow from '@number-flow/svelte';
 
 	let {
 		studentGroup = $bindable('1'),
@@ -153,7 +154,7 @@
 		onPop();
 	}}
 	onkeyup={(event) => {
-		onUnpop();
+		onUnpop(true);
 	}}
 />
 
@@ -165,7 +166,7 @@
 				{popper.displayName}
 			</div>
 			<div class="mb-4 text-center text-2xl font-bold">
-				{currentPopBatchCount + popper.displaySelfCount}
+				<NumberFlow value={currentPopBatchCount + popper.displaySelfCount} />
 			</div>
 		</div>
 		<button
@@ -204,9 +205,17 @@
 							<div class="flex flex-col gap-1 rounded-lg border p-2">
 								<span class="">
 									{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
-									กรุ๊ป {groupName}</span
+									แคว้น {groupName}</span
 								>
-								<span class="text-lg">{formatNumberToShorthand(score)}</span>
+								<span class="text-lg">
+									{#if score >= 1e6}
+										<NumberFlow value={(score / 1e6).toFixed(2)} />m
+									{:else if score >= 1e3}
+										<NumberFlow value={(score / 1e3).toFixed(2)} />k
+									{:else}
+										<NumberFlow value={score} />
+									{/if}
+								</span>
 							</div>
 						{/each}
 					</div>
@@ -232,7 +241,9 @@
 										{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
 										แคว้น {groupName}
 									</span>
-									<span>{formatLocalNum(score)}</span>
+									<span>
+										<NumberFlow value={score} />
+									</span>
 								</div>
 							{/each}
 						</TabsContent>
@@ -291,7 +302,9 @@
 														</div>
 													{/if}
 												</div>
-												<span>{formatLocalNum(score)}</span>
+												<span>
+													<NumberFlow value={score} />
+												</span>
 											</div>
 										{/each}
 									</div>
