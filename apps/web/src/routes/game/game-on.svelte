@@ -28,6 +28,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { when } from '$lib/reacitivity.svelte';
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 
 	let {
 		studentGroup = $bindable('1'),
@@ -130,6 +131,16 @@
 			clearInterval(id2);
 		};
 	});
+
+	function formatNumberToShorthand(num: number): string {
+		if (num >= 1e6) return (num / 1e6).toFixed(1) + 'm';
+		if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k';
+		return num.toString();
+	}
+
+	function formatLocalNum(num: number) {
+		return num.toLocaleString();
+	}
 </script>
 
 <svelte:window
@@ -143,7 +154,8 @@
 
 <audio src={PopSound} bind:this={popSound} class="hidden"></audio>
 
-<div class="flex h-screen flex-col items-center justify-center bg-gray-100">
+<!-- background image repeat -->
+<div class="flex h-screen flex-col items-center justify-center">
 	<div class="mb-4 flex flex-col items-center">
 		<div class="flex flex-col items-center justify-center">
 			<div>
@@ -170,17 +182,32 @@
 	<div>
 		<Drawer>
 			<DrawerTrigger
-				class={buttonVariants({
-					variant: 'outline'
-				})}
 				onclick={async () => {
 					isEditingName = false;
 					myDisplayName = (await client.getName()) || '';
 					gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
 					gameData.leaderboard = await client.getGlobalLeaderboard();
 				}}
+				class={buttonVariants({ variant: 'outline', class: 'h-auto rounded-2xl p-2' })}
 			>
-				สถิติเกม
+				<div class="flex flex-col items-center gap-2">
+					<strong> อันดับ </strong>
+					<div class="text-muted-foreground w-full rounded-md text-sm">กดเพื่อดูอันดับทั้งหมด</div>
+					<div class="flex flex-row gap-3">
+						<!-- 3 อันดับ -->
+						{#each Object.entries(gameData.leaderboard)
+							.toSorted(([, a], [, b]) => b - a)
+							.slice(0, 3) as [groupName, score], i}
+							<div class="flex flex-col gap-1 rounded-lg border p-2">
+								<span class="">
+									{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
+									กรุ๊ป {groupName}</span
+								>
+								<span class="text-lg">{formatNumberToShorthand(score)}</span>
+							</div>
+						{/each}
+					</div>
+				</div>
 			</DrawerTrigger>
 
 			<DrawerContent class="mx-auto max-w-2xl px-5">
@@ -196,22 +223,33 @@
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="all">
-							{#each Object.entries(gameData.leaderboard) as [groupName, score]}
+							{#each Object.entries(gameData.leaderboard).toSorted(([, a], [, b]) => b - a) as [groupName, score], i}
 								<div class="flex items-center justify-between border-b p-2">
-									<span>{groupName}</span>
-									<span>{score}</span>
+									<span>
+										{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
+										แคว้น {groupName}
+									</span>
+									<span>{formatLocalNum(score)}</span>
 								</div>
 							{/each}
 						</TabsContent>
 						<TabsContent class="p-3" value="mygroup">
 							<div class="flex flex-col items-center">
-								<div class="mb-2 text-lg font-semibold">กรุ๊ป {studentGroup}</div>
-								<p>คะแนนสูงสุด 10 อันดับในกรุ๊ปของคุ้ณณณณณ</p>
+								<div class="mb-2 text-lg font-semibold">แคว้น {studentGroup}</div>
+								<p>คะแนนสูงสุด 10 ผู้ขยันขันแข็งในแคว้นของคุณณณณ</p>
 								{#if gameData.inGroup.length > 0}
 									<div class="w-full">
-										{#each gameData.inGroup as { playerId, score, player_name }}
+										{#each gameData.inGroup as { playerId, score, player_name }, i}
 											<div class="flex items-center justify-between border-b p-2">
-												<div>
+												<div class="flex items-center gap-2">
+													{#if popper.displaySelfCount > 0 && i === 0}
+														<Badge class="bg-yellow-200 text-yellow-800">คุณ</Badge>
+													{/if}
+													{#if i < 3}
+														<span>
+															{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
+														</span>
+													{/if}
 													{#if playerId === studentOuid && isEditingName}
 														<div class="flex items-center gap-2">
 															<Input
@@ -233,12 +271,13 @@
 														</div>
 													{:else if playerId === studentOuid}
 														<div>
-															<span class="font-bold">{player_name || `(คุณ) ${studentOuid}`}</span>
+															<span class="font-bold">{player_name || studentOuid}</span>
 															<Button
 																variant="outline"
 																onclick={() => {
 																	isEditingName = true;
 																}}
+																size="sm"
 															>
 																แก้ไขชื่อคุณ
 															</Button>

@@ -22,6 +22,39 @@ export class GameAPIClient {
     }
   }
 
+  async fetchApi(endpoint: string, options: RequestInit = {}, { retryCount = 0 } = {}) {
+    if (!this.#token) {
+      await this.refreshToken();
+    }
+    if (!this.#token) {
+      toast.error("ไม่สามารถยืนยันตัวตนได้ กรุณาเข้าสู่ระบบใหม่");
+      throw new Error("Not authenticated");
+    }
+    const res = await fetch(`${gameApiPrefix}${endpoint}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${this.#token}`,
+      },
+    });
+
+    if (res.status === 401) {
+      if (retryCount < 1) {
+        await this.refreshToken();
+        return this.fetchApi(endpoint, options, { retryCount: retryCount + 1 });
+      }
+      toast.error("ไม่สามารถยืนยันตัวตนได้ กรุณาเข้าสู่ระบบใหม่");
+      throw new Error("Not authenticated");
+    }
+
+    if (!res.ok) {
+      toast.error(`เกิดข้อผิดพลาด: ${res.statusText}`);
+      throw new Error(`API error: ${res.statusText}`);
+    }
+
+    return res;
+  }
+
   async refreshToken() {
     const { data, error } = await authClient.getSession();
     if (error || !data?.session) {
@@ -39,12 +72,9 @@ export class GameAPIClient {
 
   async updateName(newName: string) {
     try {
-      await fetch(`${gameApiPrefix}/username`, {
+      await this.fetchApi('/username', {
         method: "POST",
         body: newName,
-        headers: {
-          Authorization: `Bearer ${this.#token}`
-        }
       });
       this.playerDisplayName = newName;
       toast.success("อัพเดตชื่อผู้ใช้เรียบร้อยแล้ว");
@@ -57,11 +87,7 @@ export class GameAPIClient {
 
   async getName() {
     try {
-      return await fetch(`${gameApiPrefix}/username`, {
-        headers: {
-          Authorization: `Bearer ${this.#token}`
-        }
-      })
+      return await this.fetchApi('/username')
         .catch(() => {
           throw new Error("Failed to fetch username");
         })
@@ -76,38 +102,27 @@ export class GameAPIClient {
       return;
     }
 
-    await fetch(`${gameApiPrefix}/pop?pop=${count}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.#token}`
-      }
+    await this.fetchApi(`/pop?pop=${count}`, {
+      method: "POST"
     });
   }
 
   async getGlobalLeaderboard() {
-    const res = await fetch(`${gameApiPrefix}/stats/global`, {
-      headers: {
-        Authorization: `Bearer ${this.#token}`
-      }
-    });
+    const res = await this.fetchApi('/stats/global');
     return (await res.json()) as Record<string, number>;
   }
 
   async getInGroupLeaderboard(groupId: string) {
-    const res = await fetch(`${gameApiPrefix}/stats/groups/${groupId}`, {
-      headers: {
-        Authorization: `Bearer ${this.#token}`
-      }
-    });
+    const res = await this.fetchApi(`/stats/groups/${groupId}`);
+    if (!res.ok) {
+      toast.error(`ไม่สามารถดึงข้อมูลกลุ่มได้: ${res.statusText}`);
+      throw new Error(`Failed to fetch group leaderboard: ${res.statusText}`);
+    }
     return (await res.json()) as LeaderboardEntry[];
   }
 
   async getSelfPopCount() {
-    const res = await fetch(`${gameApiPrefix}/stats/self`, {
-      headers: {
-        Authorization: `Bearer ${this.#token}`
-      }
-    });
+    const res = await this.fetchApi('/stats/self');
     return (await res.json()) as number;
   }
 }

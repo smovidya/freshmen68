@@ -21,10 +21,74 @@
 </svelte:head>
 
 <Toaster />
-<main class="flex h-screen flex-col items-center justify-center bg-gray-100">
+<main class="subtle-bg flex h-screen flex-col items-center justify-center">
 	{#if data.whoami.group}
 		<GameOn {client} studentGroup={data.whoami.group} studentOuid={data.whoami.ouid} />
 	{:else}
 		<AddMeToGroup {client} />
 	{/if}
 </main>
+
+<style>
+	.subtle-bg {
+		background-image: url('/bg-subtle.png');
+		background-repeat: repeat;
+		background-attachment: fixed;
+		background-size: 440px;
+		background-repeat: repeat;
+		-webkit-animation: bg-scrolling-reverse 0.92s infinite;
+		/* Safari 4+ */
+		-moz-animation: bg-scrolling-reverse 0.92s infinite;
+		/* Fx 5+ */
+		-o-animation: bg-scrolling-reverse 0.92s infinite;
+		/* Opera 12+ */
+		animation: bg-scrolling-reverse 0.92s infinite;
+		/* IE 10+ */
+		-webkit-animation-timing-function: linear;
+		-moz-animation-timing-function: linear;
+		-o-animation-timing-function: linear;
+		animation-timing-function: linear;
+	}
+
+	@-webkit-keyframes bg-scrolling-reverse {
+		100% {
+			background-position: 440px 440px;
+		}
+	}
+	@-moz-keyframes bg-scrolling-reverse {
+		100% {
+			background-position: 440px 440p;
+		}
+	}
+	@-o-keyframes bg-scrolling-reverse {
+		100% {
+			background-position: 440px 440px;
+		}
+	}
+	@keyframes bg-scrolling-reverse {
+		100% {
+			background-position: 440px 440p;
+		}
+	}
+
+	@-webkit-keyframes bg-scrolling {
+		0% {
+			background-position: 440px 440px;
+		}
+	}
+	@-moz-keyframes bg-scrolling {
+		0% {
+			background-position: 440px 440p;
+		}
+	}
+	@-o-keyframes bg-scrolling {
+		0% {
+			background-position: 440px 440px;
+		}
+	}
+	@keyframes bg-scrolling {
+		0% {
+			background-position: 440px 440p;
+		}
+	}
+</style>
