@@ -115,13 +115,13 @@
 		}, 200);
 	}
 
-	function onUnpop(isCount = false) {
+	async function onUnpop(isCount = false) {
 		if (!poping) return;
 		poping = false;
 		if (isCount) popper.pop();
 		if (browser) {
 			const audio = new Audio(PopSound);
-			audio.play().catch((error) => {
+			await audio.play().catch((error) => {
 				console.error('Error playing sound:', error);
 			});
 		}
