@@ -149,7 +149,7 @@ router.post('/pop', async (c) => {
 	const pop = parseInt(query.pop);
 	if (!pop || pop > MAX_POP_PER_REQUEST) {
 		throw new HTTPException(400, {
-			message: 'nah',
+			message: INVITE_MESSAGE,
 		});
 	}
 
