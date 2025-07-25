@@ -55,7 +55,7 @@ app.use('/game/*', async (c, next) => {
 			audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
 		});
 
-		console.log('JWT Payload:', payload);
+		// console.log('JWT Payload:', payload);
 
 		c.set("gameJWTPayload", payload);
 		await next()
