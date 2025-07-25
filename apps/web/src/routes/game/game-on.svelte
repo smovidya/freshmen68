@@ -242,13 +242,13 @@
 										{#each gameData.inGroup as { playerId, score, player_name }, i}
 											<div class="flex items-center justify-between border-b p-2">
 												<div class="flex items-center gap-2">
-													{#if popper.displaySelfCount > 0 && i === 0}
-														<Badge class="bg-yellow-200 text-yellow-800">คุณ</Badge>
-													{/if}
 													{#if i < 3}
 														<span>
 															{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
 														</span>
+													{/if}
+													{#if playerId === studentOuid}
+														<Badge class="bg-yellow-200 text-yellow-800">คุณ</Badge>
 													{/if}
 													{#if playerId === studentOuid && isEditingName}
 														<div class="flex items-center gap-2">
@@ -288,7 +288,7 @@
 														</div>
 													{/if}
 												</div>
-												<span>{score}</span>
+												<span>{formatLocalNum(score)}</span>
 											</div>
 										{/each}
 									</div>
