@@ -251,5 +251,19 @@ router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reset-every-scor
 	return c.text("done");
 });
 
+router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reinit", async c => {
+	// const ouid = c.get("ouid");
+	// if (!elavatedOuids.includes(ouid) && !dev) {
+	// 	throw new HTTPException(404);
+	// }
+
+	await Promise.all(
+		getRegionHandlers()
+			.map(async it => it.handler.reinit())
+	);
+
+	return c.text("done");
+});
+
 
 export { router as gameRouter };

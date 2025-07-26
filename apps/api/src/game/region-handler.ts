@@ -56,7 +56,12 @@ export class GameRegionHandler extends DurableObject<Env> {
 	}
 
 	reset() {
-		this.ctx.storage.sql.exec("DELETE FROM leaderboard")
-		this.ctx.storage.sql.exec("DELETE FROM pops")
+		this.ctx.storage.sql.exec("DELETE FROM leaderboard");
+		this.ctx.storage.sql.exec("DELETE FROM pops");
+		this.leaderboard.initialize(true);
+	}
+
+	reinit() {
+		this.leaderboard.initialize(true);
 	}
 }
