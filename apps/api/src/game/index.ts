@@ -81,7 +81,7 @@ router.get('/stats/global', async (c) => {
 			'Cache-Control': `max-age=${GLOBAL_LEADERBOARD_CACHE_DURATION}`,
 		},
 	});
-	console.log(c.executionCtx);
+
 	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
 	return response;
 });

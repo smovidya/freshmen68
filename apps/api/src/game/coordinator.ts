@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import type { GameRegionHandler } from "./region-handler";
+import type { LeaderboardEntry } from "./sqlite-leaderboard";
 
 export type GameRegion = {
 	groupNumber: string;
@@ -35,4 +36,19 @@ export async function getPopByGroups() {
 	);
 
 	return Object.fromEntries(scores) as Record<number, number>;
+}
+
+export async function dumpStats() {
+	const scores = await Promise.all(
+		getRegionHandlers()
+			.map(async (it) => {
+				return {
+					groupNumber: it.groupNumber,
+					totalScore: await it.handler.getTotalScore(),
+					leaderboard: await it.handler.getTopTen(),
+				};
+			})
+	);
+
+	return scores;
 }

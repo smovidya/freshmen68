@@ -8,6 +8,8 @@ import { createDatabaseConnection } from '@freshmen68/db';
 import { FeatureFlags } from '@freshmen68/flags';
 import { gameRouter } from './game';
 import * as jose from 'jose';
+import { dumpStats } from './game/coordinator';
+import type { WorkerCacheStorage } from './type';
 
 const app = new Hono<{
 	Variables: {
@@ -20,7 +22,7 @@ const app = new Hono<{
 function getJwks() {
 	if (env.WORKER_ENV === 'production') {
 		// It's safe to embed here btw
-		return jose.createLocalJWKSet({ "keys": [{ "kty": "OKP", "crv": "Ed25519", "x": "5s1FFUB8l54bIi7OtakDKwQmEe2Krf1PaWTMycL9yCU", "kid": "POMpwv8go7MUWBLO11LcgeygdZ8KFgyH" }] })
+		return jose.createLocalJWKSet({ "keys": [{ "kty": "OKP", "crv": "Ed25519", "x": "5s1FFUB8l54bIi7OtakDKwQmEe2Krf1PaWTMycL9yCU", "kid": "POMpwv8go7MUWBLO11LcgeygdZ8KFgyH" }] });
 	}
 
 	const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`;
@@ -57,7 +59,7 @@ app.use('/game/*', async (c, next) => {
 		// console.log('JWT Payload:', payload);
 
 		c.set("gameJWTPayload", payload);
-		await next()
+		await next();
 	} catch (error) {
 		console.error('JWT verification failed: ', error);
 		return c.json({ error: 'Unauthorized' }, 401);
@@ -115,6 +117,28 @@ app.get("__hono/__version", c => {
 	return c.json({
 		version: 0x9065
 	});
+});
+
+
+app.get("/game-stats", async c => {
+	const cfCaches = caches as unknown as WorkerCacheStorage;
+	const cached = await cfCaches.default.match(c.req.raw);
+	if (cached) {
+		// console.log(`Cache hit for ${c.req.url}`);
+		return cached;
+	}
+
+	// we dont rate limit this because cf cache
+
+	const pops = await dumpStats();
+	const response = Response.json(pops, {
+		headers: {
+			'Cache-Control': `max-age=${5}`,
+		},
+	});
+
+	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
+	return response;
 });
 
 // redirect all other requests to the frontend URL
