@@ -43,6 +43,10 @@ app.use(
 	}),
 );
 
+app.get('/game', (c) => {
+	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
+})
+
 app.use('/game/*', async (c, next) => {
 	const token = c.req.header('Authorization')?.replace('Bearer ', '');
 
