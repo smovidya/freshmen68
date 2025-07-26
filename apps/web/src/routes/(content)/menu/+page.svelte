@@ -89,7 +89,7 @@
 				href="/game"
 				title="เกมสุดพิเศษล่าความภูมิใจและศักดิ์ศรี"
 				description="เล่นได้ในวันที่ 26 กรกฎาคม"
-				status="ยังไม่เปิด"
+				status="เล่นได้!!!"
 				icon={Swords}
 			/>
 		</TaskSection>
