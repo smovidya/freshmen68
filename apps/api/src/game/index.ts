@@ -21,7 +21,7 @@ import type { LeaderboardEntry } from './sqlite-leaderboard';
 	BUT popcat allow ANY KEY and dont require pressing only 1 key at a time
 	so 26cps seem low, well RIP mobile user
 */
-const MAX_POP_PER_REQUEST = 300;
+const MAX_POP_PER_REQUEST = 110;
 
 // TODO: better error message
 const INVITE_MESSAGE =
