@@ -120,26 +120,26 @@ app.get("__hono/__version", c => {
 });
 
 
-app.get("/game-stats", async c => {
-	const cfCaches = caches as unknown as WorkerCacheStorage;
-	const cached = await cfCaches.default.match(c.req.raw);
-	if (cached) {
-		// console.log(`Cache hit for ${c.req.url}`);
-		return cached;
-	}
+// app.get("/game-stats", async c => {
+// 	const cfCaches = caches as unknown as WorkerCacheStorage;
+// 	const cached = await cfCaches.default.match(c.req.raw);
+// 	if (cached) {
+// 		// console.log(`Cache hit for ${c.req.url}`);
+// 		return cached;
+// 	}
 
-	// we dont rate limit this because cf cache
+// 	// we dont rate limit this because cf cache
 
-	const pops = await dumpStats();
-	const response = Response.json(pops, {
-		headers: {
-			'Cache-Control': `max-age=${5}`,
-		},
-	});
+// 	const pops = await dumpStats();
+// 	const response = Response.json(pops, {
+// 		headers: {
+// 			'Cache-Control': `max-age=${15}`,
+// 		},
+// 	});
 
-	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
-	return response;
-});
+// 	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
+// 	return response;
+// });
 
 // redirect all other requests to the frontend URL
 app.all('*', (c) => {
@@ -151,9 +151,14 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 		return app.fetch(request, {}, this.ctx);
 	}
 
-	// async scheduled(event: ScheduledEvent): Promise<void> {
-	// 	await env.SyncGoogleSheetWithDatabase.create()
-	// }
+	async scheduled(event: ScheduledEvent): Promise<void> {
+		// await env.SyncGoogleSheetWithDatabase.create()
+		const pops = await dumpStats();
+		await env.GAME_STATS_DB
+			.prepare("INSERT INTO stats (timestamp, stats) VALUES (?, ?)")
+			.bind(Date.now(), JSON.stringify(pops))
+			.run();
+	}
 }
 
 // export all workflows

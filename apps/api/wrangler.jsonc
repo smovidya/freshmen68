@@ -45,11 +45,18 @@
 			}
 		],
 	},
-	// "triggers": {
-	// 	"crons": [
-	// 		"*/15 * * * *"
-	// 	]
-	// }
+	"triggers": {
+		"crons": [
+			"* * * * *"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "GAME_STATS_DB",
+			"database_name": "freshmen68-game-stats",
+			"database_id": "6bdef66d-a0e6-415f-9534-7b7c43f1d154"
+		}
+	],
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
