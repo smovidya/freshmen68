@@ -199,7 +199,7 @@
 					<div class="text-muted-foreground w-full rounded-md text-sm">กดเพื่อดูอันดับทั้งหมด</div>
 					<div class="flex flex-row gap-2">
 						<!-- 3 อันดับ -->
-						{#each Object.entries(gameData.leaderboard)
+						{#each Object.entries(gameData.leaderboard || {})
 							.toSorted(([, a], [, b]) => b - a)
 							.slice(0, 3) as [groupName, score], i}
 							<div class="flex flex-col gap-1 rounded-lg border p-2">
@@ -235,7 +235,7 @@
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="all">
-							{#each Object.entries(gameData.leaderboard).toSorted(([, a], [, b]) => b - a) as [groupName, score], i}
+							{#each Object.entries(gameData.leaderboard || {}).toSorted(([, a], [, b]) => b - a) as [groupName, score], i}
 								<div class="flex items-center justify-between border-b p-2">
 									<span>
 										{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
