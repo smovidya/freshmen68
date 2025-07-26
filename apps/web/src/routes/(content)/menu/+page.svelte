@@ -85,7 +85,7 @@
 		</TaskSection>
 		<TaskSection subtitle="26 &ndash; 29 กรกฎาคม">
 			<TaskCard
-				disabled={!flags.isEnabled('game-playing') && (!flags.isEnabled('game-allow-non-freshmen') || data.whoami.ouid.startsWith('68'))}
+				disabled={!flags.isEnabled('game-playing')}
 				href="/game"
 				title="เกมสุดพิเศษล่าความภูมิใจและศักดิ์ศรี"
 				description="เล่นได้ในวันที่ 26 กรกฎาคม"
