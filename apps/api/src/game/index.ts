@@ -117,6 +117,7 @@ router.get('/stats/self', async (c) => {
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `stats:self:${ouid}` });
 	if (!success && !dev) {
+		console.warn(`[anticheat] Rate limit exceed. (/stats/self) ouid:${ouid} group:${group}`)
 		throw new HTTPException(429, {
 			message: INVITE_MESSAGE,
 		});
@@ -141,6 +142,7 @@ router.post('/pop', async (c) => {
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `pop:${ouid}` });
 	if (!success && !dev) {
+		console.warn(`[anticheat] Rate limit exceed. (/pop) ouid:${ouid} group:${group}`)
 		throw new HTTPException(429, {
 			message: INVITE_MESSAGE,
 		});
@@ -148,6 +150,7 @@ router.post('/pop', async (c) => {
 
 	const pop = parseInt(query.pop);
 	if (!pop || pop > MAX_POP_PER_REQUEST) {
+		console.warn(`[anticheat] Too much pop (/pop) pop:${pop} ouid:${ouid} group:${group}`)
 		throw new HTTPException(400, {
 			message: INVITE_MESSAGE,
 		});
