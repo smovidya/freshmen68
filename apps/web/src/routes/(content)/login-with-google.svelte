@@ -20,5 +20,8 @@
 	)}
 	size="lg"
 >
-	เข้าสู่ระบบด้วย Chula SSO
+	<div class="flex flex-col items-center justify-center gap-2">
+		<span>เข้าสู่ระบบด้วย Chula SSO</span>
+		<span class="text-xs">เลือก @student.chula.ac.th</span>
+	</div>
 </Button>

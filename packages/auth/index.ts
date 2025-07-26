@@ -113,7 +113,8 @@ export const createAuth = ({
 		socialProviders: {
 			google: {
 				clientId: env.GOOGLE_CLIENT_ID as string,
-				clientSecret: env.GOOGLE_CLIENT_SECRET as string
+				clientSecret: env.GOOGLE_CLIENT_SECRET as string,
+				prompt: "select_account",
 			}
 		},
 		user: {
