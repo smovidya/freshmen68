@@ -252,10 +252,10 @@ router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reset-every-scor
 });
 
 router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reinit", async c => {
-	// const ouid = c.get("ouid");
-	// if (!elavatedOuids.includes(ouid) && !dev) {
-	// 	throw new HTTPException(404);
-	// }
+	const ouid = c.get("ouid");
+	if (!elavatedOuids.includes(ouid) && !dev) {
+		throw new HTTPException(404);
+	}
 
 	await Promise.all(
 		getRegionHandlers()
