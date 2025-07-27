@@ -64,7 +64,12 @@ app.use('/game/*', async (c, next) => {
 		c.set("gameJWTPayload", payload);
 		await next();
 	} catch (error) {
-		console.error('JWT verification failed: ', error);
+		let payload = {};
+		try {
+			payload = jose.decodeJwt(token);
+		} catch { }
+
+		console.error('JWT verification failed: ', error, payload);
 		return c.json({ error: 'Unauthorized' }, 401);
 	}
 });
