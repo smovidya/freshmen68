@@ -32,7 +32,7 @@ export class GameAPIClient {
     }
     const res = await fetch(`${gameApiPrefix}${endpoint}`, {
       ...options,
-      // cache: "reload",
+      cache: "reload",
       headers: {
         ...options.headers,
         Authorization: `Bearer ${this.#token}`,
