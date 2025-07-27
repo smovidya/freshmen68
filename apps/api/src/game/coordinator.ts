@@ -28,24 +28,9 @@ export async function getPopByGroups() {
 	const scores = await Promise.all(
 		getRegionHandlers()
 			.map(async (it) => {
-				return [
-					it.groupNumber,
-					await it.handler.getTotalScore()
-				];
-			})
-	);
-
-	return Object.fromEntries(scores) as Record<number, number>;
-}
-
-export async function dumpStats() {
-	const scores = await Promise.all(
-		getRegionHandlers()
-			.map(async (it) => {
 				return {
 					groupNumber: it.groupNumber,
-					totalScore: await it.handler.getTotalScore(),
-					leaderboard: await it.handler.getTopTen(),
+					...await it.handler.getTopTenAndTotalScore()
 				};
 			})
 	);

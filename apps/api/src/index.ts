@@ -1,15 +1,14 @@
-import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import { env, WorkerEntrypoint } from 'cloudflare:workers';
-import { appRouter } from '@freshmen68/trpc';
-import { createAuth, auth } from '@freshmen68/auth';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
+import { auth, createAuth } from '@freshmen68/auth';
 import { createDatabaseConnection } from '@freshmen68/db';
 import { FeatureFlags } from '@freshmen68/flags';
-import { gameRouter } from './game';
+import { appRouter } from '@freshmen68/trpc';
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+import { env, WorkerEntrypoint } from 'cloudflare:workers';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import * as jose from 'jose';
-import { dumpStats } from './game/coordinator';
-import type { WorkerCacheStorage } from './type';
+import { gameRouter } from './game';
+import { getPopByGroups } from './game/coordinator';
 
 const app = new Hono<{
 	Variables: {
@@ -45,7 +44,7 @@ app.use(
 
 app.get('/game', (c) => {
 	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
-})
+});
 
 app.use('/game/*', async (c, next) => {
 	const token = c.req.header('Authorization')?.replace('Bearer ', '');
@@ -157,7 +156,9 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 
 	async scheduled(event: ScheduledEvent): Promise<void> {
 		// await env.SyncGoogleSheetWithDatabase.create()
-		const pops = await dumpStats();
+
+		// can we fetch itself, to use cf cache
+		const pops = await getPopByGroups();
 		await env.GAME_STATS_DB
 			.prepare("INSERT INTO stats (timestamp, stats) VALUES (?, ?)")
 			.bind(Date.now(), JSON.stringify(pops))
@@ -166,5 +167,6 @@ export default class TRPCCloudflareWorkerExample extends WorkerEntrypoint {
 }
 
 // export all workflows
-export * from './workflows';
 export { GameRegionHandler } from "./game/region-handler";
+export * from './workflows';
+

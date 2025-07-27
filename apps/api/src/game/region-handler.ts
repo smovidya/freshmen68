@@ -61,6 +61,10 @@ export class GameRegionHandler extends DurableObject<Env> {
 		this.leaderboard.initialize(true);
 	}
 
+	getTopTenAndTotalScore() {
+		return this.leaderboard.getTopScoresAndTotalScore(10)
+	}
+
 	reinit() {
 		this.leaderboard.initialize(true);
 	}

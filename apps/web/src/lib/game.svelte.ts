@@ -22,7 +22,7 @@ export class GameAPIClient {
     }
   }
 
-  async fetchApi(endpoint: string, options: RequestInit = {}, { retryCount = 0 } = {}) {
+  async fetchApi(endpoint: string, options: RequestInit = {}, { retryCount = 0 } = {}): Promise<Response> {
     if (!this.#token) {
       await this.refreshToken();
     }
@@ -107,18 +107,14 @@ export class GameAPIClient {
     });
   }
 
-  async getGlobalLeaderboard() {
-    const res = await this.fetchApi('/stats/global');
-    return (await res.json()) as Record<string, number>;
-  }
+  async getLeaderboard() {
+    const res = await this.fetchApi('/stats');
 
-  async getInGroupLeaderboard(groupId: string) {
-    const res = await this.fetchApi(`/stats/groups/${groupId}`);
-    if (!res.ok) {
-      toast.error(`ไม่สามารถดึงข้อมูลกลุ่มได้: ${res.statusText}`);
-      throw new Error(`Failed to fetch group leaderboard: ${res.statusText}`);
-    }
-    return (await res.json()) as LeaderboardEntry[];
+    return (await res.json()) as {
+      leaderboard: LeaderboardEntry[],
+      totalScore: number;
+      groupNumber: string,
+    }[];
   }
 
   async getSelfPopCount() {
@@ -153,7 +149,7 @@ export class GamePopper {
   async init() {
     this.#serverCount = await this.#client.getSelfPopCount();
     localStorage.setItem("__pop_count", String(untrack(() => this.#serverCount)));
-    this.displayName = await this.#client.getName()
+    this.displayName = await this.#client.getName();
     // let abortController: AbortController | null = null;
     // const pollGroupCount = () => {
     //   abortController?.abort();

@@ -41,28 +41,20 @@
 	const popper = new GamePopper(client);
 
 	let popSound: HTMLAudioElement;
-	let gameData = $state<{
-		leaderboard: Awaited<ReturnType<GameAPIClient['getGlobalLeaderboard']>>;
-		inGroup: Awaited<ReturnType<GameAPIClient['getInGroupLeaderboard']>>;
-	}>({
-		leaderboard: {},
-		inGroup: []
-	});
+	let leaderboard: Awaited<ReturnType<GameAPIClient['getLeaderboard']>> = $state([]);
+	const inGroupLeaderboard = $derived(
+		leaderboard.find((it) => it.groupNumber === studentGroup)?.leaderboard ?? []
+	);
 
-	const getLeaderboardGlobal = async () => {
-		gameData.leaderboard = await client.getGlobalLeaderboard();
-	};
-
-	const getInGroupLeaderboard = async () => {
-		gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
+	const getLeaderboard = async () => {
+		leaderboard = await client.getLeaderboard();
 	};
 
 	when(
 		() => client.ready,
 		() => {
 			popper.init();
-			getLeaderboardGlobal();
-			getInGroupLeaderboard();
+			getLeaderboard();
 		}
 	);
 
@@ -129,12 +121,10 @@
 	}
 
 	onMount(() => {
-		const id1 = setInterval(getInGroupLeaderboard, 1000 * 2);
-		const id2 = setInterval(getLeaderboardGlobal, 1000 * 2);
+		const id1 = setInterval(getLeaderboard, 1000 * 2);
 		return () => {
 			popper.destroy();
 			clearInterval(id1);
-			clearInterval(id2);
 		};
 	});
 
@@ -189,8 +179,7 @@
 				onclick={async () => {
 					isEditingName = false;
 					myDisplayName = (await client.getName()) || '';
-					gameData.inGroup = await client.getInGroupLeaderboard(studentGroup);
-					gameData.leaderboard = await client.getGlobalLeaderboard();
+					getLeaderboard();
 				}}
 				class={buttonVariants({ variant: 'outline', class: 'h-auto rounded-2xl p-2' })}
 			>
@@ -199,21 +188,21 @@
 					<div class="text-muted-foreground w-full rounded-md text-sm">กดเพื่อดูอันดับทั้งหมด</div>
 					<div class="flex flex-row gap-2">
 						<!-- 3 อันดับ -->
-						{#each Object.entries(gameData.leaderboard || {})
-							.toSorted(([, a], [, b]) => b - a)
-							.slice(0, 3) as [groupName, score], i}
+						{#each leaderboard
+							.toSorted((a, b) => b.totalScore - a.totalScore)
+							.slice(0, 3) as { groupNumber, totalScore }, i}
 							<div class="flex flex-col gap-1 rounded-lg border p-2">
 								<span class="">
 									{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
-									แคว้น {groupName}</span
+									แคว้น {groupNumber}</span
 								>
 								<span class="text-lg">
-									{#if score >= 1e6}
-										<NumberFlow value={(score / 1e6).toFixed(2)} />m
-									{:else if score >= 1e3}
-										<NumberFlow value={(score / 1e3).toFixed(2)} />k
+									{#if totalScore >= 1e6}
+										<NumberFlow value={(totalScore / 1e6).toFixed(2)} />m
+									{:else if totalScore >= 1e3}
+										<NumberFlow value={(totalScore / 1e3).toFixed(2)} />k
 									{:else}
-										<NumberFlow value={score} />
+										<NumberFlow value={totalScore} />
 									{/if}
 								</span>
 							</div>
@@ -235,14 +224,14 @@
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="all">
-							{#each Object.entries(gameData.leaderboard || {}).toSorted(([, a], [, b]) => b - a) as [groupName, score], i}
+							{#each leaderboard.toSorted((a, b) => b.totalScore - a.totalScore) as { groupNumber, totalScore }, i}
 								<div class="flex items-center justify-between border-b p-2">
 									<span>
 										{#if i === 0}🥇{:else if i === 1}🥈{:else if i === 2}🥉{/if}
-										แคว้น {groupName}
+										แคว้น {groupNumber}
 									</span>
 									<span>
-										<NumberFlow value={score} />
+										<NumberFlow value={totalScore} />
 									</span>
 								</div>
 							{/each}
@@ -251,9 +240,9 @@
 							<div class="flex flex-col items-center">
 								<div class="mb-2 text-lg font-semibold">แคว้น {studentGroup}</div>
 								<p>คะแนนสูงสุด 10 ผู้ขยันขันแข็งในแคว้นของคุณณณณ</p>
-								{#if gameData.inGroup.length > 0}
+								{#if inGroupLeaderboard.length > 0}
 									<div class="w-full">
-										{#each gameData.inGroup as { playerId, score, player_name }, i}
+										{#each inGroupLeaderboard as { playerId, score, player_name }, i}
 											<div class="flex items-center justify-between border-b p-2">
 												<div class="flex items-center gap-2">
 													{#if i < 3}
@@ -276,8 +265,7 @@
 																onclick={async () => {
 																	isEditingName = false;
 																	await client.updateName(myDisplayName);
-																	gameData.inGroup =
-																		await client.getInGroupLeaderboard(studentGroup);
+																	await getLeaderboard();
 																}}
 															>
 																บันทึก

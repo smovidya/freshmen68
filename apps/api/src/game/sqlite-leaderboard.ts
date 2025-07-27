@@ -84,10 +84,16 @@ export class SqliteLeaderboard {
 	}
 
 	getPlayerName(playerId: string) {
-		return this.#db.sql.exec<{ player_name: string; }>(
+		const rows = this.#db.sql.exec<{ player_name: string; }>(
 			`SELECT player_name FROM leaderboard WHERE playerId = ?`,
 			playerId,
-		).one().player_name;
+		).toArray();
+
+		if (rows.length) {
+			return rows[0].player_name;
+		}
+
+		return null;
 	}
 
 	getTopScores(limit: number = 10): LeaderboardEntry[] {
@@ -99,6 +105,13 @@ export class SqliteLeaderboard {
 			limit
 		).toArray();
 		return rows;
+	}
+
+	getTopScoresAndTotalScore(limit = 10) {
+		return {
+			leaderboard: this.getTopScores(limit),
+			totalScore: this.#totalScore
+		};
 	}
 
 	getTotalPlayers() {

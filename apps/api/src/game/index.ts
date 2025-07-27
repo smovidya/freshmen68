@@ -65,15 +65,11 @@ router.use('*', async (c, next) => {
 	await next();
 });
 
-router.get('/stats/global', async (c) => {
-	// we do this to reduce amount of rpc call to Durable object
+router.get('/stats', async (c) => {
 	const cached = await cfCaches.default.match(c.req.raw);
 	if (cached) {
-		// console.log(`Cache hit for ${c.req.url}`);
 		return cached;
 	}
-
-	// we dont rate limit this because cf cache
 
 	const pops = await getPopByGroups();
 	const response = Response.json(pops, {
@@ -86,28 +82,44 @@ router.get('/stats/global', async (c) => {
 	return response;
 });
 
+router.get('/stats/groups/:group', async (c) => {
+	const ouid = c.get("ouid");
+	const group = c.get("group");
+
+	console.log(`[anticheat] Deprecated api: Get ${c.req.path} by ouid:${ouid} group:${group}`);
+	return c.json([]);
+});
+
+router.get('/stats/global', async (c) => {
+	const ouid = c.get("ouid");
+	const group = c.get("group");
+
+	console.log(`[anticheat] Deprecated api: Get ${c.req.path} by ouid:${ouid} group:${group}`);
+	return c.json({});
+});
+
 /**
  * @example `GET /stats/groups/8`
  * @returns Top 10 user in current group as @type {LeaderboardEntry[]}
  */
-router.get('/stats/groups/:group', async (c) => {
-	const cached = await cfCaches.default.match(c.req.raw);
-	if (cached) {
-		return cached;
-	}
+// router.get('/stats/groups/:group', async (c) => {
+// 	const cached = await cfCaches.default.match(c.req.raw);
+// 	if (cached) {
+// 		return cached;
+// 	}
 
-	// we dont rate limit this because cf cache
+// 	// we dont rate limit this because cf cache
 
-	const gameRegion = getRegionHandler(c.get("group"));
-	console.log(c.get("group"));
-	const response = Response.json(await gameRegion.getTopTen(), {
-		headers: {
-			'Cache-Control': `max-age=${LEADERBOARD_CACHE_DURATION}`,
-		},
-	});
-	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
-	return response;
-});
+// 	const gameRegion = getRegionHandler(c.get("group"));
+// 	console.log(c.get("group"));
+// 	const response = Response.json(await gameRegion.getTopTen(), {
+// 		headers: {
+// 			'Cache-Control': `max-age=${LEADERBOARD_CACHE_DURATION}`,
+// 		},
+// 	});
+// 	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
+// 	return response;
+// });
 
 // its pain to cache this unless we change the url to `/stats/self/:ouid`
 // so dont call this too much
@@ -117,7 +129,7 @@ router.get('/stats/self', async (c) => {
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `stats:self:${ouid}` });
 	if (!success && !dev) {
-		console.warn(`[anticheat] Rate limit exceed. (/stats/self) ouid:${ouid} group:${group}`)
+		console.warn(`[anticheat] Rate limit exceed. (/stats/self) ouid:${ouid} group:${group}`);
 		throw new HTTPException(429, {
 			message: INVITE_MESSAGE,
 		});
@@ -142,7 +154,7 @@ router.post('/pop', async (c) => {
 
 	const { success } = await env.GAME_RATE_LIMITER.limit({ key: `pop:${ouid}` });
 	if (!success && !dev) {
-		console.warn(`[anticheat] Rate limit exceed. (/pop) ouid:${ouid} group:${group}`)
+		console.warn(`[anticheat] Rate limit exceed. (/pop) ouid:${ouid} group:${group}`);
 		throw new HTTPException(429, {
 			message: INVITE_MESSAGE,
 		});
@@ -150,7 +162,7 @@ router.post('/pop', async (c) => {
 
 	const pop = parseInt(query.pop);
 	if (!pop || pop > MAX_POP_PER_REQUEST) {
-		console.warn(`[anticheat] Too much pop (/pop) pop:${pop} ouid:${ouid} group:${group}`)
+		console.warn(`[anticheat] Too much pop (/pop) pop:${pop} ouid:${ouid} group:${group}`);
 		throw new HTTPException(400, {
 			message: INVITE_MESSAGE,
 		});
@@ -174,9 +186,10 @@ router.get('/username', async c => {
 
 	try {
 		const gameRegion = getRegionHandler(group);
-		return c.text(await gameRegion.getPlayerName(ouid));
-	} catch {
-		return c.text('failed', 400);
+		return c.text(await gameRegion.getPlayerName(ouid) ?? "");
+	} catch (e) {
+		console.error(e);
+		return c.text("failed", 400);
 	}
 });
 
