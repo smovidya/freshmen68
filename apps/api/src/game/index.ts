@@ -66,10 +66,12 @@ router.use('*', async (c, next) => {
 });
 
 router.get('/stats', async (c) => {
-	const cached = await cfCaches.default.match(c.req.raw);
+	const cached = await cfCaches.default.match(c.req.raw.url);
 	if (cached) {
+		console.log('cache hit /stats')
 		return cached;
 	}
+	console.log('cache miss /stats')
 
 	const pops = await getPopByGroups();
 	const response = Response.json(pops, {
