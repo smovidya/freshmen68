@@ -78,7 +78,7 @@ router.get('/stats', async (c) => {
 		},
 	});
 
-	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url, c.req.raw), response.clone()));
+	c.executionCtx.waitUntil(cfCaches.default.put(new Request(c.req.raw.url), response.clone()));
 	return response;
 });
 

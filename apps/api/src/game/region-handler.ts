@@ -38,13 +38,13 @@ export class GameRegionHandler extends DurableObject<Env> {
 		return this.leaderboard.getPlayerName(ouid);
 	}
 
-	getTotalScore() {
-		return this.leaderboard.totalScore;
-	}
+	// getTotalScore() {
+	// 	return this.leaderboard.totalScore;
+	// }
 
-	getTopTen() {
-		return this.leaderboard.getTopScores(10);
-	}
+	// getTopTen() {
+	// 	return this.leaderboard.getTopScores(10);
+	// }
 
 	getPlayerScore(ouid: string) {
 		const score = this.leaderboard.getPlayerScore(ouid);
@@ -56,6 +56,7 @@ export class GameRegionHandler extends DurableObject<Env> {
 	}
 
 	reset() {
+		console.log("Resetting leaderboard")
 		this.ctx.storage.sql.exec("DELETE FROM leaderboard");
 		this.ctx.storage.sql.exec("DELETE FROM pops");
 		this.leaderboard.initialize(true);
