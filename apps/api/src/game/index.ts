@@ -5,7 +5,9 @@ import { HTTPException } from 'hono/http-exception';
 import type { JWTPayload } from 'jose';
 import type { WorkerCacheStorage } from '../type';
 import { getPopByGroups, getRegionHandler, getRegionHandlers, groupNumbers } from './coordinator';
+import * as jose from 'jose';
 import type { LeaderboardEntry } from './sqlite-leaderboard';
+import { createMiddleware } from 'hono/factory';
 
 /*
 	POPCAT: 800pop/30sec
@@ -38,6 +40,19 @@ export const flags = new FeatureFlags({
 	enabledAll: dev,
 });
 
+
+function getJwks() {
+	if (env.WORKER_ENV === 'production') {
+		// It's safe to embed here btw
+		return jose.createLocalJWKSet({ "keys": [{ "kty": "OKP", "crv": "Ed25519", "x": "5s1FFUB8l54bIi7OtakDKwQmEe2Krf1PaWTMycL9yCU", "kid": "POMpwv8go7MUWBLO11LcgeygdZ8KFgyH" }] });
+	}
+
+	const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`;
+	return jose.createRemoteJWKSet(new URL(jwksUrl));
+}
+
+const JWKS = getJwks();
+
 const router = new Hono<{
 	Variables: {
 		gameJWTPayload: JWTPayload;
@@ -46,23 +61,48 @@ const router = new Hono<{
 	};
 }>();
 
-router.use('*', async (c, next) => {
+router.use("*", async (c, next) => {
 	if (!flags.isEnabled("game-playing") && !flags.isEnabled("game-allow-non-freshmen")) {
 		console.log("Game is not available");
 		return c.json({ error: 'Not available' }, 401);
 	}
+	return next();
+});
 
-	const { group, ouid } = c.get("gameJWTPayload");
-	if (!group || !ouid) {
-		console.log("User is not authenticated or missing group/ID");
-		return c.json({
-			message: "what"
-		}, 500);
+const withAuth = createMiddleware(async (c, next) => {
+	const token = c.req.header('Authorization')?.replace('Bearer ', '');
+
+	if (!token) {
+		return c.json({ error: 'Unauthorized' }, 401);
 	}
 
-	c.set("group", group as string);
-	c.set("ouid", ouid as string);
-	await next();
+	try {
+		const { payload } = await jose.jwtVerify(token, JWKS, {
+			issuer: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
+			audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
+		});
+
+		const { group, ouid } = payload;
+		if (!group || !ouid) {
+			console.log("User is not authenticated or missing group/ID");
+			return c.json({
+				message: "what"
+			}, 500);
+		}
+
+		c.set("group", group as string);
+		c.set("ouid", ouid as string);
+
+		await next();
+	} catch (error) {
+		let payload = {};
+		try {
+			payload = jose.decodeJwt(token);
+		} catch { }
+
+		console.error('JWT verification failed: ', error, payload);
+		return c.json({ error: 'Unauthorized' }, 401);
+	}
 });
 
 router.get('/stats', async (c) => {
@@ -76,7 +116,7 @@ router.get('/stats', async (c) => {
 	const pops = await getPopByGroups();
 	const response = Response.json(pops, {
 		headers: {
-			'Cache-Control': `max-age=${GLOBAL_LEADERBOARD_CACHE_DURATION}`,
+			'Cache-Control': `public, max-age=${GLOBAL_LEADERBOARD_CACHE_DURATION}`,
 		},
 	});
 
@@ -123,9 +163,10 @@ router.get('/stats/global', async (c) => {
 // 	return response;
 // });
 
+
 // its pain to cache this unless we change the url to `/stats/self/:ouid`
 // so dont call this too much
-router.get('/stats/self', async (c) => {
+router.get('/stats/self', withAuth, async (c) => {
 	const ouid = c.get("ouid");
 	const group = c.get("group");
 
@@ -149,7 +190,7 @@ router.get('/stats/self', async (c) => {
 /**
  * @example `POST /pop?pop=80` = add 80 pop for current authenticated user
  */
-router.post('/pop', async (c) => {
+router.post('/pop', withAuth, async (c) => {
 	const query = c.req.query();
 	const ouid = c.get("ouid");
 	const group = c.get("group");
@@ -175,7 +216,7 @@ router.post('/pop', async (c) => {
 	return c.text('queued');
 });
 
-router.get('/username', async c => {
+router.get('/username', withAuth, async c => {
 	const group = c.get("group");
 	const ouid = c.get("ouid");
 
@@ -198,7 +239,7 @@ router.get('/username', async c => {
 /**
  * @example `POST /username` plaese submit the name in request body as a string
  */
-router.post('/username', async (c) => {
+router.post('/username', withAuth, async (c) => {
 	const group = c.get("group");
 	const ouid = c.get("ouid");
 
@@ -235,7 +276,7 @@ router.post('/username', async (c) => {
 	}
 });
 
-router.get("/dump/pop", async c => {
+router.get("/dump/pop", withAuth, async c => {
 	const ouid = c.get("ouid");
 	if (!elavatedOuids.includes(ouid) && !dev) {
 		throw new HTTPException(404);
@@ -255,7 +296,7 @@ router.get("/dump/pop", async c => {
 	);
 });
 
-router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reset-every-score", async c => {
+router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reset-every-score", withAuth, async c => {
 	const ouid = c.get("ouid");
 	if (!elavatedOuids.includes(ouid) && !dev) {
 		throw new HTTPException(404);
@@ -269,7 +310,7 @@ router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reset-every-scor
 	return c.text("done");
 });
 
-router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reinit", async c => {
+router.get("/__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/reinit", withAuth, async c => {
 	const ouid = c.get("ouid");
 	if (!elavatedOuids.includes(ouid) && !dev) {
 		throw new HTTPException(404);

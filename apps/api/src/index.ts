@@ -18,18 +18,6 @@ const app = new Hono<{
 	};
 }>();
 
-function getJwks() {
-	if (env.WORKER_ENV === 'production') {
-		// It's safe to embed here btw
-		return jose.createLocalJWKSet({ "keys": [{ "kty": "OKP", "crv": "Ed25519", "x": "5s1FFUB8l54bIi7OtakDKwQmEe2Krf1PaWTMycL9yCU", "kid": "POMpwv8go7MUWBLO11LcgeygdZ8KFgyH" }] });
-	}
-
-	const jwksUrl = `${env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787'}/api/auth/jwks`;
-	return jose.createRemoteJWKSet(new URL(jwksUrl));
-}
-
-const JWKS = getJwks();
-
 app.use(
 	'*', // or replace with "*" to enable cors for all routes
 	cors({
@@ -44,34 +32,6 @@ app.use(
 
 app.get('/game', (c) => {
 	return c.redirect(`${env.FRONTEND_URL || 'http://localhost:5173'}${c.req.path}`, 302);
-});
-
-app.use('/game/*', async (c, next) => {
-	const token = c.req.header('Authorization')?.replace('Bearer ', '');
-
-	if (!token) {
-		return c.json({ error: 'Unauthorized' }, 401);
-	}
-
-	try {
-		const { payload } = await jose.jwtVerify(token, JWKS, {
-			issuer: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
-			audience: env.PUBLIC_BETTER_AUTH_URL || 'http://localhost:8787',
-		});
-
-		// console.log('JWT Payload:', payload);
-
-		c.set("gameJWTPayload", payload);
-		await next();
-	} catch (error) {
-		let payload = {};
-		try {
-			payload = jose.decodeJwt(token);
-		} catch { }
-
-		console.error('JWT verification failed: ', error, payload);
-		return c.json({ error: 'Unauthorized' }, 401);
-	}
 });
 
 app.route("/game", gameRouter);
