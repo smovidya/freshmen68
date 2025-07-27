@@ -4,12 +4,20 @@
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { GameAPIClient } from '$lib/game.svelte';
 	import { onMount } from 'svelte';
+	import { updated } from '$app/state';
+
 	let { data } = $props();
 
 	const client = new GameAPIClient(false);
 	onMount(() => {
 		client.refreshToken();
 	});
+
+	$effect(() => {
+		if (updated.current) {
+			location.reload()
+		}
+	})
 </script>
 
 <svelte:head>

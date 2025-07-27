@@ -14,8 +14,11 @@ const config = {
 		adapter: adapter(),
 		paths: {
 			relative: false // Required for PostHog session replay to work correctly
+		},
+		version: {
+			pollInterval: 5000
 		}
-	}
+	},
 };
 
 export default config;
