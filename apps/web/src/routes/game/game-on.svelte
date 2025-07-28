@@ -162,9 +162,11 @@
 		<button
 			class="h-full min-h-64 w-full min-w-64 touch-manipulation rounded-lg bg-contain bg-center bg-no-repeat outline-none select-none focus:outline-none"
 			onmousedown={onPop}
-			onmouseup={() => onUnpop(true)}
-			ontouchstart={onPop}
+			onmouseup={() => onUnpop()}
+			ontouchstart={() => onPop()}
 			ontouchend={() => onUnpop()}
+			onpointerdown={() => onPop()}
+			onpointerup={() => onUnpop(true)}
 			aria-label="Toggle Pop"
 			style="background-image: url({poping
 				? popImages[groupImageKey].open
