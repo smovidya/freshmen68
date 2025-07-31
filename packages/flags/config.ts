@@ -13,7 +13,7 @@ export const features = {
     end: "2025-07-21T23:59:59+07:00",
   },
   "group-announcement": true,
-  "game-playing": true,
+  "game-playing": false,
   "game-allow-non-freshmen": false
 } satisfies Record<string, EventAvailability>;
 
